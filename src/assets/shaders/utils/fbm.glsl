@@ -129,6 +129,8 @@ float fbm(vec3 x, int numOctaves) {
 	return v;
 }
 
+#pragma glslify: export(fbm)
+
 float turbulenceFBM(vec3 x, int numOctaves) {
 	float v = 0.0;
 	float a = 0.5;

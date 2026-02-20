@@ -1,6 +1,6 @@
 import { useStore } from "@/store/useStore";
 import { useThree, useFrame } from "@react-three/fiber";
-import { useMemo, useState, useRef } from "react";
+import { useMemo, useState, useRef, useEffect } from "react";
 import Page from "./Page";
 import {
   BoxGeometry,
@@ -9,7 +9,6 @@ import {
   Euler,
   Quaternion,
 } from "three";
-import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { easing } from "maath";
 import { useRouter } from "next/router";
@@ -45,7 +44,7 @@ export default function Book() {
   const [prevPage, setPrevPage] = useState(false);
   const { asPath } = useRouter();
 
-  const { size, camera } = useThree();
+  const { size } = useThree();
   const staticViewport = useMemo(() => {
     const distance = 5;
     const fov = (75 * Math.PI) / 180;
@@ -106,136 +105,137 @@ export default function Book() {
 
   // Transizioni entrata/uscita
   const tl = useRef();
-  useGSAP(
-    () => {
-      if (!groupRef.current) return;
+  useEffect(() => {
+    if (!groupRef.current) return;
 
-      tl.current?.kill();
-      tl.current = null;
-
-      if (asPath === "/year") {
-        if (selectedPage || selectedPage === 0) {
-          isEnabled.current = false;
-          setCurrentPage(0);
-          groupRef.current.visible = false;
-          setSelectedPage(false);
-        }
-        // Entrata
-        gsap.set(groupRef.current.position, {
-          x: -staticViewport.width,
-          y: 0,
-          z: 0,
-        });
-        gsap.set(groupRef.current.rotation, {
-          x: Math.PI * 0.33,
-          y: Math.PI * 0.4,
-          z: 0,
-        });
-
-        tl.current = gsap.timeline({
-          defaults: {
-            duration: 1.5,
-            ease: "power3.out",
-            delay: 0.1,
-          },
-          onStart: () => {
-            groupRef.current.visible = true;
-          },
-          onComplete: () => {
-            isEnabled.current = true;
-          },
-        });
-        tl.current
-          .to(groupRef.current.position, {
-            x: -sizes.width / 2,
-            y: 0,
-            z: 0,
-            overwrite: true,
-          })
-          .to(groupRef.current.rotation, { x: 0, y: 0, z: 0 }, "<");
-      } else {
-        if (selectedPage || selectedPage === 0) return;
-        // Uscita
-        isEnabled.current = false;
-        setPrevPage(currentPage);
-        setCurrentPage(0);
-        tl.current = gsap.timeline({
-          onComplete: () => {
-            groupRef.current.visible = false;
-          },
-          defaults: {
-            duration: 1.8,
-            ease: "power2.out",
-            delay: 0.1,
-          },
-        });
-        tl.current
-          .to(groupRef.current.position, {
-            x: staticViewport.width,
-            y: 0,
-            z: 0,
-          })
-          .to(
-            groupRef.current.rotation,
-            {
-              x: -Math.PI * 0.1,
-              y: -Math.PI * 0.4,
-              z: 0,
-            },
-            "<",
-          );
+    tl.current?.kill();
+    tl.current = null;
+    if (asPath === "/year") {
+      const needsStateReset = selectedPage || selectedPage === 0;
+      isEnabled.current = false;
+      gsap.killTweensOf([groupRef.current.position, groupRef.current.rotation]);
+      if (needsStateReset) {
+        groupRef.current.visible = false;
       }
+      // Reset esplicito posizione/rotazione per entrata
+      gsap.set(groupRef.current.position, {
+        x: -staticViewport.width,
+        y: 0,
+        z: 0,
+      });
+      gsap.set(groupRef.current.rotation, {
+        x: Math.PI * 0.33,
+        y: Math.PI * 0.4,
+        z: 0,
+      });
+      groupRef.current.visible = true;
 
-      return () => {
-        tl.current?.kill();
-        tl.current = null;
-      };
-    },
-    { dependencies: [asPath] },
-  );
-
-  useGSAP(
-    () => {
-      if (
-        currentPage === false ||
-        !isEnabled.current ||
-        selectedPage ||
-        selectedPage === 0
-      )
-        return;
-      tl.current?.kill();
-      tl.current = null;
       tl.current = gsap.timeline({
         defaults: {
-          duration: 0.8,
-          ease: "power2.out",
-          overwrite: true,
+          duration: 1.5,
+          ease: "power3.out",
+          delay: 0.1,
+        },
+        onStart: () => {
+          if (needsStateReset) {
+            setCurrentPage(0);
+            setSelectedPage(false);
+          }
+        },
+        onComplete: () => {
+          isEnabled.current = true;
         },
       });
-      if (currentPage == 0) {
-        tl.current.to(groupRef.current.position, {
+      tl.current
+        .to(groupRef.current.position, {
           x: -sizes.width / 2,
           y: 0,
           z: 0,
-        });
-      } else if (currentPage == totalSheets) {
-        tl.current.to(groupRef.current.position, {
-          x: sizes.width / 2,
+          overwrite: true,
+        })
+        .to(groupRef.current.rotation, { x: 0, y: 0, z: 0 }, "<");
+    } else {
+      if (selectedPage || selectedPage === 0) return;
+      // Uscita
+      tl.current = gsap.timeline({
+        onStart: () => {
+          isEnabled.current = false;
+          setPrevPage(currentPage);
+          setCurrentPage(0);
+        },
+        onComplete: () => {
+          groupRef.current.visible = false;
+        },
+        defaults: {
+          duration: 1.8,
+          ease: "power2.out",
+          delay: 0.1,
+        },
+      });
+      tl.current
+        .to(groupRef.current.position, {
+          x: staticViewport.width,
           y: 0,
           z: 0,
-        });
-      } else {
-        if (groupRef.current.position.x !== -sizes.width / 2) {
-          tl.current.to(groupRef.current.position, { x: 0, y: 0, z: 0 });
-        }
+        })
+        .to(
+          groupRef.current.rotation,
+          {
+            x: -Math.PI * 0.1,
+            y: -Math.PI * 0.4,
+            z: 0,
+          },
+          "<",
+        );
+    }
+
+    return () => {
+      tl.current?.kill();
+      tl.current = null;
+    };
+  }, [asPath]);
+
+  const tlPage = useRef();
+  useEffect(() => {
+    if (
+      currentPage === false ||
+      !isEnabled.current ||
+      selectedPage ||
+      selectedPage === 0
+    )
+      return;
+
+    tlPage.current?.kill();
+    tlPage.current = null;
+    tlPage.current = gsap.timeline({
+      defaults: {
+        duration: 0.8,
+        ease: "power2.out",
+        overwrite: true,
+      },
+    });
+    if (currentPage == 0) {
+      tlPage.current.to(groupRef.current.position, {
+        x: -sizes.width / 2,
+        y: 0,
+        z: 0,
+      });
+    } else if (currentPage == totalSheets) {
+      tlPage.current.to(groupRef.current.position, {
+        x: sizes.width / 2,
+        y: 0,
+        z: 0,
+      });
+    } else {
+      if (groupRef.current.position.x !== -sizes.width / 2) {
+        tlPage.current.to(groupRef.current.position, { x: 0, y: 0, z: 0 });
       }
-      return () => {
-        tl.current?.kill();
-        tl.current = null;
-      };
-    },
-    { dependencies: [currentPage] },
-  );
+    }
+    return () => {
+      tlPage.current?.kill();
+      tlPage.current = null;
+    };
+  }, [currentPage]);
 
   const resetBook = () => {
     setPrevPage(currentPage);

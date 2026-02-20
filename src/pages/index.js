@@ -4,7 +4,10 @@ import { useStore } from "@/store/useStore";
 export default function Home() {
   const setTransition = useStore((state) => state.setTransition);
   useLayoutEffect(() => {
-    setTransition(false);
+    const currentTransition = useStore.getState().transition;
+    if (currentTransition !== "exit") {
+      setTransition(false);
+    }
   }, []);
 
   return (

@@ -10,7 +10,8 @@ export default function StateManager() {
 
       const yearsToYear =
         router.asPath == "/year" && url.includes("/year/") && url !== "/year/";
-      if (yearsToYear || router.asPath == "/") return;
+      const yearsToHome = router.asPath == "/year" && url == "/";
+      if (yearsToYear || yearsToHome || router.asPath == "/") return;
 
       if (!currentTransition) {
         setTransition("exit");

@@ -19,4 +19,6 @@ export const useStore = create((set) => ({
   clearObjects: () => set({ objects: [] }),
   transition: false,
   setTransition: (transition) => set({ transition }),
+  background: null,
+  setBackground: (background) => set({ background }),
 }));

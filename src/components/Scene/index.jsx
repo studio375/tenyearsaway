@@ -3,6 +3,8 @@ import ComicBook from "./ComicBook";
 import { Suspense } from "react";
 import { Preload } from "@react-three/drei";
 import Book from "./Book";
+import Background from "./Background";
+
 export default function Scene() {
   return (
     <div id="scene" className="fixed inset-0 left-0 top-0 z-0">
@@ -19,7 +21,10 @@ export default function Scene() {
         <Suspense fallback={null}>
           <ComicBook />
         </Suspense>
-        <Book />
+        <Suspense fallback={null}>
+          <Book />
+        </Suspense>
+        <Background />
         <Preload all />
       </Canvas>
     </div>
