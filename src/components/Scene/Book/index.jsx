@@ -40,6 +40,7 @@ export default function Book() {
   const isEnabled = useRef(false);
   const isDragging = useRef(false);
   const { pages, setSelectedPage, selectedPage } = useStore();
+  const activeExperience = useStore((state) => state.active);
   const [currentPage, setCurrentPage] = useState(false);
   const [prevPage, setPrevPage] = useState(false);
   const { asPath } = useRouter();
@@ -76,7 +77,7 @@ export default function Book() {
   // Drag gesture for page swiping
   const bind = useDrag(
     ({ event, direction, distance, last, first, active }) => {
-      if (!isEnabled.current) return;
+      if (!isEnabled.current || !activeExperience) return;
       event.stopPropagation();
 
       if (!active) {
@@ -106,7 +107,7 @@ export default function Book() {
   // Transizioni entrata/uscita
   const tl = useRef();
   useEffect(() => {
-    if (!groupRef.current) return;
+    if (!groupRef.current || !activeExperience) return;
 
     tl.current?.kill();
     tl.current = null;
@@ -168,7 +169,7 @@ export default function Book() {
         },
         defaults: {
           duration: 1.8,
-          ease: "power2.out",
+          ease: "power2.inOut",
           delay: 0.1,
         },
       });
@@ -193,7 +194,7 @@ export default function Book() {
       tl.current?.kill();
       tl.current = null;
     };
-  }, [asPath]);
+  }, [asPath, activeExperience]);
 
   const tlPage = useRef();
   useEffect(() => {
@@ -201,7 +202,8 @@ export default function Book() {
       currentPage === false ||
       !isEnabled.current ||
       selectedPage ||
-      selectedPage === 0
+      selectedPage === 0 ||
+      !activeExperience
     )
       return;
 
@@ -235,7 +237,7 @@ export default function Book() {
       tlPage.current?.kill();
       tlPage.current = null;
     };
-  }, [currentPage]);
+  }, [currentPage, activeExperience]);
 
   const resetBook = () => {
     setPrevPage(currentPage);
@@ -252,7 +254,8 @@ export default function Book() {
   const targetQuat = useRef(new Quaternion());
 
   useFrame(({ clock, pointer, delta }) => {
-    if (!isEnabled.current || !groupRef.current.visible) return;
+    if (!isEnabled.current || !groupRef.current.visible || !activeExperience)
+      return;
     const t = clock.getElapsedTime();
 
     const idleX = Math.sin(t * ROT_SPEED) * ROT_AMP;

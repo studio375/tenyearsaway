@@ -19,7 +19,7 @@ const Caption = function ({
 }) {
   const meshRef = useRef(null);
   const tl = useRef(null);
-  const { addObject, removeObject } = useStore();
+  const { addObject, removeObject, active } = useStore();
   useEffect(() => {
     if (!meshRef.current) return;
     const ref = meshRef.current;
@@ -59,7 +59,7 @@ const Caption = function ({
 
   useGSAP(
     () => {
-      if (!meshRef.current) return;
+      if ((!meshRef.current, !active)) return;
 
       tl.current = gsap.timeline({
         delay: index === 0 ? 3 : 1,
@@ -74,11 +74,11 @@ const Caption = function ({
 
       if (index === 0) tl.current.play();
     },
-    { scope: meshRef, dependencies: [index] }
+    { scope: meshRef, dependencies: [index, active] },
   );
 
   useLenis(({ progress, velocity }) => {
-    if (!meshRef.current) return;
+    if (!meshRef.current || !useStore.getState().active) return;
     meshRef.current.material.uniforms.uVelocity.value = velocity * 0.1;
 
     if (
@@ -97,7 +97,7 @@ const Caption = function ({
 
   const dummy = useMemo(() => new Object3D(), []);
   useFrame(({ clock, pointer, delta }) => {
-    if (!meshRef.current) return;
+    if (!meshRef.current || !active) return;
     meshRef.current.material.uniforms.uTime.value =
       clock.getElapsedTime() * 0.7;
 

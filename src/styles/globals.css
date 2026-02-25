@@ -4,6 +4,9 @@
 :root {
   --background: #fff;
   --foreground: #525252;
+  --storm: #0d1429;
+  --text-color: #d65938;
+  --text-blue: #a5d8dd;
   --font-size: 10px;
   --spacing: 1rem;
 }
@@ -11,6 +14,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-text-color: var(--text-color);
+  --color-text-blue: var(--text-blue);
+  --color-storm: var(--storm);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -19,6 +25,7 @@
   :root {
     --background: #fff;
     --foreground: #525252;
+    --color-storm: var(--storm);
   }
 }
 
@@ -57,4 +64,43 @@ body {
   top: 0;
   width: 100svw;
   z-index: 30;
+}
+
+/* .cardBox {
+  position: relative;
+  &::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 104%;
+    height: 110%;
+    border-radius: 12px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border: 2px solid black;
+    border-bottom: 0;
+    background: var(--text-blue);
+    z-index: -1;
+  }
+} */
+
+.button {
+  background: #fff;
+  display: block;
+  border-color: #000;
+  border-width: 2px;
+  border-radius: 12px;
+  padding: 3px 12px;
+}
+
+.box1 {
+  border-width: 3px 4px 3px 5px;
+  border-radius: 95% 4% 92% 5%/4% 95% 6% 95%;
+  transform: rotate(2deg);
+}
+
+svg .letter {
+  will-change: transform;
 }

@@ -12,13 +12,7 @@ export default function Home() {
 
   return (
     <div>
-      <main className="relative z-10 h-screen w-screen">
-        <div className="flex flex-col items-center justify-center h-full w-full">
-          <Link href="/year/2015">
-            <span>Start</span>
-          </Link>
-        </div>
-      </main>
+      <main className="relative z-10 h-screen w-screen"></main>
     </div>
   );
 }

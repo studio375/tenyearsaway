@@ -6,7 +6,6 @@ import { useStore } from "@/store/useStore";
 import { useRouter } from "next/router";
 export default function Footer() {
   const nextRef = useRef(null);
-  const info = useRef([]);
   const endRef = useRef(false);
   const [end, setEnd] = useState(false);
   const { setTransition } = useStore();
@@ -15,7 +14,7 @@ export default function Footer() {
   useGSAP(() => {
     if (!nextRef.current) return;
 
-    gsap.set([nextRef.current, info.current], {
+    gsap.set(nextRef.curren, {
       autoAlpha: 0,
       y: 20,
     });
@@ -33,31 +32,6 @@ export default function Footer() {
     });
   }, [end]);
 
-  useGSAP(
-    () => {
-      if (!info.current) return;
-
-      if (asPath === "/year") {
-        gsap.to(info.current[0], {
-          autoAlpha: 1,
-          y: 0,
-          duration: 0.5,
-          ease: "power2.out",
-          overwrite: true,
-        });
-      } else {
-        gsap.to(info.current[0], {
-          autoAlpha: 0,
-          y: 20,
-          duration: 0.3,
-          ease: "power2.in",
-          overwrite: true,
-        });
-      }
-    },
-    { dependencies: [asPath] },
-  );
-
   useLenis(({ progress }) => {
     if (progress >= 0.9 && !endRef.current) {
       endRef.current = true;
@@ -70,9 +44,6 @@ export default function Footer() {
 
   return (
     <footer className="fixed bottom-0 left-0 w-full p-2 z-12 flex justify-center items-center">
-      <span ref={(el) => (info.current[0] = el)}>
-        Click or swipe to turn the page
-      </span>
       {asPath !== "/year" && (
         <span
           ref={nextRef}

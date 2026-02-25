@@ -20,6 +20,7 @@ const Page = function ({ geometry, page }) {
         uVelocity: { value: 0 },
         uAmplitude: { value: 1.4 },
         uFrequency: { value: 0.75 },
+        uLightProgress: { value: 0 },
       },
       transparent: true,
       depthTest: false,

@@ -6,12 +6,13 @@ import fragmentShader from "@/assets/shaders/background/fragment.glsl";
 import { ShaderMaterial, MathUtils } from "three";
 import { useStore } from "@/store/useStore";
 import gsap from "gsap";
-export default function Background() {
+export default function Background({ geometry }) {
   const { size, viewport } = useThree();
   const ref = useRef(null);
   const lenis = useLenis();
   const transition = useStore((state) => state.transition);
   const setBackground = useStore((state) => state.setBackground);
+  const loaded = useStore((state) => state.loaded);
   const staticViewport = useMemo(() => {
     const distance = 5;
     const fov = (75 * Math.PI) / 180;
@@ -59,7 +60,7 @@ export default function Background() {
   }, [sizes.width, sizes.height]);
 
   useEffect(() => {
-    if (!ref.current || transition) return;
+    if (!ref.current || transition || !loaded) return;
     ref.current.material.uniforms.uMovement.value = 0;
     ref.current.material.uniforms.uSpeed.value = 0;
     gsap.to(ref.current.material.uniforms.uAlpha, {
@@ -68,7 +69,7 @@ export default function Background() {
       delay: 0.2,
       ease: "power3.inOut",
     });
-  }, [transition]);
+  }, [transition, loaded]);
 
   const targetSpeed = useRef(0);
   useLenis(
@@ -80,7 +81,8 @@ export default function Background() {
         useStore.getState().transition ||
         lastVelocity < -400 ||
         isStopped ||
-        (lastVelocity == 0 && progress == 1)
+        (lastVelocity == 0 && progress == 1) ||
+        !useStore.getState().loaded
       )
         return;
 
@@ -93,7 +95,7 @@ export default function Background() {
   );
 
   useFrame((state) => {
-    if (!ref.current) return;
+    if (!ref.current || !loaded) return;
 
     let time = state.clock.getElapsedTime();
     ref.current.material.uniforms.uTime.value = time;
@@ -113,10 +115,9 @@ export default function Background() {
     <mesh
       ref={ref}
       scale={[sizes.width, sizes.height, 1]}
+      geometry={geometry}
       material={material}
       renderOrder={-1}
-    >
-      <planeGeometry args={[1, 1]} />
-    </mesh>
+    />
   );
 }

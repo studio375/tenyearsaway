@@ -61,8 +61,8 @@ export default function TransitionHandler() {
         0,
       ).to(
         background.material.uniforms.uAlpha,
-        { value: 0, duration: 1.5, ease: "power3.inOut" },
-        0,
+        { value: 0, duration: 2, ease: "power2.out", delay: 0.75 },
+        1,
       );
 
       // Objects
@@ -83,7 +83,12 @@ export default function TransitionHandler() {
           )
             .to(
               page.material.uniforms.uProgress,
-              { value: 1, duration: 2.1, ease: "power2.out", delay: 0.7 },
+              { value: 1, duration: 2.8, ease: "power2.out", delay: 0.7 },
+              1,
+            )
+            .to(
+              page.material.uniforms.uLightProgress,
+              { value: 1.0, duration: 2.1, ease: "power2.out", delay: 1.3 },
               1,
             )
             .to(
@@ -134,6 +139,11 @@ export default function TransitionHandler() {
                 1,
               )
               .to(
+                mesh.material.uniforms.uLightProgress,
+                { value: 1.0, duration: 1.8, ease: "power2.out", delay: 0.7 },
+                1,
+              )
+              .to(
                 mesh.material.uniforms.uProgress,
                 {
                   value: 0,
@@ -160,7 +170,6 @@ export default function TransitionHandler() {
     }
 
     if (transition === "exit") {
-      console.log("entro e faccio l'exit");
       lenis.stop();
       transitionTl.current = gsap.timeline({
         onComplete: () => {

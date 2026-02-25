@@ -19,7 +19,7 @@ const Mesh = function ({
   const meshRef = useRef(null);
   const tl = useRef(null);
   const texture = useKTX2(src);
-  const { addObject, removeObject, activeYear } = useStore();
+  const { addObject, removeObject, activeYear, active } = useStore();
 
   useEffect(() => {
     if (!meshRef.current) return;
@@ -49,6 +49,7 @@ const Mesh = function ({
           uAmplitude: { value: 1.4 },
           uFrequency: { value: 0.75 },
           uVelocity: { value: 0 },
+          uLightProgress: { value: 0 },
         },
         transparent: true,
         alphaTest: 0,
@@ -59,7 +60,7 @@ const Mesh = function ({
   );
 
   useEffect(() => {
-    if (!meshRef.current || index === 0) return;
+    if (!meshRef.current || index === 0 || !active) return;
     const proxy = { value: 0 };
     tl.current = gsap.timeline({ paused: true }).to(proxy, {
       value: 1,
@@ -71,11 +72,11 @@ const Mesh = function ({
     return () => {
       if (tl.current) tl.current.kill();
     };
-  }, [meshRef, index]);
+  }, [meshRef, index, active]);
 
   useGSAP(
     () => {
-      if (!meshRef.current || index !== 0) return;
+      if (!meshRef.current || index !== 0 || !active) return;
       tl.current = gsap.timeline();
       tl.current.to(meshRef.current.position, {
         x: positions[0],
@@ -94,11 +95,11 @@ const Mesh = function ({
         "<",
       );
     },
-    { scope: meshRef, dependencies: [index, positions] },
+    { scope: meshRef, dependencies: [index, positions, active] },
   );
 
   useLenis(({ progress, velocity }) => {
-    if (!meshRef.current) return;
+    if (!meshRef.current || !useStore.getState().active) return;
     meshRef.current.material.uniforms.uVelocity.value = velocity * 0.1;
     if (index == 0 || !framesProgress.current[index] || !tl.current) return;
     if (framesProgress.current[index].progress >= 1) {
@@ -110,7 +111,7 @@ const Mesh = function ({
   });
 
   useFrame(({ clock }) => {
-    if (!meshRef.current) return;
+    if (!meshRef.current || !active) return;
     meshRef.current.material.uniforms.uTime.value =
       clock.getElapsedTime() * 0.7;
   });

@@ -4,6 +4,10 @@ import { Suspense } from "react";
 import { Preload } from "@react-three/drei";
 import Book from "./Book";
 import Background from "./Background";
+import { PlaneGeometry } from "three";
+import Intro from "./Background/Intro";
+
+const geometry = new PlaneGeometry(1, 1, 8, 8);
 
 export default function Scene() {
   return (
@@ -24,7 +28,8 @@ export default function Scene() {
         <Suspense fallback={null}>
           <Book />
         </Suspense>
-        <Background />
+        <Background geometry={geometry} />
+        <Intro geometry={geometry} />
         <Preload all />
       </Canvas>
     </div>

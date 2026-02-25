@@ -42,9 +42,12 @@ void main() {
   alpha = pow(alpha, 2.); 
   //alpha *= 2.;
 
-  vec3 color = vec3(0.1, 0.1, 0.1);
+  vec3 gray = vec3(0.1, 0.1, 0.1);
+  vec3 stellarBlue = vec3(0.45, 0.72, 0.98);
+  vec3 color = mix(stellarBlue, gray, uAlpha);
 
-  gl_FragColor = vec4(color, alpha * uAlpha);
+  float amount = pow(uAlpha, 2.0);
+  gl_FragColor = vec4(color, alpha * amount);
   
   #include <tonemapping_fragment>
   #include <colorspace_fragment>

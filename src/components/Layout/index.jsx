@@ -3,15 +3,17 @@ import ScrollProvider from "../Utility/ScrollProvider";
 import StateManager from "../Utility/StateManager";
 import Footer from "../Library/Footer";
 import Header from "../Library/Header";
-export default function Layout({ children }) {
+import Loader from "../Library/Loader";
+
+export default function Layout({ children, ...props }) {
   return (
-    <div>
+    <div className={props.className}>
       <ScrollProvider>
-        <Header />
         {children}
         <Scene />
         <div className="noise" />
-        <Footer />
+        <Header />
+        <Loader />
         <StateManager />
       </ScrollProvider>
     </div>

@@ -11,10 +11,12 @@ import { getMeshSizes } from "@/helpers/functions";
 import { useLenis } from "lenis/react";
 import TransitionHandler from "./TransitionHandler";
 import Page from "./Page";
+import { useProgress } from "@react-three/drei";
 const sharedGeometry = new PlaneGeometry(1, 1, 64, 64);
 
 export default function ComicBook() {
   // Main variables
+  const progress = useProgress();
   const { frames, activeYear, page } = useStore();
   const { size } = useThree();
   const staticViewport = useMemo(() => {

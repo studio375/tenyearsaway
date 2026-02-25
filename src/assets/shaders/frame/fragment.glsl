@@ -6,6 +6,7 @@ uniform float uAmplitude;
 uniform float uFrequency;
 uniform sampler2D uMap;
 uniform float uProgress;
+uniform float uLightProgress;
 
 varying vec2 vUv;
 varying vec3 vWorldPosition;
@@ -43,14 +44,17 @@ void main() {
   
   // Dots
   float noiseSize = cnoise(vec4(vWorldPosition * 0.5, 1.0));
-  
   float dotSizeMap = 0. + 0.8 * smoothstep(-.5, 1.0, noiseSize); 
   float dotPattern = halftone(vWorldPosition.xy, 19.0, .985, dotSizeMap);
-
   vec3 dots = vec3(dotPattern);
   float dotsReveal = 1. - falloff(d, -uAmplitude - 0.3, 1.5 + uAmplitude, .56, uProgress);
   dotsReveal = pow(dotsReveal, 2.0);
   baseColor += dots * 2. * dotsReveal;
+
+
+  // Light
+  vec3 light = vec3(0.8, 0.8, 1.);
+  baseColor += light * uLightProgress;
 
   gl_FragColor = vec4(baseColor, alpha);
   
