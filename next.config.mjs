@@ -9,6 +9,11 @@ const nextConfig = {
         hostname: "tenyearsaway.local",
         pathname: "/wp-content/uploads/**",
       },
+      {
+        protocol: "http",
+        hostname: "admin10.375.studio",
+        pathname: "/wp-content/uploads/**",
+      },
     ],
   },
   turbopack: {
