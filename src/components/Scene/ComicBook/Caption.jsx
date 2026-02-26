@@ -62,14 +62,14 @@ const Caption = function ({
       if ((!meshRef.current, !active)) return;
 
       tl.current = gsap.timeline({
-        delay: index === 0 ? 3 : 1,
+        delay: index === 0 ? 0.7 : 0.7,
         repeatDelay: 0,
         paused: true,
       });
       tl.current.to(meshRef.current.material.uniforms.uProgress, {
-        value: 0.75,
-        duration: 5,
-        ease: "power2.out",
+        value: 1,
+        duration: 3,
+        ease: "expo.out",
       });
 
       if (index === 0) tl.current.play();

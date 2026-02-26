@@ -18,9 +18,9 @@ export default function Header() {
         autoAlpha: 1,
         yPercent: 0,
         y: 0,
-        duration: 1.4,
-        delay: 0.7,
-        ease: "power4.inOut",
+        duration: 1.2,
+        delay: 0.2,
+        ease: "power2.out",
       });
 
       const handleClick = () => {
@@ -28,9 +28,9 @@ export default function Header() {
           autoAlpha: 0,
           yPercent: 10,
           y: 0,
-          duration: 1.4,
+          duration: 1.2,
           overwrite: true,
-          ease: "power4.inOut",
+          ease: "power2.out",
         });
         router.push("/year/2015").then(() => {
           document.removeEventListener("click", handleClick);
@@ -45,26 +45,23 @@ export default function Header() {
         autoAlpha: 0,
         yPercent: 10,
         y: 0,
-        duration: 1.4,
-        ease: "power4.inOut",
+        duration: 0.8,
+        ease: "power2.out",
       });
     }
   }, [loaded, active]);
 
+  const isVisible = useRef(false);
   useEffect(() => {
     const tl = gsap.timeline();
-    if (active) {
-      gsap.set([menu.current, box.current], {
-        opacity: 0,
-        yPercent: 100,
-        y: 100,
-      });
+    if (active && router.asPath !== "/" && !isVisible.current) {
+      isVisible.current = true;
       tl.to(box.current, {
         opacity: 1,
         yPercent: 0,
         y: 0,
         duration: 1,
-        delay: 1.3,
+        delay: 0.2,
         ease: "expo-hard",
       }).to(
         menu.current,
@@ -77,7 +74,9 @@ export default function Header() {
         },
         "<",
       );
-    } else {
+    }
+    if (router.asPath == "/") {
+      isVisible.current = false;
       tl.to(menu.current, {
         opacity: 0,
         yPercent: 100,
@@ -102,25 +101,25 @@ export default function Header() {
     return () => {
       tl?.kill();
     };
-  }, [active]);
+  }, [active, router.asPath]);
 
   return (
     <header className="fixed bottom-0 left-0 w-full p-0 z-12 flex justify-center items-center gap-2 font-bold uppercase text-[2rem]">
       <div className="flex justify-center items-center absolute bottom-4 left-1/2 -translate-x-1/2">
         <span
           ref={startRef}
-          className="text-[1.5rem] lowercase tracking-widest text-white opacity-0 translate-y-3"
+          className="text-[1.5rem] lowercase tracking-widest text-white opacity-0 translate-y-3 will-change-transform"
         >
           <span className="animate-pulse">click everywhere to start</span>
         </span>
       </div>
       <div
         ref={box}
-        className="opacity-0 translate-y-100 cardBox inline-flex justify-center items-center w-auto bg-background p-2 rounded-tl-[12px] rounded-tr-[12px] border-2 border-black border-b-0 text-text-color"
+        className="opacity-0 translate-y-100 cardBox inline-flex justify-center items-center w-auto bg-background p-2 rounded-tl-[12px] rounded-tr-[12px] border-2 border-black border-b-0 text-text-color  will-change-transform"
       >
         <span
           ref={(el) => (menu.current[0] = el)}
-          className="opacity-0 translate-y-100"
+          className="opacity-0 translate-y-100  will-change-transform"
         >
           <Link
             href="/year"
@@ -136,7 +135,7 @@ export default function Header() {
         <div className="w-20 flex justify-center items-center" />
         <span
           ref={(el) => (menu.current[2] = el)}
-          className="opacity-0 translate-y-100"
+          className="opacity-0 translate-y-100  will-change-transform"
         >
           <Link
             href="/about"
