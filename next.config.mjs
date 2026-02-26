@@ -10,7 +10,7 @@ const nextConfig = {
         pathname: "/wp-content/uploads/**",
       },
       {
-        protocol: "http",
+        protocol: "https",
         hostname: "admin10.375.studio",
         pathname: "/wp-content/uploads/**",
       },
