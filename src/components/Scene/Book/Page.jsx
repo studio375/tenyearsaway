@@ -226,6 +226,7 @@ export default function Page({
         geometry={geometry}
         material={materials}
         frustumCulled={false}
+        castShadow={true}
         onPointerOver={(e) => {
           e.stopPropagation();
           setHighlighted(true);

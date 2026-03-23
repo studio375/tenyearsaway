@@ -7,13 +7,15 @@ import pageFragmentShader from "@/assets/shaders/storm/pageFragment.glsl";
 import { ShaderMaterial, DoubleSide } from "three";
 import gsap from "gsap";
 import { useRouter } from "next/router";
-import { useKTX2 } from "@react-three/drei";
+import { useKTX2, Text } from "@react-three/drei";
 import { useStore } from "@/store/useStore";
+import BookShadow from "@/components/Scene/Book/Shadow";
 export default function Intro({ geometry }) {
   const { size } = useThree();
   const ref = useRef(null);
   const ref2 = useRef(null);
   const pageRef = useRef(null);
+  const textRef = useRef(null);
   const { asPath } = useRouter();
   const { loaded, setActive } = useStore();
   const staticViewport = useMemo(() => {
@@ -101,6 +103,16 @@ export default function Intro({ geometry }) {
             ease: "expo.in",
           },
           0,
+        )
+        .to(
+          textRef.current.position,
+          {
+            y: staticViewport.height,
+            duration: 0.6,
+            delay: 0,
+            ease: "power2.in",
+          },
+          0,
         );
     } else {
       tlInOut.current.to(ref.current.material.uniforms.uProgress, {
@@ -132,6 +144,17 @@ export default function Intro({ geometry }) {
             ease: "power2.out",
           },
           0,
+        )
+        .fromTo(
+          textRef.current.position,
+          { y: staticViewport.height },
+          {
+            y: staticViewport.height / 2,
+            duration: 1.4,
+            delay: 0.3,
+            ease: "power3.out",
+          },
+          0,
         );
     }
 
@@ -151,6 +174,20 @@ export default function Intro({ geometry }) {
 
   return (
     <group renderOrder={-2}>
+      <Text
+        ref={textRef}
+        color="#cce8eb"
+        font={"/assets/fonts/PPValve-PlainExtrabold.woff"}
+        anchorX="center"
+        anchorY="top-cap"
+        position={[0, staticViewport.height - 0.2, 0.1]}
+        fontSize={staticViewport.height * 0.207}
+        letterSpacing={-0.06}
+        material-toneMapped={false}
+        receiveShadow
+      >
+        TEN YEARS AWAY
+      </Text>
       <mesh
         ref={ref}
         scale={[sizes.width, sizes.height, 1]}
@@ -164,6 +201,16 @@ export default function Intro({ geometry }) {
         rotation={[0, -Math.PI, 0]}
         visible={false}
       >
+        <BookShadow
+          width={3.7}
+          height={5.3}
+          x={1.6}
+          y={-0.15}
+          z={-0.25}
+          opacity={0.92}
+          feather={0.05}
+          renderOrder={-2}
+        />
         <mesh
           ref={ref2}
           position={[2, 0, 0]}
@@ -171,6 +218,8 @@ export default function Intro({ geometry }) {
           geometry={geometry}
           material={materialPage}
           renderOrder={-2}
+          receiveShadow={true}
+          castShadow={true}
         />
       </group>
     </group>

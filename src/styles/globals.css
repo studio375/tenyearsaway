@@ -3,10 +3,11 @@
 
 :root {
   --background: #fff;
-  --foreground: #525252;
+  --foreground: #000;
   --storm: #0d1429;
   --text-color: #d65938;
-  --text-blue: #a5d8dd;
+  --text-blue: #cce8eb;
+  --bg-blue: #a5d8dd;
   --font-size: 10px;
   --spacing: 1rem;
 }
@@ -16,24 +17,26 @@
   --color-foreground: var(--foreground);
   --color-text-color: var(--text-color);
   --color-text-blue: var(--text-blue);
+  --color-bg-blue: var(--bg-blue);
   --color-storm: var(--storm);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-valve: var(--font-valve);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #fff;
-    --foreground: #525252;
+    --foreground: #000;
     --color-storm: var(--storm);
+    --color-bg-blue: var(--bg-blue);
   }
 }
 
 html,
 body {
   overflow-x: hidden;
-  font-weight: 400;
+  font-weight: 500;
   line-height: 1.5;
+  font-family: var(--font-valve);
   &::-webkit-scrollbar {
     display: none !important;
   }
@@ -47,7 +50,6 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
   position: relative;
   font-size: 1.5rem;
 }

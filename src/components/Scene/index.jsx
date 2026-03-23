@@ -19,7 +19,7 @@ export default function Scene() {
           stencil: false,
           powerPreference: "high-performance",
         }}
-        shadows={false}
+        shadows={true}
         dpr={[1, 1.5]}
       >
         <Suspense fallback={null}>

@@ -2,6 +2,7 @@ import { useStore } from "@/store/useStore";
 import { useThree, useFrame } from "@react-three/fiber";
 import { useMemo, useState, useRef, useEffect } from "react";
 import Page from "./Page";
+import BookShadow from "./Shadow";
 import {
   BoxGeometry,
   MeshBasicMaterial,
@@ -280,36 +281,49 @@ export default function Book() {
   if (!pages || pages.length === 0) return null;
 
   return (
-    <group ref={groupRef} visible={false} {...bind()}>
-      {sheets.map((sheetIndex) => {
-        const frontUrl = textures[sheetIndex * 2];
-        const backUrl = textures[sheetIndex * 2 + 1];
-        return (
-          <Page
-            key={`sheet-${sheetIndex}`}
-            index={sheetIndex}
-            geometry={sharedGeometry}
-            pageMaterials={pageMaterials}
-            sizes={sizes}
-            frontUrl={frontUrl}
-            backUrl={backUrl}
-            opened={currentPage > sheetIndex}
-            currentPage={currentPage}
-            prevPage={prevPage}
-            totalSheets={totalSheets}
-            selectedPage={selectedPage}
-            setSelectedPage={setSelectedPage}
-            isDragging={isDragging}
-            isEnabled={isEnabled}
-            year={
-              currentPage > sheetIndex && sheetIndex !== 0
-                ? pages[sheetIndex + 1].year
-                : pages[sheetIndex].year
-            }
-            resetBook={() => resetBook()}
-          />
-        );
-      })}
-    </group>
+    <>
+      <group ref={groupRef} visible={false} {...bind()}>
+        <BookShadow
+          width={sizes.width}
+          height={sizes.height}
+          x={0}
+          y={-0.2}
+          z={-0.25}
+          opacity={0.42}
+          feather={0.2}
+          currentPage={currentPage}
+          totalSheets={totalSheets}
+        />
+        {sheets.map((sheetIndex) => {
+          const frontUrl = textures[sheetIndex * 2];
+          const backUrl = textures[sheetIndex * 2 + 1];
+          return (
+            <Page
+              key={`sheet-${sheetIndex}`}
+              index={sheetIndex}
+              geometry={sharedGeometry}
+              pageMaterials={pageMaterials}
+              sizes={sizes}
+              frontUrl={frontUrl}
+              backUrl={backUrl}
+              opened={currentPage > sheetIndex}
+              currentPage={currentPage}
+              prevPage={prevPage}
+              totalSheets={totalSheets}
+              selectedPage={selectedPage}
+              setSelectedPage={setSelectedPage}
+              isDragging={isDragging}
+              isEnabled={isEnabled}
+              year={
+                currentPage > sheetIndex && sheetIndex !== 0
+                  ? pages[sheetIndex + 1].year
+                  : pages[sheetIndex].year
+              }
+              resetBook={() => resetBook()}
+            />
+          );
+        })}
+      </group>
+    </>
   );
 }

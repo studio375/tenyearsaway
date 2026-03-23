@@ -1,57 +1,31 @@
-import Link from "next/link";
-import Title from "../Title";
 import { useRef, useEffect } from "react";
-import gsap from "gsap";
 import { useStore } from "@/store/useStore";
+import gsap from "gsap";
 import { useRouter } from "next/router";
+import Title from "../Title";
+import Link from "next/link";
+
 export default function Header() {
+  const box = useRef();
   const menu = useRef([]);
-  const box = useRef(null);
-  const startRef = useRef(null);
-  const { active, loaded } = useStore();
+  const hoverBgLeft = useRef();
+  const hoverBgRight = useRef();
+  const active = useStore((state) => state.active);
+
   const router = useRouter();
-  useEffect(() => {
-    if (!loaded) return;
-
-    if (!active) {
-      gsap.to(startRef.current, {
-        autoAlpha: 1,
-        yPercent: 0,
-        y: 0,
-        duration: 1.2,
-        delay: 0.2,
-        ease: "power2.out",
-      });
-
-      const handleClick = () => {
-        gsap.to(startRef.current, {
-          autoAlpha: 0,
-          yPercent: 10,
-          y: 0,
-          duration: 1.2,
-          overwrite: true,
-          ease: "power2.out",
-        });
-        router.push("/year/2015").then(() => {
-          document.removeEventListener("click", handleClick);
-        });
-      };
-      document.addEventListener("click", handleClick);
-      return () => {
-        document.removeEventListener("click", handleClick);
-      };
-    } else {
-      gsap.to(startRef.current, {
-        autoAlpha: 0,
-        yPercent: 10,
-        y: 0,
-        duration: 0.8,
-        ease: "power2.out",
-      });
-    }
-  }, [loaded, active]);
-
   const isVisible = useRef(false);
+
+  useEffect(() => {
+    gsap.set(hoverBgLeft.current, {
+      scaleX: 0,
+      transformOrigin: "right center",
+    });
+    gsap.set(hoverBgRight.current, {
+      scaleX: 0,
+      transformOrigin: "left center",
+    });
+  }, []);
+
   useEffect(() => {
     const tl = gsap.timeline();
     if (active && router.asPath !== "/" && !isVisible.current) {
@@ -103,51 +77,75 @@ export default function Header() {
     };
   }, [active, router.asPath]);
 
+  const handleEnterLeft = () => {
+    gsap.to(hoverBgLeft.current, {
+      scaleX: 1,
+      duration: 0.5,
+      ease: "power3.out",
+    });
+  };
+  const handleLeaveLeft = () =>
+    gsap.to(hoverBgLeft.current, {
+      scaleX: 0,
+      duration: 0.5,
+      overwrite: true,
+      ease: "power3.in",
+    });
+  const handleEnterRight = () => {
+    gsap.to(hoverBgRight.current, {
+      scaleX: 1,
+      duration: 0.5,
+      ease: "power3.out",
+    });
+  };
+  const handleLeaveRight = () =>
+    gsap.to(hoverBgRight.current, {
+      scaleX: 0,
+      duration: 0.5,
+      overwrite: true,
+      ease: "power3.in",
+    });
+
   return (
-    <header className="fixed bottom-0 left-0 w-full p-0 z-12 flex justify-center items-center gap-2 font-bold uppercase text-[2rem]">
-      <div className="flex justify-center items-center absolute bottom-4 left-1/2 -translate-x-1/2">
-        <span
-          ref={startRef}
-          className="text-[1.5rem] lowercase tracking-widest text-white opacity-0 translate-y-3 will-change-transform"
-        >
-          <span className="animate-pulse">click everywhere to start</span>
-        </span>
-      </div>
+    <header className="fixed top-2 left-0 w-full p-0 z-12 flex justify-center items-center uppercase text-[1.4rem] font-500">
       <div
         ref={box}
-        className="opacity-0 translate-y-100 cardBox inline-flex justify-center items-center w-auto bg-background p-2 rounded-tl-[12px] rounded-tr-[12px] border-2 border-black border-b-0 text-text-color  will-change-transform"
+        className="opacity-0 translate-y-100 inline-flex justify-center items-center w-auto h-[3.3rem]"
       >
-        <span
+        <div
           ref={(el) => (menu.current[0] = el)}
-          className="opacity-0 translate-y-100  will-change-transform"
+          onMouseEnter={handleEnterLeft}
+          onMouseLeave={handleLeaveLeft}
+          className="relative opacity-0 translate-y-100 w-22 h-full flex justify-start items-center will-change-transform pl-3 border-b-1 rounded-tl-[3px] overflow-hidden"
         >
+          <div
+            ref={hoverBgLeft}
+            className="absolute inset-0 bg-bg-blue border-1 border-b-0"
+          />
           <Link
             href="/year"
-            className="text-stroke-black text-stroke-0.8"
-            style={{
-              WebkitTextStroke: "0.8px black",
-              textStroke: "0.8px black",
-            }}
+            className="relative z-10 w-full h-full flex justify-start items-center"
           >
             Years
           </Link>
-        </span>
-        <div className="w-20 flex justify-center items-center" />
-        <span
+        </div>
+        <div
           ref={(el) => (menu.current[2] = el)}
-          className="opacity-0 translate-y-100  will-change-transform"
+          onMouseEnter={handleEnterRight}
+          onMouseLeave={handleLeaveRight}
+          className="relative opacity-0 translate-y-100 w-22 h-full flex justify-end items-center will-change-transform pr-3 border-b-1 rounded-tr-[3px] overflow-hidden"
         >
+          <div
+            ref={hoverBgRight}
+            className="absolute inset-0 bg-bg-blue border-1 border-b-0"
+          />
           <Link
             href="/about"
-            className="text-stroke-black text-stroke-0.8"
-            style={{
-              WebkitTextStroke: "0.8px black",
-              textStroke: "0.8px black",
-            }}
+            className="relative z-10 w-full h-full flex justify-end items-center"
           >
             About
           </Link>
-        </span>
+        </div>
       </div>
       <Title />
     </header>

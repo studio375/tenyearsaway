@@ -21,7 +21,7 @@ export default function Title() {
     const root = rootRef.current;
 
     const svgData = ref.current.clientHeight;
-    const initialY = -window.innerHeight + svgData * 2 * 1.5;
+    const initialY = window.innerHeight / 2 + svgData / 1.5;
 
     if (firstLoad.current) {
       gsap.set(letters, {
@@ -113,7 +113,7 @@ export default function Title() {
 
   return (
     <div
-      className="w-20 h-auto preserve-3d perspective-1000 fixed bottom-0 left-1/2 -translate-x-1/2 opacity-0"
+      className="w-20 h-auto preserve-3d perspective-1000 fixed top-2 left-1/2 -translate-x-1/2 opacity-0"
       ref={rootRef}
     >
       <Link href="/">

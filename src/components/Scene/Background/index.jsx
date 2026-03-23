@@ -118,6 +118,7 @@ export default function Background({ geometry }) {
       geometry={geometry}
       material={material}
       renderOrder={-1}
+      receiveShadow={true}
     />
   );
 }

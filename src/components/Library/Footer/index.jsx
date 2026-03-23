@@ -1,60 +1,112 @@
-import { useRef, useState } from "react";
-import { useGSAP } from "@gsap/react";
+import { useRef, useEffect } from "react";
 import gsap from "gsap";
-import { useLenis } from "lenis/react";
 import { useStore } from "@/store/useStore";
 import { useRouter } from "next/router";
+import Link from "next/link";
 export default function Footer() {
-  const nextRef = useRef(null);
-  const endRef = useRef(false);
-  const [end, setEnd] = useState(false);
-  const { setTransition } = useStore();
-  const { asPath } = useRouter();
+  const startRef = useRef(null);
+  const infoRef = useRef([]);
+  const { active, loaded } = useStore();
+  const router = useRouter();
+  useEffect(() => {
+    if (!loaded) return;
+    const tl = gsap.timeline();
+    if (!active) {
+      gsap.set(infoRef.current, { autoAlpha: 0 });
+      gsap.to(startRef.current, {
+        autoAlpha: 1,
+        yPercent: 0,
+        y: 0,
+        duration: 1.2,
+        delay: 0.2,
+        ease: "power2.out",
+      });
 
-  useGSAP(() => {
-    if (!nextRef.current) return;
-
-    gsap.set(nextRef.curren, {
-      autoAlpha: 0,
-      y: 20,
-    });
-  }, []);
-
-  useGSAP(() => {
-    if (!nextRef.current) return;
-
-    gsap.to(nextRef.current, {
-      autoAlpha: end ? 1 : 0,
-      y: end ? 0 : 20,
-      duration: end ? 0.5 : 0.3,
-      ease: end ? "power2.out" : "power2.in",
-      overwrite: true,
-    });
-  }, [end]);
-
-  useLenis(({ progress }) => {
-    if (progress >= 0.9 && !endRef.current) {
-      endRef.current = true;
-      setEnd(true);
-    } else if (progress < 0.9 && endRef.current) {
-      endRef.current = false;
-      setEnd(false);
+      const handleClick = () => {
+        gsap.to(startRef.current, {
+          autoAlpha: 0,
+          yPercent: 10,
+          y: 0,
+          duration: 1.2,
+          overwrite: true,
+          ease: "power2.out",
+        });
+        router.push("/year/2015").then(() => {
+          document.removeEventListener("click", handleClick);
+        });
+      };
+      document.addEventListener("click", handleClick);
+      return () => {
+        document.removeEventListener("click", handleClick);
+      };
+    } else {
+      gsap.to(startRef.current, {
+        autoAlpha: 0,
+        yPercent: 10,
+        y: 0,
+        duration: 0.8,
+        ease: "power2.out",
+      });
+      tl.to(infoRef.current[0], {
+        autoAlpha: 1,
+        yPercent: 0,
+        y: 0,
+        duration: 1,
+        delay: 0.23,
+        ease: "power2.out",
+      }).to(
+        infoRef.current[1],
+        {
+          autoAlpha: 1,
+          yPercent: -50,
+          y: 0,
+          duration: 1,
+          ease: "power2.out",
+        },
+        "<",
+      );
     }
-  });
+
+    return () => {
+      tl?.kill();
+    };
+  }, [loaded, active]);
+
+  useEffect(() => {
+    if (router.asPath === "/") {
+      gsap.to(infoRef.current, {
+        autoAlpha: 0,
+        yPercent: 100,
+        y: 0,
+      });
+    }
+  }, [router.asPath]);
 
   return (
-    <footer className="fixed bottom-0 left-0 w-full p-2 z-12 flex justify-center items-center">
-      {asPath !== "/year" && (
+    <footer className="fixed bottom-0 left-0 w-full h-5 z-12 flex justify-center items-center font-500 text-[1.2rem] px-5">
+      <div className="flex justify-center items-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
         <span
-          ref={nextRef}
-          className="cursor-pointer"
-          onClick={() => {
-            setTransition("next");
-          }}
+          ref={startRef}
+          className="lowercase text-text-blue opacity-0 translate-y-3 will-change-transform"
         >
-          next year
+          <span className="animate-pulse">click everywhere to start</span>
         </span>
-      )}
+      </div>
+      <div
+        ref={(el) => (infoRef.current[0] = el)}
+        className="opacity-0 translate-y-100"
+      >
+        TEN YEARS AWAY...one year later... ops: a grapghic novel, of a true
+        story, based on... us.
+      </div>
+      <div
+        ref={(el) => (infoRef.current[1] = el)}
+        className="opacity-0 text-right absolute right-5 top-1/2 translate-y-100"
+      >
+        <Link href="https://375.studio" target="_blank">
+          375.studio
+        </Link>
+      </div>
     </footer>
   );
 }

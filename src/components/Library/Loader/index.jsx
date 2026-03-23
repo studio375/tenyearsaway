@@ -70,7 +70,7 @@ export default function Loader() {
       ref={loaderRef}
       className="fixed left-0 top-0 inset-0 z-0 w-screen h-screen bg-storm flex items-center justify-center tracking-[2em]"
     >
-      <div className="flex text-text-blue text-[6rem] font-bold leading-none">
+      <div className="flex text-text-blue text-[6rem] font-200 leading-none">
         {STRIPS.map((strip, col) => (
           <div
             key={col}
@@ -81,12 +81,10 @@ export default function Loader() {
               {strip.map((digit, row) => (
                 <div
                   key={row}
-                  className="flex items-center justify-center tabular-nums text-stroke-black text-stroke-2"
+                  className="flex items-center font-200 justify-center tabular-nums"
                   style={{
                     height: DIGIT_H,
                     minWidth: "0.65em",
-                    WebkitTextStroke: "2px black",
-                    textStroke: "2px black",
                   }}
                 >
                   {digit}

@@ -2,15 +2,30 @@ import "@/styles/globals.css";
 import Layout from "@/components/Layout";
 import localFont from "next/font/local";
 
-const neueMachina = localFont({
+const valve = localFont({
   src: [
     {
-      path: "../assets/fonts/PPNeueMachina-InktrapRegular.woff2",
-      weight: "400",
+      path: "../assets/fonts/PPValve-PlainExtralight.woff2",
+      weight: "200",
       style: "normal",
     },
     {
-      path: "../assets/fonts/PPNeueMachina-InktrapUltrabold.woff2",
+      path: "../assets/fonts/PPValve-PlainExtralightItalic.woff2",
+      weight: "200",
+      style: "italic",
+    },
+    {
+      path: "../assets/fonts/PPValve-PlainMedium.woff2",
+      weight: "500",
+      style: "normal",
+    },
+    {
+      path: "../assets/fonts/PPValve-PlainMediumItalic.woff2",
+      weight: "500",
+      style: "italic",
+    },
+    {
+      path: "../assets/fonts/PPValve-PlainExtrabold.woff2",
       weight: "800",
       style: "normal",
     },
@@ -19,7 +34,7 @@ const neueMachina = localFont({
 
 export default function App({ Component, pageProps }) {
   return (
-    <Layout className={neueMachina.className}>
+    <Layout className={valve.className}>
       <Component {...pageProps} />
     </Layout>
   );
