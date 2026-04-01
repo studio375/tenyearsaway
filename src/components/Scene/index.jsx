@@ -6,6 +6,7 @@ import Book from "./Book";
 import Background from "./Background";
 import { PlaneGeometry } from "three";
 import Intro from "./Background/Intro";
+import Team from "./Team";
 
 const geometry = new PlaneGeometry(1, 1, 8, 8);
 
@@ -27,6 +28,9 @@ export default function Scene() {
         </Suspense>
         <Suspense fallback={null}>
           <Book />
+        </Suspense>
+        <Suspense fallback={null}>
+          <Team />
         </Suspense>
         <Background geometry={geometry} />
         <Intro geometry={geometry} />

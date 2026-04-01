@@ -40,7 +40,8 @@ export default function Book() {
   const groupRef = useRef();
   const isEnabled = useRef(false);
   const isDragging = useRef(false);
-  const { pages, setSelectedPage, selectedPage } = useStore();
+  const { pages, setSelectedPage, selectedPage, setBookCurrentPage } =
+    useStore();
   const activeExperience = useStore((state) => state.active);
   const [currentPage, setCurrentPage] = useState(false);
   const [prevPage, setPrevPage] = useState(false);
@@ -75,6 +76,10 @@ export default function Book() {
     [totalSheets],
   );
 
+  useEffect(() => {
+    setBookCurrentPage(currentPage);
+  }, [currentPage]);
+
   // Drag gesture for page swiping
   const bind = useDrag(
     ({ event, direction, distance, last, first, active }) => {
@@ -83,10 +88,13 @@ export default function Book() {
 
       if (!active) {
         isDragging.current = false;
+        document.body.style.cursor = 'grab';
+      } else {
+        document.body.style.cursor = 'grabbing';
       }
       if (!last || distance[0] < 1.1) return;
       isDragging.current = true;
-      if (direction[0] > 0) {
+      if (direction[0] >= 0) {
         setCurrentPage((prev) => {
           setPrevPage(prev);
           return Math.max(0, prev - 1);
@@ -286,13 +294,14 @@ export default function Book() {
         <BookShadow
           width={sizes.width}
           height={sizes.height}
-          x={0}
+          x={1.6}
           y={-0.2}
-          z={-0.25}
+          z={-0.3}
           opacity={0.42}
-          feather={0.2}
+          feather={0.1}
           currentPage={currentPage}
           totalSheets={totalSheets}
+          selectedPage={selectedPage}
         />
         {sheets.map((sheetIndex) => {
           const frontUrl = textures[sheetIndex * 2];
@@ -311,9 +320,6 @@ export default function Book() {
               prevPage={prevPage}
               totalSheets={totalSheets}
               selectedPage={selectedPage}
-              setSelectedPage={setSelectedPage}
-              isDragging={isDragging}
-              isEnabled={isEnabled}
               year={
                 currentPage > sheetIndex && sheetIndex !== 0
                   ? pages[sheetIndex + 1].year

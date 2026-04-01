@@ -10,7 +10,6 @@ void main() {
 }
 `;
 
-// Soft rectangular shadow — feather follows book edges independently on X and Y
 const frag = `
 varying vec2 vUv;
 uniform float uOpacity;
@@ -36,6 +35,7 @@ export default function BookShadow({
   renderOrder = -0.5,
   currentPage,
   totalSheets,
+  selectedPage = false,
 }) {
   const meshRef = useRef(null);
 
@@ -47,30 +47,66 @@ export default function BookShadow({
         transparent: true,
         depthWrite: false,
         uniforms: {
-          uOpacity: { value: opacity },
+          uOpacity: { value: 0 },
           uFeather: { value: feather },
         },
       }),
     [],
   );
 
-  // Animate shadow width: wide when book is open, narrow when closed
   useEffect(() => {
     if (!meshRef.current || currentPage === false || currentPage === undefined)
       return;
     const isOpen = currentPage > 0 && currentPage < totalSheets;
-    gsap.to(meshRef.current.scale, {
-      x: isOpen ? width * 2.7 : width * 1.4,
+    const tl = gsap.timeline({
+      delay: isOpen ? 0.8 : currentPage !== totalSheets ? 0.35 : 1.4,
+    });
+    tl.to(meshRef.current.scale, {
+      x: isOpen ? width * 2.2 : width * 1.24,
       duration: 0.9,
       ease: "power2.out",
-    });
+    }).to(
+      meshRef.current.position,
+      {
+        x: isOpen ? 0 : currentPage !== totalSheets ? 1.6 : -1.9,
+        duration: 0.9,
+        ease: "power2.out",
+      },
+      "<",
+    );
+    return () => {
+      tl.kill();
+    };
   }, [currentPage, totalSheets, width]);
+
+  useEffect(() => {
+    const tl = gsap.timeline();
+    if (
+      !meshRef.current ||
+      selectedPage === false ||
+      selectedPage === undefined
+    ) {
+      tl.to(meshRef.current.material.uniforms.uOpacity, {
+        value: opacity,
+        duration: 1.2,
+        delay: 0.3,
+        ease: "power2.out",
+      });
+    } else {
+      tl.to(meshRef.current.material.uniforms.uOpacity, {
+        value: 0,
+        duration: 1.2,
+        delay: 0.1,
+        ease: "power2.out",
+      });
+    }
+  }, [selectedPage]);
 
   return (
     <mesh
       ref={meshRef}
       position={[x, y, z]}
-      scale={[width * 1.4, height * 1.2, 1]}
+      scale={[width * 1.24, height * 1.2, 1]}
       geometry={geo}
       material={mat}
       renderOrder={renderOrder}

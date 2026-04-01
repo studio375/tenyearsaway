@@ -3,7 +3,7 @@ export function generateMeshPositions(
   viewportWidth,
   viewportHeight,
   minGap = 0.5,
-  maxGap = 1.0
+  maxGap = 1.0,
 ) {
   const positions = [];
   let currentX = viewportWidth; // partenza a destra
@@ -88,7 +88,7 @@ export function generateCaptionPosition({
   const maxAllowedOffset = (meshSize.meshWidth - captionSize.width) / 2;
   const clampedHorizontalOffset = Math.max(
     -maxAllowedOffset,
-    Math.min(maxAllowedOffset, horizontalOffset)
+    Math.min(maxAllowedOffset, horizontalOffset),
   );
 
   const captionX = meshPosition[0] + clampedHorizontalOffset;
@@ -147,7 +147,7 @@ export function getMeshSizes(
   maxWidth,
   maxHeight,
   minWidth,
-  maxAspectRatio
+  maxAspectRatio,
 ) {
   const aspectRatio = image.width / image.height;
   let meshW = maxWidth * (aspectRatio / maxAspectRatio);
@@ -198,3 +198,7 @@ export const generateGridPositions = (layoutConfig) => {
     };
   });
 };
+
+function mod(n, m) {
+  return ((n % m) + m) % m;
+}

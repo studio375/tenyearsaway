@@ -112,7 +112,7 @@ export default function Home() {
               ref={leftTextRef}
               className="text-text-blue text-[2rem] font-[200] w-[10vw] opacity-0"
             >
-              A grapghic novel, of a true story, based on... us.
+              A graphic novel, of a true story, based on... us.
             </p>
           </div>
           <div>

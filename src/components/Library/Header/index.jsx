@@ -8,9 +8,13 @@ import Link from "next/link";
 export default function Header() {
   const box = useRef();
   const menu = useRef([]);
+  const currentYear = useRef();
   const hoverBgLeft = useRef();
   const hoverBgRight = useRef();
   const active = useStore((state) => state.active);
+  const pageData = useStore((state) => state.page);
+  const activeYear = useStore((state) => state.activeYear);
+  const transition = useStore((state) => state.transition);
 
   const router = useRouter();
   const isVisible = useRef(false);
@@ -77,6 +81,51 @@ export default function Header() {
     };
   }, [active, router.asPath]);
 
+  useEffect(() => {
+    if (!currentYear.current) return;
+    const tl = gsap.timeline();
+    const p = currentYear.current.querySelectorAll("p");
+
+    if (
+      (router.asPath.startsWith("/year/") && !useStore.getState().transition) ||
+      !useStore.getState().transition == "exit"
+    ) {
+      gsap.set(p, {
+        y: 10,
+        yPercent: 0,
+        opacity: 0,
+      });
+      tl.to(p, {
+        opacity: 1,
+        y: 0,
+        yPercent: 0,
+        duration: 0.5,
+        overwrite: true,
+        ease: "power2.out",
+        stagger: 0.12,
+        delay: useStore.getState().active ? 0.2 : 5.7,
+      });
+    } else {
+      if (
+        !router.asPath.startsWith("/year/") ||
+        useStore.getState().transition == "next"
+      ) {
+        tl.to(p, {
+          opacity: 0,
+          y: 10,
+          yPercent: 0,
+          duration: 0.5,
+          overwrite: true,
+          ease: "power2.out",
+          stagger: 0.12,
+        });
+      }
+    }
+    return () => {
+      tl?.kill();
+    };
+  }, [router.asPath, activeYear]);
+
   const handleEnterLeft = () => {
     gsap.to(hoverBgLeft.current, {
       scaleX: 1,
@@ -105,9 +154,24 @@ export default function Header() {
       overwrite: true,
       ease: "power3.in",
     });
-
   return (
     <header className="fixed top-2 left-0 w-full p-0 z-12 flex justify-center items-center uppercase text-[1.4rem] font-500">
+      {activeYear && (
+        <div
+          className={`text-[1.4rem] absolute top-1 left-[2.4rem] flex gap-2`}
+          ref={currentYear}
+        >
+          <p className="font-medium uppercase m-0 opacity-0 will-change-transform">
+            Year {Math.abs(2015 - parseInt(activeYear)) ?? ""}
+          </p>
+          <p className="font-bold mx-0 opacity-0  will-change-transform">
+            {activeYear ?? ""}
+          </p>
+          <p className="font-medium uppercase m-0 opacity-0 will-change-transform">
+            {pageData?.[2] ?? ""}
+          </p>
+        </div>
+      )}
       <div
         ref={box}
         className="opacity-0 translate-y-100 inline-flex justify-center items-center w-auto h-[3.3rem]"

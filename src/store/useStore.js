@@ -14,6 +14,8 @@ export const useStore = create((set) => ({
     set({ activeYear: year, frames, page, objects: [] }),
   selectedPage: false,
   setSelectedPage: (selectedPage) => set({ selectedPage }),
+  bookCurrentPage: false,
+  setBookCurrentPage: (bookCurrentPage) => set({ bookCurrentPage }),
   objects: [],
   addObject: (obj) => set((state) => ({ objects: [...state.objects, obj] })),
   removeObject: (uuid) =>
@@ -25,4 +27,6 @@ export const useStore = create((set) => ({
   setTransition: (transition) => set({ transition }),
   background: null,
   setBackground: (background) => set({ background }),
+  team: [],
+  setTeam: (team) => set({ team }),
 }));

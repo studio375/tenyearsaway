@@ -1,9 +1,10 @@
 import { fetchAPI } from "@/helpers/api/fetch-api";
 import Bridge from "@/components/Utility/Bridge";
+import BookLabels from "@/components/Scene/Book/Labels";
 
 export async function getStaticProps() {
   const data = await fetchAPI("anno", {
-    _fields: "slug,acf.completo,acf.completo_texture",
+    _fields: "slug,title,acf.completo,acf.completo_texture",
     acf_format: "standard",
     order: "asc",
     per_page: 100,
@@ -11,6 +12,7 @@ export async function getStaticProps() {
 
   const cleanData = data.map((item) => ({
     year: item.slug,
+    title: item.title?.rendered || null,
     full: item.acf?.completo || null,
     fullTexture: item.acf?.completo_texture || null,
   }));
@@ -25,6 +27,7 @@ export default function Year({ years }) {
   return (
     <div>
       <main className="pointer-events-none relative z-10 h-screen">
+        <BookLabels />
         <Bridge years={years} />
       </main>
     </div>

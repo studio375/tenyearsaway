@@ -1,6 +1,6 @@
-import { useCursor, useKTX2 } from "@react-three/drei";
+import { useKTX2 } from "@react-three/drei";
 import gsap from "gsap";
-import { useMemo, useRef, useState, useEffect } from "react";
+import { useMemo, useRef, useEffect } from "react";
 import { ShaderMaterial } from "three";
 import vertexShader from "@/assets/shaders/book/vertex.glsl";
 import fragmentShader from "@/assets/shaders/book/fragment.glsl";
@@ -20,18 +20,13 @@ export default function Page({
   prevPage,
   totalSheets,
   selectedPage,
-  setSelectedPage,
-  isDragging,
-  isEnabled,
   year,
   resetBook,
 }) {
   const groupRef = useRef(null);
   const meshRef = useRef(null);
   const [frontTexture, backTexture] = useKTX2([frontUrl, backUrl || frontUrl]);
-  const [highlighted, setHighlighted] = useState(null);
   const router = useRouter();
-  useCursor(highlighted);
 
   const materials = useMemo(() => {
     return [
@@ -204,16 +199,6 @@ export default function Page({
     <group
       ref={groupRef}
       rotation={[0, currentPage === false ? -Math.PI : 0, 0]}
-      onClick={(e) => {
-        e.stopPropagation();
-        if (
-          isDragging.current ||
-          !isEnabled.current ||
-          (index === 0 && !opened)
-        )
-          return;
-        setSelectedPage(index);
-      }}
     >
       <mesh
         ref={meshRef}
@@ -227,14 +212,8 @@ export default function Page({
         material={materials}
         frustumCulled={false}
         castShadow={true}
-        onPointerOver={(e) => {
-          e.stopPropagation();
-          setHighlighted(true);
-        }}
-        onPointerOut={(e) => {
-          e.stopPropagation();
-          setHighlighted(false);
-        }}
+        onPointerOver={(e) => { e.stopPropagation(); document.body.style.cursor = 'grab'; }}
+        onPointerOut={(e) => { e.stopPropagation(); document.body.style.cursor = 'auto'; }}
       />
     </group>
   );

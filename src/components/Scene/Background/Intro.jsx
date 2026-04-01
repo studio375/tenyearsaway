@@ -198,7 +198,7 @@ export default function Intro({ geometry }) {
       <group
         ref={pageRef}
         position={[-2, 0, 4]}
-        rotation={[0, -Math.PI, 0]}
+        rotation={[0, -Math.PI, 0.03]}
         visible={false}
       >
         <BookShadow
@@ -207,7 +207,7 @@ export default function Intro({ geometry }) {
           x={1.6}
           y={-0.15}
           z={-0.25}
-          opacity={0.92}
+          opacity={0.8}
           feather={0.05}
           renderOrder={-2}
         />
