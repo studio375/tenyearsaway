@@ -63,7 +63,7 @@ export default function Background({ geometry }) {
 
   useEffect(() => {
     if (!ref.current) return;
-    if (asPath === "/year") {
+    if (asPath === "/year" || asPath === "/about") {
       gsap.to(ref.current.material.uniforms.uAlpha, {
         value: 0,
         duration: 1.5,

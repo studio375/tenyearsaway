@@ -44,25 +44,31 @@ const Card = forwardRef(function Card(
   );
 
   useEffect(() => {
-    gsap.set([nameRef.current.position, descRef.current.position], { y: -0.5 });
-
-    if (!nameRef.current || !active) return;
-    const tl = gsap.timeline({
-      onStart: () => {
-        nameRef.current.visible = true;
-        descRef.current.visible = true;
-      },
-    });
-    tl.to([nameRef.current.position, descRef.current.position], {
-      y: -2.2,
-      duration: 1,
-      stagger: 0.1,
-      ease: "power3.inOut",
-    });
+    if (!nameRef.current) return;
+    let tl;
+    if (active) {
+      tl = gsap.timeline({
+        onStart: () => {
+          nameRef.current.visible = true;
+          descRef.current.visible = true;
+        },
+      });
+      tl.to([nameRef.current, descRef.current], {
+        fillOpacity: 1,
+        duration: 1,
+        stagger: 0.1,
+        ease: "power3.inOut",
+      });
+    } else {
+      gsap.to([nameRef.current, descRef.current], {
+        fillOpacity: 0,
+        duration: 1,
+        stagger: 0.1,
+        ease: "power3.inOut",
+      });
+    }
     return () => {
       tl?.kill();
-      nameRef.current.visible = false;
-      descRef.current.visible = false;
     };
   }, [active]);
 
@@ -95,6 +101,7 @@ const Card = forwardRef(function Card(
         fontSize={0.14}
         color="#000"
         anchorX="left"
+        fillOpacity={0}
         anchorY="bottom"
         font="/assets/fonts/PPValve-PlainExtrabold.woff"
         letterSpacing={0}
@@ -109,6 +116,7 @@ const Card = forwardRef(function Card(
         position={[1.2, -2.2, 0]}
         fontSize={0.14}
         color="#000"
+        fillOpacity={0}
         anchorX="right"
         anchorY="bottom"
         font="/assets/fonts/PPValve-PlainMedium.woff"

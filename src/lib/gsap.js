@@ -35,6 +35,8 @@ CustomEase.create(
   "lightningStrike",
   "M0,0 C0.15,0 0.2,0.85 0.3,0.95 0.5,1 0.8,1 1,1",
 );
+CustomEase.create("snake", "0.76, 0, 0.24, 1");
+
 // Global Config
 gsap.config({
   autoSleep: 60,

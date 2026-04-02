@@ -44,8 +44,8 @@ export default function Team() {
   }, [team, staticViewport]);
 
   const circleLayout = useMemo(() => {
-    const radius = staticViewport.width * 0.75;
-    const spread = Math.PI;
+    const radius = staticViewport.width * 0.764;
+    const spread = Math.PI * 1.4;
     const startAngle = Math.PI / 2 - spread / 2;
     const centerY = -staticViewport.height * 1.05 - staticViewport.width * 0.2;
     const spacing = spread / team.length;
@@ -79,6 +79,8 @@ export default function Team() {
 
       tl.current = gsap.timeline({ delay: entryDelay });
       cards.current.forEach((card, index) => {
+        cardsMesh.current[index].material.uniforms.uScrollForce.value = 0;
+        cardsMesh.current[index].rotation.set(0, 0, 0);
         tl.current
           .to(
             card.position,
@@ -104,7 +106,7 @@ export default function Team() {
               x: circleLayout[index].position[0],
               y: circleLayout[index].position[1],
               duration: 1,
-              ease: "power3.inOut",
+              ease: "snake",
               delay: 0.03,
             },
             1,
@@ -115,7 +117,7 @@ export default function Team() {
               z: circleLayout[index].rotation,
               x: 0,
               duration: 1,
-              ease: "power3.inOut",
+              ease: "snake",
               delay: 0.03,
               onComplete:
                 index === team.length - 1
@@ -141,14 +143,14 @@ export default function Team() {
               x: positions[index][0],
               y: positions[index][1],
               duration: 1,
-              ease: "power4.inOut",
+              ease: "power3.inOut",
               delay: 0.03,
             },
             "<",
           )
           .to(
             card.rotation,
-            { z: 0, duration: 1, ease: "power4.inOut", delay: 0.03 },
+            { z: 0, duration: 1, ease: "power3.inOut", delay: 0.03 },
             "<",
           );
       });
@@ -170,6 +172,11 @@ export default function Team() {
   useEffect(() => {
     if (!enableCarousel) return;
 
+    scrollOffset.current = 0;
+    targetOffset.current = 0;
+    scrollForce.current = 0;
+    prevOffset.current = 0;
+
     const obs = Observer.create({
       target: window,
       type: "wheel,touch,pointer",
@@ -185,6 +192,7 @@ export default function Team() {
       scrollOffset.current = 0;
       targetOffset.current = 0;
       scrollForce.current = 0;
+      prevOffset.current = 0;
     };
   }, [enableCarousel]);
 
@@ -205,8 +213,8 @@ export default function Team() {
       1 - Math.exp(-6 * delta),
     );
 
-    const radius = staticViewport.width * 0.75;
-    const spread = Math.PI;
+    const radius = staticViewport.width * 0.764;
+    const spread = Math.PI * 1.4;
     const startAngle = Math.PI / 2 - spread / 2;
     const centerY = -staticViewport.height * 1.05 - staticViewport.width * 0.2;
     const spacing = spread / team.length;

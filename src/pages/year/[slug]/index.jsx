@@ -1,5 +1,6 @@
 import { fetchAPI } from "@/helpers/api/fetch-api";
 import Bridge from "@/components/Utility/Bridge";
+import End from "@/components/Library/End";
 
 export async function getStaticPaths() {
   const years = await fetchAPI("anno", { _fields: "slug", per_page: 100 });
@@ -30,6 +31,7 @@ export default function Year({ year }) {
   return (
     <div>
       <main className="pointer-events-none relative z-10 h-[1600vh]">
+        <End />
         <Bridge year={year} />
       </main>
     </div>
