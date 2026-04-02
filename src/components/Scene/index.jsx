@@ -1,7 +1,7 @@
 import { Canvas } from "@react-three/fiber";
 import ComicBook from "./ComicBook";
 import { Suspense } from "react";
-import { Preload } from "@react-three/drei";
+import { Preload, AdaptiveDpr, AdaptiveEvents } from "@react-three/drei";
 import Book from "./Book";
 import Background from "./Background";
 import { PlaneGeometry } from "three";
@@ -35,6 +35,8 @@ export default function Scene() {
         <Background geometry={geometry} />
         <Intro geometry={geometry} />
         <Preload all />
+        <AdaptiveDpr pixelated />
+        <AdaptiveEvents />
       </Canvas>
     </div>
   );
