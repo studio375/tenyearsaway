@@ -106,15 +106,20 @@ const Caption = function ({
     easing.dampQ(meshRef.current.quaternion, dummy.quaternion, 0.15, delta);
   });
 
+  const positionVec = useMemo(
+    () => [position.x, position.y, position.z],
+    [position.x, position.y, position.z],
+  );
+
   return (
     <mesh
       ref={meshRef}
       geometry={geometry}
       material={material}
-      position={[position.x, position.y, position.z]}
+      position={positionVec}
       scale={[size.meshWidth, size.meshHeight, 1]}
     />
   );
 };
 
-export default Caption;
+export default React.memo(Caption);

@@ -1,5 +1,5 @@
 import { DoubleSide, ShaderMaterial } from "three";
-import {
+import React, {
   forwardRef,
   useMemo,
   useRef,
@@ -137,4 +137,4 @@ const Card = forwardRef(function Card(
   );
 });
 
-export default Card;
+export default React.memo(Card);

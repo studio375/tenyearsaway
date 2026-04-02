@@ -202,6 +202,11 @@ export default function Page({
     meshRef.current.material[5].uniforms.uTime.value = time * 0.3;
   });
 
+  const meshPosition = useMemo(
+    () => [sizes.width / 2, 0, -index * PAGE_DEPTH + currentPage * PAGE_DEPTH],
+    [sizes.width, index, currentPage],
+  );
+
   return (
     <group
       ref={groupRef}
@@ -209,11 +214,7 @@ export default function Page({
     >
       <mesh
         ref={meshRef}
-        position={[
-          sizes.width / 2,
-          0,
-          -index * PAGE_DEPTH + currentPage * PAGE_DEPTH,
-        ]}
+        position={meshPosition}
         scale={[sizes.width, sizes.height, 1]}
         geometry={geometry}
         material={materials}

@@ -251,7 +251,7 @@ export default function Team() {
         <group
           key={`team-card-${index}`}
           ref={(el) => (cards.current[index] = el)}
-          position={[...positions[index]]}
+          position={positions[index]}
           rotation={[0, 0, 0]}
         >
           <Card

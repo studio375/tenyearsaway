@@ -117,19 +117,20 @@ const Mesh = function ({
       clock.getElapsedTime() * 0.7;
   });
 
+  const positionVec = useMemo(
+    () => [positions[0], positions[1], index !== 0 ? 0 : -5],
+    [positions, index],
+  );
+
   return (
     <mesh
       ref={meshRef}
       geometry={geometry}
       material={material}
-      position={
-        index !== 0
-          ? [positions[0], positions[1], 0]
-          : [positions[0], positions[1], -5]
-      }
+      position={positionVec}
       scale={[sizes.meshWidth, sizes.meshHeight, 1]}
     />
   );
 };
 
-export default Mesh;
+export default React.memo(Mesh);
