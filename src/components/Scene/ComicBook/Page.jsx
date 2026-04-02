@@ -8,7 +8,7 @@ import { useFrame } from "@react-three/fiber";
 const Page = function ({ geometry, page }) {
   const meshRef = useRef(null);
   const texture = useKTX2(page[1].url);
-  const { addObject, removeObject, activeYear } = useStore();
+  const { addObject, removeObject } = useStore();
   const material = useMemo(() => {
     return new ShaderMaterial({
       vertexShader: vertexShader,
@@ -42,7 +42,8 @@ const Page = function ({ geometry, page }) {
     const obj = { ref, type: "page" };
     addObject(obj);
     return () => {
-      removeObject(activeYear, ref.uuid);
+      removeObject(ref.uuid);
+      ref.material?.dispose();
     };
   }, [page]);
 

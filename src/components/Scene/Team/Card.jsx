@@ -44,6 +44,13 @@ const Card = forwardRef(function Card(
   );
 
   useEffect(() => {
+    return () => {
+      material.dispose();
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     if (!nameRef.current) return;
     let tl;
     if (active) {

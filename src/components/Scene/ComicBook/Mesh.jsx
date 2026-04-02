@@ -19,7 +19,7 @@ const Mesh = function ({
   const meshRef = useRef(null);
   const tl = useRef(null);
   const texture = useKTX2(src);
-  const { addObject, removeObject, activeYear, active } = useStore();
+  const { addObject, removeObject, active } = useStore();
 
   useEffect(() => {
     if (!meshRef.current) return;
@@ -28,12 +28,13 @@ const Mesh = function ({
     const obj = { ref, index, type: "frame" };
     addObject(obj);
     return () => {
-      removeObject(activeYear, ref.uuid);
+      removeObject(ref.uuid);
       gsap.killTweensOf(ref.position);
       gsap.killTweensOf(ref.scale);
       if (ref.material?.uniforms) {
         gsap.killTweensOf(ref.material.uniforms.uProgress);
       }
+      ref.material?.dispose();
     };
   }, []);
 

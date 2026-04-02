@@ -27,6 +27,7 @@ const Caption = function ({
     addObject(obj);
     return () => {
       removeObject(ref.uuid);
+      ref.material?.dispose();
     };
   }, []);
 

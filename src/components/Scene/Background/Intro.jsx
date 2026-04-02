@@ -64,6 +64,13 @@ export default function Intro({ geometry }) {
     });
   }, [texture]);
 
+  useEffect(() => {
+    return () => {
+      material.dispose();
+      materialPage.dispose();
+    };
+  }, []);
+
   const tlInOut = useRef(null);
   useEffect(() => {
     if (!ref.current || !loaded) return;

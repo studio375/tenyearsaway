@@ -55,6 +55,12 @@ export default function BookShadow({
   );
 
   useEffect(() => {
+    return () => {
+      mat.dispose();
+    };
+  }, []);
+
+  useEffect(() => {
     if (!meshRef.current || currentPage === false || currentPage === undefined)
       return;
     const isOpen = currentPage > 0 && currentPage < totalSheets;

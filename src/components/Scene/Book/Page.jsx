@@ -71,6 +71,13 @@ export default function Page({
   }, [pageMaterials, frontTexture, backTexture]);
 
   useEffect(() => {
+    return () => {
+      materials[4]?.dispose();
+      materials[5]?.dispose();
+    };
+  }, []);
+
+  useEffect(() => {
     if (router.asPath === `/year`) {
       meshRef.current.position.set(
         sizes.width / 2,
