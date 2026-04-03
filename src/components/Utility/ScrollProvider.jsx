@@ -3,6 +3,7 @@ import { ReactLenis, useLenis } from "lenis/react";
 import { useRouter } from "next/router";
 import gsap from "gsap";
 import { useStore } from "@/store/useStore";
+import { ScrollTrigger } from "@/lib/gsap";
 function ScrollManager() {
   const lenis = useLenis();
   const { asPath } = useRouter();
@@ -11,6 +12,8 @@ function ScrollManager() {
   useEffect(() => {
     if (!lenis) return;
     gsap.ticker.lagSmoothing(0);
+    ScrollTrigger.normalizeScroll(true);
+    ScrollTrigger.config({ ignoreMobileResize: true });
   }, [lenis]);
 
   useLayoutEffect(() => {

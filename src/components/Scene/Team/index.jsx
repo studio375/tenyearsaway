@@ -144,15 +144,10 @@ export default function Team() {
               y: positions[index][1],
               duration: 1,
               ease: "power3.inOut",
-              delay: 0.03,
             },
             "<",
           )
-          .to(
-            card.rotation,
-            { z: 0, duration: 1, ease: "power3.inOut", delay: 0.03 },
-            "<",
-          );
+          .to(card.rotation, { z: 0, duration: 1, ease: "power3.inOut" }, "<");
       });
     }
 

@@ -107,9 +107,8 @@ export default function AboutText() {
         className="fixed top-[8rem] right-[2.4rem] z-10 max-w-[22rem] text-right pointer-events-none opacity-0"
       >
         <p className="text-[1.3rem] leading-[1.6] uppercase font-medium text-storm m-0">
-          Studio375 è uno studio multidisciplinare di design e sviluppo con sede
-          a Vicenza. Progettiamo brand, esperienze digitali e progetti
-          interattivi.
+          Studio375 è un'agenzia di comunicazione, grafica e web con sede a
+          Vicenza. Illustrazioni di Davide Grazi.
         </p>
       </div>
     </>

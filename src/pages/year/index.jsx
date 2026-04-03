@@ -4,7 +4,7 @@ import BookLabels from "@/components/Scene/Book/Labels";
 
 export async function getStaticProps() {
   const data = await fetchAPI("anno", {
-    _fields: "slug,title,acf.completo,acf.completo_texture",
+    _fields: "slug,title,acf.completo,acf.completo_texture,acf.titolo",
     acf_format: "standard",
     order: "asc",
     per_page: 100,
@@ -12,7 +12,7 @@ export async function getStaticProps() {
 
   const cleanData = data.map((item) => ({
     year: item.slug,
-    title: item.title?.rendered || null,
+    title: item.acf?.titolo || null,
     full: item.acf?.completo || null,
     fullTexture: item.acf?.completo_texture || null,
   }));

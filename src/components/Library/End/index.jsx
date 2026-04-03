@@ -24,32 +24,31 @@ export default function End() {
   useEffect(() => {
     gsap.to(endRef.current, {
       opacity: end ? 1 : 0,
-      y: end ? 0 : 10,
-      duration: 0.4,
-      ease: "power2.out",
+      xPercent: end ? 0 : 100,
+      duration: 0.5,
+      ease: "power3.inOut",
     });
   }, [end]);
 
   const handleClick = () => {
     gsap.to(endRef.current, {
       opacity: 0,
-      y: 10,
-      duration: 0.4,
+      xPercent: 100,
+      duration: 0.5,
       overwrite: true,
-      ease: "power2.out",
+      ease: "power3.inOut",
     });
     setTransition("next");
   };
 
   return (
-    <div className="fixed bottom-7 left-1/2 -translate-x-1/2">
+    <div className="fixed top-1/2 -translate-y-1/2 right-0">
       <div
         ref={endRef}
-        className="cursor-pointer relative uppercase text-[2rem] font-[800] pointer-events-auto border-b-1 px-2 py-1 group opacity-0"
+        className="cursor-pointer bg-gradient-to-r from-bg-blue to-text-color from-50% to-50% bg-[length:200%_100%] bg-left hover:bg-right transition-all duration-300 bg-clip-text text-transparent uppercase text-[9vw] leading-[6vw] font-extrabold pointer-events-auto px-2 [writing-mode:vertical-rl] rotate-180 translate-x-full opacity-0"
         onClick={handleClick}
       >
-        <span className="relative z-1">next</span>
-        <span className="border-1 border-b-0 absolute z-0 bg-bg-blue w-full h-full left-0 bottom-0 scale-y-0 group-hover:scale-y-100 origin-bottom transition-transform duration-300" />
+        next
       </div>
     </div>
   );

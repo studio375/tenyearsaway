@@ -20,18 +20,27 @@ export default function Title() {
     const paths = Array.from(ref.current.querySelectorAll("path"));
     const root = rootRef.current;
 
-    const svgData = ref.current.clientHeight;
-    const initialY = window.innerHeight / 2 + svgData / 1.5;
+    const scale =
+      typeof window !== "undefined" ? (window.innerWidth / 1710) * 1.4 : 1.5;
+    const rootHeight = root.clientHeight;
+    // Translate the root container itself: no SVG coordinate system involved,
+    // so the y value is in plain CSS pixels and requires no scale compensation.
+    const centerY = window.innerHeight / 2 - root.offsetTop - rootHeight / 2;
 
     if (firstLoad.current) {
       gsap.set(letters, {
         opacity: 0,
-        y: initialY + svgData,
+        y: ref.current.clientHeight,
         scale: 0,
         skewY: 70,
         transformOrigin: "center center",
       });
-      gsap.set(root, { scale: 1.5, pointerEvents: "none", opacity: 1 });
+      gsap.set(root, {
+        scale,
+        y: asPath === "/" ? centerY : 0,
+        pointerEvents: "none",
+        opacity: 1,
+      });
       firstLoad.current = false;
     }
 
@@ -45,7 +54,7 @@ export default function Title() {
           opacity: 1,
           skewY: 0,
           duration: 1.4,
-          ease: "power4.inOut",
+          ease: "snake",
           stagger: { amount: 0.3, from: "random" },
           delay: 0,
         })
@@ -54,7 +63,7 @@ export default function Title() {
           {
             strokeWidth: 2.5,
             duration: 1.4,
-            ease: "power4.inOut",
+            ease: "snake",
             delay: 0,
           },
           "<",
@@ -63,9 +72,10 @@ export default function Title() {
           root,
           {
             scale: 1,
-            duration: 1.4,
+            y: 0,
             pointerEvents: "auto",
-            ease: "power4.inOut",
+            duration: 1.4,
+            ease: "snake",
             delay: 0,
           },
           "<",
@@ -76,10 +86,10 @@ export default function Title() {
         .to(letters, {
           opacity: 1,
           scale: 1,
-          y: initialY,
+          y: 0,
           skewY: 0,
           duration: 1.4,
-          ease: "power4.inOut",
+          ease: "snake",
           stagger: { amount: 0.3, from: "random" },
           delay: 0,
         })
@@ -88,7 +98,7 @@ export default function Title() {
           {
             strokeWidth: 1,
             duration: 1.4,
-            ease: "power4.inOut",
+            ease: "snake",
             delay: 0,
           },
           "<",
@@ -96,18 +106,30 @@ export default function Title() {
         .to(
           root,
           {
-            scale: 1.5,
+            scale,
+            y: centerY,
             pointerEvents: "none",
             duration: 1.4,
-            ease: "power4.inOut",
+            ease: "snake",
             delay: 0,
           },
           "<",
         );
     }
 
+    const handleResize = () => {
+      if (asPath !== "/") return;
+      const newScale = (window.innerWidth / 1710) * 1.4;
+      const newCenterY =
+        window.innerHeight / 2 - root.offsetTop - root.clientHeight / 2;
+      gsap.set(root, { scale: newScale, y: newCenterY });
+    };
+
+    window.addEventListener("resize", handleResize);
+
     return () => {
       tween?.kill();
+      window.removeEventListener("resize", handleResize);
     };
   }, [asPath, loaded]);
 

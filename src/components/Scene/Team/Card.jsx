@@ -47,7 +47,7 @@ const Card = forwardRef(function Card(
     return () => {
       material.dispose();
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
