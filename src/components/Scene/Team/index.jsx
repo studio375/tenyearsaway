@@ -15,6 +15,7 @@ export default function Team() {
   const team = useStore((state) => state.team);
   const loaded = useStore((state) => state.loaded);
   const active = useStore((state) => state.active);
+  const transition = useStore((state) => state.transition);
   const router = useRouter();
   const { size } = useThree();
   const isAbout = router.asPath.startsWith("/about");
@@ -36,8 +37,8 @@ export default function Team() {
       staticViewport.width *
         0.7 *
         Math.cos((2 * Math.PI * index) / team.length),
-      staticViewport.width *
-        0.7 *
+      staticViewport.height *
+        1.2 *
         Math.sin((2 * Math.PI * index) / team.length),
       0,
     ]);
@@ -64,14 +65,13 @@ export default function Team() {
   }, [team, staticViewport]);
 
   useEffect(() => {
-    if (!loaded || !active) return;
+    if (!loaded || !active || transition) return;
     if (!container.current || cards.current.length === 0) return;
 
     tl.current?.kill();
     tl.current = null;
 
     if (isAbout) {
-      // active was false → intro just finished (first load) → wait for it to clear
       const entryDelay = prevActiveRef.current ? 0.3 : 1.5;
 
       container.current.visible = true;
@@ -95,7 +95,7 @@ export default function Team() {
                   ? (Math.PI / 8) * index * 0.12
                   : -(Math.PI / 10) * index * 0.17,
               duration: 1,
-              ease: "power3.inOut",
+              ease: "power3.out",
               delay: 0.03,
             },
             "<",
@@ -157,7 +157,7 @@ export default function Team() {
       tl.current?.kill();
       tl.current = null;
     };
-  }, [isAbout, active, loaded, team]);
+  }, [isAbout, active, loaded, team, transition]);
 
   // Infinite radial carousel
   const scrollOffset = useRef(0);

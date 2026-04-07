@@ -5,6 +5,7 @@ import { useStore } from "@/store/useStore";
 import vertexShader from "@/assets/shaders/page/vertex.glsl";
 import fragmentShader from "@/assets/shaders/page/fragment.glsl";
 import { useFrame } from "@react-three/fiber";
+import BookShadow from "../Book/Shadow";
 const Page = function ({ geometry, page }) {
   const meshRef = useRef(null);
   const texture = useKTX2(page[1].url);
@@ -55,14 +56,16 @@ const Page = function ({ geometry, page }) {
   });
 
   return (
-    <mesh
-      ref={meshRef}
-      geometry={geometry}
-      material={material}
-      position={[0, 0, 0]}
-      scale={[size.meshWidth, size.meshHeight, 1]}
-      visible={false}
-    />
+    <>
+      <mesh
+        ref={meshRef}
+        geometry={geometry}
+        material={material}
+        position={[0, 0, 0]}
+        scale={[size.meshWidth, size.meshHeight, 1]}
+        visible={false}
+      />
+    </>
   );
 };
 

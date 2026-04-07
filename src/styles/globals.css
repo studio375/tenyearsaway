@@ -20,6 +20,14 @@
   --color-bg-blue: var(--bg-blue);
   --color-storm: var(--storm);
   --font-valve: var(--font-valve);
+
+  /* responsive */
+  --breakpoint-2xl: 2000px;
+  --breakpoint-xl: 1711px;
+  --breakpoint-lgx: 1360px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-md: 800px;
+  --breakpoint-sm: 648px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -28,6 +36,14 @@
     --foreground: #000;
     --color-storm: var(--storm);
     --color-bg-blue: var(--bg-blue);
+
+    /* responsive */
+    --breakpoint-2xl: 2000px;
+    --breakpoint-xl: 1711px;
+    --breakpoint-lgx: 1360px;
+    --breakpoint-lg: 1024px;
+    --breakpoint-md: 800px;
+    --breakpoint-sm: 648px;
   }
 }
 
@@ -110,4 +126,17 @@ body {
 
 svg .letter {
   will-change: transform;
+}
+
+.stroke {
+  -webkit-text-stroke: 2px #000000;
+  text-stroke: 2px #000000;
+  color: var(--bg-blue);
+  transition: color 0.27s ease;
+}
+stroke:hover {
+  color: var(--text-color);
+}
+div.group:hover > .stroke {
+  color: var(--text-color);
 }

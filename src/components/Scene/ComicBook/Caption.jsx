@@ -79,7 +79,7 @@ const Caption = function ({
   );
 
   useLenis(({ progress, velocity }) => {
-    if (!meshRef.current || !useStore.getState().active) return;
+    if (!meshRef.current || !useStore.getState().active || useStore.getState().transition) return;
     meshRef.current.material.uniforms.uVelocity.value = velocity * 0.1;
 
     if (

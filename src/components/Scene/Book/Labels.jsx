@@ -220,7 +220,7 @@ export default function BookLabels() {
               }
               className="opacity-0 pointer-events-none absolute inset-0 group cursor-pointer pl-[8vw] text-left flex flex-col justify-center w-full"
             >
-              <p className="block text-transparent bg-clip-text bg-[length:200%_100%] transition-all duration-300 bg-gradient-to-r from-bg-blue from-50% to-text-color to-50% bg-left group-hover:bg-right uppercase text-[9vw] leading-[7vw] font-extrabold absolute -left-[1vw] top-1/2 -translate-y-1/2 [writing-mode:vertical-rl] rotate-180 h-full text-center">
+              <p className="block stroke uppercase text-[9vw] leading-[7vw] font-extrabold absolute -left-[1vw] top-1/2 -translate-y-1/2 [writing-mode:vertical-rl] rotate-180 h-full text-center">
                 {`Year ${i}`}
               </p>
               <p className="text-[1.4rem] font-medium uppercase mt-[0.6rem] mb-[0.2rem] mx-0">
@@ -251,7 +251,7 @@ export default function BookLabels() {
               }
               className="opacity-0 pointer-events-none absolute inset-0 group cursor-pointer pr-[8vw] text-right flex flex-col justify-center w-full"
             >
-              <p className="block text-transparent bg-clip-text bg-[length:200%_100%] transition-all duration-300 bg-gradient-to-r from-text-color from-50% to-bg-blue to-50% bg-right group-hover:bg-left uppercase text-[9vw] leading-[7vw] font-extrabold absolute -right-[1vw] top-1/2 -translate-y-1/2 [writing-mode:vertical-rl] rotate-180 h-full text-center">
+              <p className="block stroke uppercase text-[9vw] leading-[7vw] font-extrabold absolute -right-[1vw] top-1/2 -translate-y-1/2 [writing-mode:vertical-rl] rotate-180 h-full text-center">
                 {`Year ${i}`}
               </p>
               <p className="text-[1.4rem] font-medium uppercase mt-[0.6rem] mb-[0.2rem] mx-0">

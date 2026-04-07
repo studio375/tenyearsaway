@@ -17,7 +17,7 @@ export default function Intro({ geometry }) {
   const pageRef = useRef(null);
   const textRef = useRef(null);
   const { asPath } = useRouter();
-  const { loaded, setActive } = useStore();
+  const { loaded, setActive, transition } = useStore();
   const staticViewport = useMemo(() => {
     const distance = 5;
     const fov = (75 * Math.PI) / 180;
@@ -73,7 +73,7 @@ export default function Intro({ geometry }) {
 
   const tlInOut = useRef(null);
   useEffect(() => {
-    if (!ref.current || !loaded) return;
+    if (!ref.current || !loaded || transition) return;
 
     tlInOut.current = gsap.timeline({
       onStart: () => {
@@ -169,7 +169,7 @@ export default function Intro({ geometry }) {
       tlInOut.current.kill();
       tlInOut.current = null;
     };
-  }, [asPath, loaded]);
+  }, [asPath, loaded, transition]);
 
   useFrame((state) => {
     if (!ref.current || !loaded) return;

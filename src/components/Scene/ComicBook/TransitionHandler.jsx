@@ -171,13 +171,22 @@ export default function TransitionHandler() {
 
     if (transition === "exit") {
       lenis.stop();
+      objects.forEach(({ ref }) => {
+        gsap.killTweensOf(ref.position);
+        gsap.killTweensOf(ref.scale);
+        if (ref.material?.uniforms) {
+          gsap.killTweensOf(ref.material.uniforms.uProgress);
+        }
+      });
       transitionTl.current = gsap.timeline({
         onComplete: () => {
+          camera.position.set(0, 0, 5);
+          background.material.uniforms.uMovement.value = 0;
+          background.material.uniforms.uSpeed.value = 0;
           setYearData(null, [], null);
           clearObjects();
-          setTransition(false);
           requestAnimationFrame(() => {
-            camera.position.set(0, 0, 5);
+            setTransition(false);
             lenis.resize();
             lenis.start();
             lenis.scrollTo(0, { immediate: true });
@@ -185,19 +194,16 @@ export default function TransitionHandler() {
         },
       });
       transitionTl.current
-        .to(camera.position, {
-          x: 0,
-          y: 0,
-          z: 5,
-          duration: 1.5,
-          overwrite: true,
+        .to(background.material.uniforms.uAlpha, {
+          value: 0,
+          duration: 0.4,
           ease: "power2.out",
         })
         .to(
           background.material.uniforms.uMovement,
           {
             value: 0,
-            duration: 1.5,
+            duration: 0.4,
             ease: "power2.out",
           },
           "<",
@@ -206,7 +212,7 @@ export default function TransitionHandler() {
           background.material.uniforms.uSpeed,
           {
             value: 0,
-            duration: 1.5,
+            duration: 0.4,
             ease: "power2.out",
           },
           "<",

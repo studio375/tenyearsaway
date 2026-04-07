@@ -1,5 +1,5 @@
 import { useStore } from "@/store/useStore";
-import { PlaneGeometry } from "three";
+import { PlaneGeometry, Vector3, CatmullRomCurve3 } from "three";
 import { useThree } from "@react-three/fiber";
 import { useRef, useMemo, useLayoutEffect } from "react";
 import Mesh from "./Mesh";
@@ -87,15 +87,48 @@ export default function ComicBook() {
 
   const framesTimeline = useMemo(() => {
     if (!frames?.length || !meshSizes.length || totalWidth <= 0) return [];
-    let currentWidth = 0;
-    return frames.map((frame, index) => {
-      const frameStart =
-        (currentWidth - meshSizes[index].meshWidth * 0.75) / totalWidth;
-      const frameEnd = (currentWidth + meshSizes[index].meshWidth) / totalWidth;
-      currentWidth += meshSizes[index].meshWidth;
-      return { frameStart, frameEnd, duration: frameEnd - frameStart };
+    const targets = cameraTargets[activeYear];
+    if (!targets || targets.length < 2) return [];
+
+    // Rebuild the same CatmullRom curve used by CameraRig
+    const vectors = targets.map((t) =>
+      t.isVector3 ? t : new Vector3(t.x, t.y, t.z),
+    );
+    const curve = new CatmullRomCurve3(vectors, false, "catmullrom", 0.5);
+    curve.updateArcLengths();
+
+    const N = vectors.length;
+    const divisions = 1000;
+    const lengths = curve.getLengths(divisions);
+    const totalLength = lengths[lengths.length - 1];
+
+    const getCenterProgress = (i) => {
+      if (i <= 0) return 0;
+      if (i >= N - 1) return 1;
+      const t = i / (N - 1);
+      const idx = t * divisions;
+      const lo = Math.floor(idx);
+      const hi = Math.min(lo + 1, divisions);
+      const frac = idx - lo;
+      const len = lengths[lo] + frac * (lengths[hi] - lengths[lo]);
+      return len / totalLength;
+    };
+
+    const expansionFactor = 1.2;
+    return frames.map((_, index) => {
+      const frameEnd = getCenterProgress(index);
+      const naturalStart = getCenterProgress(index - 1);
+      const frameStart = Math.max(
+        0,
+        frameEnd - (frameEnd - naturalStart) * expansionFactor,
+      );
+      return {
+        frameStart,
+        frameEnd,
+        duration: Math.max(frameEnd - frameStart, 0.001),
+      };
     });
-  }, [frames, meshSizes, totalWidth]);
+  }, [frames, meshSizes, totalWidth, activeYear]);
 
   const framesTimelineRef = useRef([]);
   const framesProgress = useRef(

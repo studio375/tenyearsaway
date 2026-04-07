@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 
 export default function Home() {
   const loaded = useStore((state) => state.loaded);
+  const transition = useStore((state) => state.transition);
   const path1Ref = useRef(null);
   const path2Ref = useRef(null);
   const leftTextRef = useRef(null);
@@ -16,7 +17,7 @@ export default function Home() {
   useEffect(() => {
     if (!isHome) return;
 
-    if (!loaded) {
+    if (!loaded || transition) {
       return;
     }
 
@@ -56,7 +57,7 @@ export default function Home() {
       splitLeft.revert();
       splitRight.revert();
     };
-  }, [loaded, isHome]);
+  }, [loaded, isHome, transition]);
 
   useEffect(() => {
     const handleStart = () => {
@@ -110,7 +111,7 @@ export default function Home() {
           <div className="pl-[8rem]">
             <p
               ref={leftTextRef}
-              className="text-text-blue text-[2rem] font-[200] w-[10vw] opacity-0"
+              className="text-text-blue text-[2rem] font-[200] xl:w-[10vw] lg:w-[13vw] opacity-0"
             >
               A graphic novel, of a true story, based on... us.
             </p>
@@ -124,16 +125,7 @@ export default function Home() {
             </p>
           </div>
         </div>
-        <div
-          style={{
-            position: "fixed",
-            bottom: "5rem",
-            left: 0,
-            right: 0,
-            padding: "0 50px",
-            pointerEvents: "none",
-          }}
-        >
+        <div className="fixed bottom-[5rem] left-0 right-0 px-[50px] pointer-events-none">
           <svg
             width="100%"
             height="100%"

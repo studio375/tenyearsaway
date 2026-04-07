@@ -11,11 +11,11 @@ export default function Title() {
   const ref = useRef(null);
   const rootRef = useRef(null);
   const { asPath } = useRouter();
-  const { loaded } = useStore();
+  const { loaded, transition } = useStore();
 
   const firstLoad = useRef(true);
   useEffect(() => {
-    if (!ref.current || !loaded) return;
+    if (!ref.current || !loaded || transition) return;
     const letters = Array.from(ref.current.querySelectorAll(".letter"));
     const paths = Array.from(ref.current.querySelectorAll("path"));
     const root = rootRef.current;
@@ -131,7 +131,7 @@ export default function Title() {
       tween?.kill();
       window.removeEventListener("resize", handleResize);
     };
-  }, [asPath, loaded]);
+  }, [asPath, loaded, transition]);
 
   return (
     <div

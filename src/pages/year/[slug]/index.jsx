@@ -30,7 +30,7 @@ export async function getStaticProps({ params }) {
 export default function Year({ year }) {
   return (
     <div>
-      <main className="pointer-events-none relative z-10 h-[1600vh]">
+      <main className="pointer-events-none relative z-10 h-[1000vh]">
         <End />
         <Bridge year={year} />
       </main>
