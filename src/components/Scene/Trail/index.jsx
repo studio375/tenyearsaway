@@ -20,6 +20,8 @@ const RT_SIZE = 512;
 
 export default function Trail() {
   const { gl, size, viewport } = useThree();
+  if (size.width < 1024) return null;
+
   const ref = useRef();
   const mouseRef = useRef([-viewport.width, -viewport.height]);
   const prevMouseRef = useRef([-viewport.width, -viewport.height]);
@@ -191,8 +193,16 @@ export default function Trail() {
     // Bleed velocity to zero between frames
     velocityRef.current *= 0.8;
 
-    ref.current.position.x = state.camera.position.x;
-    ref.current.position.y = state.camera.position.y;
+    // Keep mesh centered on camera and correctly sized regardless of camera Z
+    const cam = state.camera;
+    const meshZ = ref.current.position.z; // stays at 0
+    const dist = cam.position.z - meshZ;
+    const fov = (cam.fov * Math.PI) / 180;
+    const h = 2 * Math.tan(fov / 2) * dist;
+    const w = h * (state.size.width / state.size.height);
+    ref.current.position.x = cam.position.x;
+    ref.current.position.y = cam.position.y;
+    ref.current.scale.set(w, h, 1);
   });
 
   return (

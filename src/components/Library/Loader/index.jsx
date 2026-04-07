@@ -79,7 +79,7 @@ export default function Loader() {
   return (
     <div
       ref={loaderRef}
-      className="fixed left-0 top-0 inset-0 z-0 w-screen h-screen bg-storm flex items-center justify-center"
+      className="fixed left-0 top-0 inset-0 z-0 w-screen h-svh bg-storm flex items-center justify-center"
     >
       <div className="absolute left-1/2 top-2 -translate-x-1/2 w-full text-center">
         <span

@@ -1,4 +1,4 @@
-precision mediump float;
+precision highp float;
 
 
 uniform sampler2D uTrailTexture;
@@ -27,8 +27,9 @@ void main() {
   // Dot radius grows with density, modulated by noise
   float radius = density * 0.47 ;
 
-  // Hard dot edge
-  float inDot = step(dist, radius);
+  // Antialiased dot edge — fwidth gives ~1 physical pixel AA regardless of DPR
+  float aa = fwidth(dist);
+  float inDot = 1.0 - smoothstep(radius - aa, radius, dist);
 
   // smoothstep threshold avoids single-pixel noise dots at near-zero density
   float alpha = inDot * smoothstep(0.05, 0.2, density);

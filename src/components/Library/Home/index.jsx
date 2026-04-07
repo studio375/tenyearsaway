@@ -108,7 +108,7 @@ export default function Home() {
     <div>
       <main className="relative z-1 h-screen w-screen">
         <div className="pt-[18vh] lgx:px-5 px-[2rem]  flex justify-between items-start flex-wrap">
-          <div className="lgx:pl-[8rem] md:pl-[5rem]">
+          <div className="lgx:pl-[8rem] md:pl-[5rem] order-2 lg:order-1">
             <p
               ref={leftTextRef}
               className="text-text-blue text-[2rem] font-[200] xl:w-[10vw] lgx:w-[13vw] md:w-[16vw] sm:w-[20vw] w-full opacity-0"
@@ -116,7 +116,7 @@ export default function Home() {
               A graphic novel, of a true story, based on... us.
             </p>
           </div>
-          <div>
+          <div className="order-1 lg:order-2">
             <p
               ref={rightTextRef}
               className="font-[500] italic text-[#cce8eb] text-[2rem] -mt-[2rem] opacity-0"
