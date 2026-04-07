@@ -1,3 +1,5 @@
+precision mediump float;
+
 #pragma glslify: falloff = require(../utils/functions.glsl)
 #pragma glslify: cnoise = require(../utils/perlin.glsl)
 

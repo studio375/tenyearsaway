@@ -1,15 +1,15 @@
+precision mediump float;
+
 uniform float uTime;
 uniform float uVelocity;
 uniform float uProgress;
 
 varying vec2 vUv;
-varying vec3 vNormal;
 varying vec3 vWorldPosition;
 
 void main() {
-  vUv = uv; 
-  vNormal = (modelMatrix * vec4(normal,0.0)).xyz;
-  vec3 pos = position; 
+  vUv = uv;
+  vec3 pos = position;
   
   float intensity = 1.0 - smoothstep(0.0, 1.0, uProgress);
   float curve = sin(vUv.x * 2. + 3.14 + 8.7 + uProgress * 3.0) * 5.14;

@@ -1,3 +1,5 @@
+precision mediump float;
+
 uniform float uTime;
 uniform float uVelocity;
 uniform float uProgress;
@@ -5,14 +7,12 @@ uniform float uOpened;
 uniform float uCurl;
 
 varying vec2 vUv;
-varying vec3 vNormal;
 varying vec3 vWorldPosition;
 
 void main() {
   vUv = uv;
 
   vec3 worldNormal = normalize((modelMatrix * vec4(normal, 0.0)).xyz);
-  vNormal = worldNormal;
 
   vec3 pos = position;
 

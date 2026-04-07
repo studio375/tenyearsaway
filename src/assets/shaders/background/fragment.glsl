@@ -1,3 +1,5 @@
+precision mediump float;
+
 #pragma glslify: falloff = require(../utils/functions.glsl)
 #pragma glslify: cnoise = require(../utils/perlin.glsl)
 #pragma glslify: fbm = require(../utils/fbm.glsl)
@@ -21,7 +23,6 @@ uniform vec2 uSizes;
 
 varying vec2 vUv;
 varying vec3 vWorldPosition;
-varying vec3 vPosition;
 void main() {
   vec2 uv = vec2(vUv);
 

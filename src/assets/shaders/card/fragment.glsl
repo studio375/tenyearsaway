@@ -7,7 +7,6 @@ precision mediump float;
 uniform sampler2D uMap;
 
 varying vec2 vUv;
-varying vec3 vWorldPosition;
 
 void main() {
   vec2 uv = vec2(vUv);

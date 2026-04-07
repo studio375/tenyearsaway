@@ -1,3 +1,5 @@
+precision mediump float;
+
 uniform sampler2D uMap;
 uniform sampler2D uDisplacement;
 uniform float uProgress;
