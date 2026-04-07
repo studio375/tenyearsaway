@@ -1,6 +1,9 @@
 import "@/styles/globals.css";
 import Layout from "@/components/Layout";
 import localFont from "next/font/local";
+import { Cache } from "three";
+
+Cache.enabled = true;
 
 const valve = localFont({
   src: [

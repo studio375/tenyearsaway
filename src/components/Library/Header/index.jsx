@@ -1,6 +1,6 @@
 import { useRef, useEffect } from "react";
 import { useStore } from "@/store/useStore";
-import gsap from "gsap";
+import { gsap } from "@/lib/gsap";
 import { useRouter } from "next/router";
 import Title from "../Title";
 import Link from "next/link";
@@ -85,7 +85,6 @@ export default function Header() {
     if (!currentYear.current) return;
     const tl = gsap.timeline();
     const p = currentYear.current.querySelectorAll("p");
-
     if (
       (router.asPath.startsWith("/year/") && !useStore.getState().transition) ||
       !useStore.getState().transition == "exit"
@@ -103,7 +102,7 @@ export default function Header() {
         overwrite: true,
         ease: "power2.out",
         stagger: 0.12,
-        delay: useStore.getState().active ? 0.2 : 5.7,
+        delay: useStore.getState().loaded ? 1.5 : 3,
       });
     } else {
       if (
