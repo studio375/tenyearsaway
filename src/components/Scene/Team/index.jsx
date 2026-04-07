@@ -178,6 +178,9 @@ export default function Team() {
       onChangeY: (self) => {
         targetOffset.current += self.deltaY * 0.001;
       },
+      onChangeX: (self) => {
+        targetOffset.current += self.deltaX * 0.001;
+      },
       tolerance: 10,
       preventDefault: true,
     });
