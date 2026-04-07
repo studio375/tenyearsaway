@@ -40,12 +40,17 @@ export default function Book() {
   const groupRef = useRef();
   const isEnabled = useRef(false);
   const isDragging = useRef(false);
-  const { pages, setSelectedPage, selectedPage, setBookCurrentPage } =
-    useStore();
+  const {
+    pages,
+    setSelectedPage,
+    selectedPage,
+    setBookCurrentPage,
+    transition,
+  } = useStore();
   const activeExperience = useStore((state) => state.active);
   const [currentPage, setCurrentPage] = useState(false);
   const [prevPage, setPrevPage] = useState(false);
-  const { asPath } = useRouter();
+  const router = useRouter();
 
   const { size } = useThree();
   const staticViewport = useMemo(() => {
@@ -80,6 +85,14 @@ export default function Book() {
     setBookCurrentPage(currentPage);
   }, [currentPage]);
 
+  // Prefetch proattivo di tutte le pagine anno non appena i dati sono disponibili
+  useEffect(() => {
+    if (!pages?.length) return;
+    pages.forEach((page) => {
+      if (page?.year) router.prefetch(`/year/${page.year}`);
+    });
+  }, [pages]);
+
   // Drag gesture for page swiping
   const bind = useDrag(
     ({ event, direction, distance, last, first, active }) => {
@@ -88,9 +101,9 @@ export default function Book() {
 
       if (!active) {
         isDragging.current = false;
-        document.body.style.cursor = 'grab';
+        document.body.style.cursor = "grab";
       } else {
-        document.body.style.cursor = 'grabbing';
+        document.body.style.cursor = "grabbing";
       }
       if (!last || distance[0] < 1.1) return;
       isDragging.current = true;
@@ -116,11 +129,11 @@ export default function Book() {
   // Transizioni entrata/uscita
   const tl = useRef();
   useEffect(() => {
-    if (!groupRef.current || !activeExperience) return;
+    if (!groupRef.current || !activeExperience || transition) return;
 
     tl.current?.kill();
     tl.current = null;
-    if (asPath === "/year") {
+    if (router.asPath === "/year") {
       const needsStateReset = selectedPage || selectedPage === 0;
       isEnabled.current = false;
       gsap.killTweensOf([groupRef.current.position, groupRef.current.rotation]);
@@ -203,7 +216,7 @@ export default function Book() {
       tl.current?.kill();
       tl.current = null;
     };
-  }, [asPath, activeExperience]);
+  }, [router.asPath, activeExperience, transition]);
 
   const tlPage = useRef();
   useEffect(() => {
