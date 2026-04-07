@@ -2,12 +2,14 @@ import { useThree } from "@react-three/fiber";
 import { useMemo, useRef, useEffect } from "react";
 import { Vector3, CatmullRomCurve3 } from "three";
 import { useLenis } from "lenis/react";
-import gsap from "gsap";
+import { gsap } from "@/lib/gsap";
 import { useStore } from "@/store/useStore";
+
 export default function CameraRig({ targets }) {
   const tl = useRef(null);
   const { camera } = useThree();
   const activeYear = useStore((state) => state.activeYear);
+  const lenisRef = useRef(null);
   const curve = useMemo(() => {
     if (!targets || targets.length === 0) return null;
     const vectors = targets.map((t) =>
@@ -39,12 +41,13 @@ export default function CameraRig({ targets }) {
     };
   }, [curve, camera]);
 
-  useLenis(({ progress }) => {
+  useLenis((lenis) => {
+    lenisRef.current = lenis;
     if (!tl.current || !targets || targets.length === 0 || !activeYear) {
       return;
     }
     if (useStore.getState().transition) return;
-    tl.current.progress(progress);
+    tl.current.progress(lenis.progress);
   });
 
   return null;

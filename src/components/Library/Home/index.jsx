@@ -107,11 +107,11 @@ export default function Home() {
   return (
     <div>
       <main className="relative z-1 h-screen w-screen">
-        <div className="pt-[18vh] px-5 flex justify-between items-start">
-          <div className="pl-[8rem]">
+        <div className="pt-[18vh] lgx:px-5 px-[2rem]  flex justify-between items-start flex-wrap">
+          <div className="lgx:pl-[8rem] md:pl-[5rem]">
             <p
               ref={leftTextRef}
-              className="text-text-blue text-[2rem] font-[200] xl:w-[10vw] lg:w-[13vw] opacity-0"
+              className="text-text-blue text-[2rem] font-[200] xl:w-[10vw] lgx:w-[13vw] md:w-[16vw] sm:w-[20vw] w-full opacity-0"
             >
               A graphic novel, of a true story, based on... us.
             </p>
@@ -125,7 +125,7 @@ export default function Home() {
             </p>
           </div>
         </div>
-        <div className="fixed bottom-[5rem] left-0 right-0 px-[50px] pointer-events-none">
+        <div className="fixed bottom-[2rem] lgx:bottom-[5rem] left-0 right-0 px-[2rem] lgx:px-[50px] pointer-events-none lg:block hidden">
           <svg
             width="100%"
             height="100%"

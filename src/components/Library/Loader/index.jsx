@@ -81,7 +81,7 @@ export default function Loader() {
       ref={loaderRef}
       className="fixed left-0 top-0 inset-0 z-0 w-screen h-screen bg-storm flex items-center justify-center"
     >
-      <div className="absolute left-1/2 top-2 -translate-x-1/2">
+      <div className="absolute left-1/2 top-2 -translate-x-1/2 w-full text-center">
         <span
           className="lowercase text-text-blue opacity-0 -translate-y-3 will-change-transform block"
           ref={soundRef}
@@ -89,7 +89,7 @@ export default function Loader() {
           enable sound for a better experience
         </span>
       </div>
-      <div className="flex text-text-blue text-[16rem] font-[800] leading-[120%]">
+      <div className="flex text-text-blue lg:text-[16rem] text-[10rem] font-[800] leading-[120%]">
         {STRIPS.map((strip, col) => (
           <div
             key={col}
@@ -113,7 +113,7 @@ export default function Loader() {
           </div>
         ))}
       </div>
-      <div className="absolute left-1/2 bottom-2 -translate-x-1/2">
+      <div className="absolute left-1/2 bottom-2 -translate-x-1/2 w-full text-center">
         <span
           className="lowercase text-text-blue opacity-0 translate-y-3 will-change-transform block"
           ref={timeRef}

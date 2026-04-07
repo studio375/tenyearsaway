@@ -33,6 +33,18 @@ export default function Intro({ geometry }) {
     };
   }, [staticViewport]);
 
+  const pageScale = useMemo(() => {
+    const ASPECT = 4 / 5.714; // width / height
+    const refH = staticViewport.height * 0.74466;
+    const refW = staticViewport.width * 0.264;
+    let h = Math.min(refH, refW / ASPECT);
+    if (size.width < 1024 && h < staticViewport.height * 0.4) {
+      h = staticViewport.height * 0.55;
+    }
+    const w = h * ASPECT;
+    return [w, h, 1];
+  }, [staticViewport]);
+
   const material = useMemo(() => {
     return new ShaderMaterial({
       vertexShader: vertexShader,
@@ -179,6 +191,7 @@ export default function Intro({ geometry }) {
     ref2.current.material.uniforms.uTime.value = time;
   });
 
+  const isMobile = size.width < 1024;
   return (
     <group renderOrder={-2}>
       <Text
@@ -187,13 +200,15 @@ export default function Intro({ geometry }) {
         font={"/assets/fonts/PPValve-PlainExtrabold.woff"}
         anchorX="center"
         anchorY="top-cap"
-        position={[0, staticViewport.height - 0.2, 0.1]}
-        fontSize={staticViewport.height * 0.207}
+        textAlign="center"
+        position={[0, staticViewport.height - (isMobile ? 0 : 0.2), 0.1]}
+        fontSize={staticViewport.width * (isMobile ? 0.175 : 0.105)}
+        lineHeight={0.8}
         letterSpacing={-0.06}
         material-toneMapped={false}
         receiveShadow
       >
-        TEN YEARS AWAY
+        {isMobile ? "TEN YEARS\nAWAY" : "TEN YEARS AWAY"}
       </Text>
       <mesh
         ref={ref}
@@ -209,8 +224,8 @@ export default function Intro({ geometry }) {
         visible={false}
       >
         <BookShadow
-          width={3.7}
-          height={5.3}
+          width={pageScale[0] - 0.3}
+          height={pageScale[1] - 0.3}
           x={1.6}
           y={-0.15}
           z={-0.25}
@@ -221,7 +236,7 @@ export default function Intro({ geometry }) {
         <mesh
           ref={ref2}
           position={[2, 0, 0]}
-          scale={[4, 5.714, 1]}
+          scale={pageScale} // 4 x 5.714
           geometry={geometry}
           material={materialPage}
           renderOrder={-2}

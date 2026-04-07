@@ -83,7 +83,7 @@ export default function Footer() {
   }, [router.asPath]);
 
   return (
-    <footer className="fixed bottom-0 left-0 w-full h-5 z-12 flex justify-center items-center font-500 text-[1.2rem] px-5">
+    <footer className="fixed bottom-0 left-0 w-full lgx:h-5 md:h-10 z-12 flex justify-center items-center font-500 text-[1.2rem] px-5">
       <div className="flex justify-center items-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
         <span
           ref={startRef}

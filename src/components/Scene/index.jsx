@@ -7,6 +7,7 @@ import Background from "./Background";
 import { PlaneGeometry } from "three";
 import Intro from "./Background/Intro";
 import Team from "./Team";
+import Trail from "./Trail";
 
 const geometry = new PlaneGeometry(1, 1, 8, 8);
 
@@ -33,6 +34,7 @@ export default function Scene() {
         </Suspense>
         <Background geometry={geometry} />
         <Intro geometry={geometry} />
+        <Trail />
         <Preload all />
         <AdaptiveDpr pixelated />
         <AdaptiveEvents />
