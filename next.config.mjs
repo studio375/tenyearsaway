@@ -2,6 +2,12 @@
 const nextConfig = {
   /* config options here */
   reactStrictMode: true,
+  transpilePackages: [
+    "three",
+    "@react-three/fiber",
+    "@react-three/drei",
+    "maath",
+  ],
   async headers() {
     return [
       {

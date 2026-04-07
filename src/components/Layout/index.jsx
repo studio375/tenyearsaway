@@ -1,4 +1,5 @@
-import Scene from "../Scene";
+import dynamic from "next/dynamic";
+const Scene = dynamic(() => import("../Scene"), { ssr: false });
 import ScrollProvider from "../Utility/ScrollProvider";
 import StateManager from "../Utility/StateManager";
 import Footer from "../Library/Footer";
