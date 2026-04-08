@@ -25,7 +25,7 @@ export default function ComicBook() {
     return { width, height };
   }, [size]);
 
-  const xScaleFactor = size.width < 1024 ? 0.6 : 1;
+  const xScaleFactor = size.width < 1024 ? 0.72 : 1;
 
   const maxWidth =
     size.width >= 1024

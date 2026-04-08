@@ -89,6 +89,12 @@ body {
   z-index: 30;
 }
 
+@media (max-width: 1023px) {
+  .noise {
+    display: none !important;
+  }
+}
+
 /* .cardBox {
   position: relative;
   &::before {
