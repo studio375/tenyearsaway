@@ -23,36 +23,68 @@ export default function End() {
 
   useEffect(() => {
     if (useStore.getState().transition) return;
-    const tl = gsap.timeline();
-    tl.to(endRef.current, {
-      opacity: end ? 1 : 0,
-      xPercent: end ? 0 : 100,
-      x: 0,
-      duration: 0.5,
-      ease: "power3.inOut",
+    const mm = gsap.matchMedia();
+    mm.add("(min-width: 1024px)", () => {
+      gsap.to(endRef.current, {
+        opacity: end ? 1 : 0,
+        xPercent: end ? 0 : 100,
+        yPercent: 0,
+        x: 0,
+        y: 0,
+        duration: 0.5,
+        ease: "power3.inOut",
+      });
+    });
+    mm.add("(max-width: 1023px)", () => {
+      gsap.to(endRef.current, {
+        opacity: end ? 1 : 0,
+        yPercent: end ? 0 : 30,
+        xPercent: 0,
+        x: 0,
+        y: 0,
+        duration: 0.5,
+        ease: "power3.inOut",
+      });
     });
     return () => {
-      tl?.kill();
+      mm.revert();
     };
   }, [end]);
 
   const handleClick = () => {
-    gsap.to(endRef.current, {
-      opacity: 0,
-      xPercent: 100,
-      x: 0,
-      duration: 0.5,
-      overwrite: true,
-      ease: "power3.inOut",
+    const mm = gsap.matchMedia();
+    mm.add("(min-width: 1024px)", () => {
+      gsap.to(endRef.current, {
+        opacity: 0,
+        xPercent: 100,
+        yPercent: 0,
+        x: 0,
+        y: 0,
+        duration: 0.5,
+        overwrite: true,
+        ease: "power3.inOut",
+      });
+    });
+    mm.add("(max-width: 1023px)", () => {
+      gsap.to(endRef.current, {
+        opacity: 0,
+        yPercent: 30,
+        xPercent: 0,
+        x: 0,
+        y: 0,
+        duration: 0.5,
+        overwrite: true,
+        ease: "power3.inOut",
+      });
     });
     setTransition("next");
   };
 
   return (
-    <div className="fixed top-1/2 -translate-y-1/2 right-0 group">
+    <div className="fixed lg:top-1/2 bottom-[8rem] lg:bottom-auto -translate-y-1/2 lg:right-0 left-1/2 lg:left-auto -translate-x-1/2 lg:translate-x-0 group">
       <div
         ref={endRef}
-        className="stroke cursor-pointer bg-gradient-to-r from-bg-blue to-text-color from-50% to-50% bg-[length:200%_100%] bg-left hover:bg-right transition-all duration-300 bg-clip-text text-transparent uppercase text-[9vw] leading-[6vw] font-extrabold pointer-events-auto px-2 [writing-mode:vertical-rl] rotate-180 translate-x-full opacity-0"
+        className="stroke cursor-pointer bg-gradient-to-r from-bg-blue to-text-color from-50% to-50% bg-[length:200%_100%] bg-left hover:bg-right transition-all duration-300 bg-clip-text text-transparent uppercase text-[9vw] leading-[6vw] font-extrabold pointer-events-auto px-2 lg:[writing-mode:vertical-rl] lg:rotate-180 rotate-0 lg:translate-x-full opacity-0"
         onClick={handleClick}
       >
         next

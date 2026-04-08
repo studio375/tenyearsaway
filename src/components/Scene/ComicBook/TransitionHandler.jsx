@@ -16,14 +16,15 @@ export default function TransitionHandler() {
     setYearData,
     background,
   } = useStore();
-  const { camera, viewport } = useThree();
+  const { camera, viewport, size } = useThree();
   const lenis = useLenis();
   const router = useRouter();
   const transitionTl = useRef(null);
+
   const finalTargets = useMemo(() => {
     if (!comicLayouts[activeYear]) return [];
-    return generateGridPositions(comicLayouts[activeYear]);
-  }, [activeYear]);
+    return generateGridPositions(comicLayouts[activeYear], size);
+  }, [activeYear, size]);
 
   useEffect(() => {
     if (!transition) return;

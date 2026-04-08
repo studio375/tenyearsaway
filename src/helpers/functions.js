@@ -167,14 +167,15 @@ export function getMeshSizes(
 }
 
 // Calcola posizioni e dimensioni basate su una griglia
-export const generateGridPositions = (layoutConfig) => {
+export const generateGridPositions = (layoutConfig, size) => {
   const { settings, items } = layoutConfig;
   const { columns, rows, gap, pageWidth, pageHeight } = settings;
+  const scale = size?.width < 1024 ? 0.75 : 1;
 
   const totalGapW = (columns - 1) * gap;
   const totalGapH = (rows - 1) * gap;
-  const cellWidth = (pageWidth - totalGapW) / columns;
-  const cellHeight = (pageHeight - totalGapH) / rows;
+  const cellWidth = (pageWidth * scale - totalGapW) / columns;
+  const cellHeight = (pageHeight * scale - totalGapH) / rows;
 
   return items.map((item) => {
     const meshWidth = item.spanW * cellWidth + (item.spanW - 1) * gap;
@@ -190,8 +191,8 @@ export const generateGridPositions = (layoutConfig) => {
     const gridX = item.col * (cellWidth + gap);
     const gridY = item.row * (cellHeight + gap);
 
-    const x = -pageWidth / 2 + gridX + meshWidth / 2;
-    const y = pageHeight / 2 - gridY - meshHeight / 2 - margin;
+    const x = -(pageWidth * scale) / 2 + gridX + meshWidth / 2;
+    const y = (pageHeight * scale) / 2 - gridY - meshHeight / 2 - margin;
 
     return {
       x,

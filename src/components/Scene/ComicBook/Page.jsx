@@ -4,12 +4,12 @@ import { useKTX2 } from "@react-three/drei";
 import { useStore } from "@/store/useStore";
 import vertexShader from "@/assets/shaders/page/vertex.glsl";
 import fragmentShader from "@/assets/shaders/page/fragment.glsl";
-import { useFrame } from "@react-three/fiber";
-import BookShadow from "../Book/Shadow";
+import { useFrame, useThree } from "@react-three/fiber";
 const Page = function ({ geometry, page }) {
   const meshRef = useRef(null);
   const texture = useKTX2(page[1].url);
   const { addObject, removeObject } = useStore();
+  const { size } = useThree();
   const material = useMemo(() => {
     return new ShaderMaterial({
       vertexShader: vertexShader,
@@ -30,12 +30,15 @@ const Page = function ({ geometry, page }) {
     });
   }, [texture]);
 
-  const size = useMemo(() => {
+  const sizes = useMemo(() => {
     return {
-      meshWidth: 5,
-      meshHeight: 5 / (page[0].width / page[0].height),
+      meshWidth: size.width < 1024 ? 5 * 0.75 : 5,
+      meshHeight:
+        size.width < 1024
+          ? (5 * 0.75) / (page[0].width / page[0].height)
+          : 5 / (page[0].width / page[0].height),
     };
-  }, [page]);
+  }, [page, size.width]);
 
   useEffect(() => {
     if (!meshRef.current) return;
@@ -62,7 +65,7 @@ const Page = function ({ geometry, page }) {
         geometry={geometry}
         material={material}
         position={[0, 0, 0]}
-        scale={[size.meshWidth, size.meshHeight, 1]}
+        scale={[sizes.meshWidth, sizes.meshHeight, 1]}
         visible={false}
       />
     </>

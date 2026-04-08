@@ -146,3 +146,10 @@ stroke:hover {
 div.group:hover > .stroke {
   color: var(--text-color);
 }
+
+@media screen and (max-width: 1023px) {
+  .stroke {
+    -webkit-text-stroke: 1px #000000;
+    text-stroke: 1px #000000;
+  }
+}
