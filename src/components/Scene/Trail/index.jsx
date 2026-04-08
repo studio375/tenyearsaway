@@ -185,6 +185,14 @@ export default function Trail() {
     // Point halftone shader at the freshly written texture
     halftoneMat.uniforms.uTrailTexture.value = writeTarget.current.texture;
 
+    // Push trail texture to all registered frame meshes for bleach effect
+    const trailTex = writeTarget.current.texture;
+    useStore.getState().objects.forEach(({ ref }) => {
+      if (ref?.material?.uniforms?.uTrailTexture) {
+        ref.material.uniforms.uTrailTexture.value = trailTex;
+      }
+    });
+
     // Swap ping-pong
     const tmp = readTarget.current;
     readTarget.current = writeTarget.current;

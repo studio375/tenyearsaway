@@ -83,7 +83,7 @@ export default function Footer() {
   }, [router.asPath]);
 
   return (
-    <footer className="fixed bottom-0 left-0 w-full lgx:h-5 md:h-10 z-12 flex justify-center items-center font-500 text-[1.2rem] px-5">
+    <footer className="fixed bottom-0 left-0 w-full lgx:h-5 md:h-10 z-12 flex justify-center items-center font-500 text-[1.2rem] md:px-5 px-[2rem]">
       <div className="flex justify-center items-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
         <span
           ref={startRef}
@@ -94,14 +94,14 @@ export default function Footer() {
       </div>
       <div
         ref={(el) => (infoRef.current[0] = el)}
-        className="opacity-0 translate-y-100"
+        className="opacity-0 translate-y-100 md:block hidden"
       >
         TEN YEARS AWAY...one year later... ops: a grapghic novel, of a true
         story, based on... us.
       </div>
       <div
         ref={(el) => (infoRef.current[1] = el)}
-        className="opacity-0 text-right absolute right-5 top-1/2 translate-y-100"
+        className="opacity-0 text-right absolute md:right-5 right-[2rem] md:top-1/2 translate-y-100 bottom-[1.1rem] md:bottom-auto"
       >
         <Link href="https://375.studio" target="_blank">
           375.studio

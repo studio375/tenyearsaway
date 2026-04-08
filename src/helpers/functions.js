@@ -148,11 +148,15 @@ export function getMeshSizes(
   maxHeight,
   minWidth,
   maxAspectRatio,
+  windowWidth = false,
 ) {
   const aspectRatio = image.width / image.height;
   let meshW = maxWidth * (aspectRatio / maxAspectRatio);
   if (meshW < minWidth) {
     meshW = minWidth;
+  }
+  if (windowWidth && windowWidth < 1024 && meshW >= maxWidth) {
+    meshW = meshW * 1.8;
   }
   let meshH = meshW / aspectRatio;
   if (meshH > maxHeight) {

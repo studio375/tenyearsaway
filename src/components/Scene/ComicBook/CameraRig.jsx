@@ -5,7 +5,7 @@ import { useLenis } from "lenis/react";
 import { gsap } from "@/lib/gsap";
 import { useStore } from "@/store/useStore";
 
-export default function CameraRig({ targets }) {
+export default function CameraRig({ targets, xScaleFactor = 1 }) {
   const tl = useRef(null);
   const { camera } = useThree();
   const activeYear = useStore((state) => state.activeYear);
@@ -13,12 +13,12 @@ export default function CameraRig({ targets }) {
   const curve = useMemo(() => {
     if (!targets || targets.length === 0) return null;
     const vectors = targets.map((t) =>
-      t.isVector3 ? t : new Vector3(t.x, t.y, t.z),
+      t.isVector3 ? t : new Vector3(t.x * xScaleFactor, t.y, t.z),
     );
     const c = new CatmullRomCurve3(vectors, false, "catmullrom", 0.5);
     c.updateArcLengths();
     return c;
-  }, [targets]);
+  }, [targets, xScaleFactor]);
 
   useEffect(() => {
     if (!curve) return;

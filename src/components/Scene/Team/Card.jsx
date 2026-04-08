@@ -12,7 +12,7 @@ import { useTexture, Text } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { gsap } from "@/lib/gsap";
 import { useRouter } from "next/router";
-
+import { useStore } from "@/store/useStore";
 const Card = forwardRef(function Card(
   { card, geometry, index = 0, active = false },
   ref,
@@ -21,8 +21,22 @@ const Card = forwardRef(function Card(
   const meshRef = useRef(null);
   const nameRef = useRef(null);
   const descRef = useRef(null);
+  const { addObject, removeObject } = useStore();
   const { asPath } = useRouter();
   useImperativeHandle(ref, () => meshRef.current);
+
+  useEffect(() => {
+    if (!meshRef.current) return;
+
+    const ref = meshRef.current;
+    const obj = { ref, index, type: "card" };
+    addObject(obj);
+    return () => {
+      removeObject(ref.uuid);
+      ref.material?.dispose();
+    };
+  }, []);
+
   const material = useMemo(
     () =>
       new ShaderMaterial({
@@ -33,6 +47,7 @@ const Card = forwardRef(function Card(
           uTime: { value: 0 },
           uOffset: { value: index },
           uScrollForce: { value: 0 },
+          uTrailTexture: { value: null },
         },
         transparent: true,
         alphaTest: 0,

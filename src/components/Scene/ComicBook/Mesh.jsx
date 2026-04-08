@@ -14,6 +14,7 @@ const Mesh = function ({
   index,
   sizes,
   positions,
+  xScaleFactor = 1,
   framesProgress,
 }) {
   const meshRef = useRef(null);
@@ -51,6 +52,7 @@ const Mesh = function ({
           uFrequency: { value: 0.75 },
           uVelocity: { value: 0 },
           uLightProgress: { value: 0 },
+          uTrailTexture: { value: null },
         },
         transparent: true,
         alphaTest: 0,
@@ -80,7 +82,7 @@ const Mesh = function ({
       if (!meshRef.current || index !== 0 || !active) return;
       tl.current = gsap.timeline();
       tl.current.to(meshRef.current.position, {
-        x: positions[0],
+        x: positions[0] * xScaleFactor,
         y: positions[1],
         z: 0,
         duration: 3,
@@ -118,8 +120,8 @@ const Mesh = function ({
   });
 
   const positionVec = useMemo(
-    () => [positions[0], positions[1], index !== 0 ? 0 : -5],
-    [positions, index],
+    () => [positions[0] * xScaleFactor, positions[1], index !== 0 ? 0 : -5],
+    [positions, xScaleFactor, index],
   );
 
   return (

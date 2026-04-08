@@ -27,8 +27,16 @@ export default function ComicBook() {
     return { width, height };
   }, [size]);
 
-  const maxWidth = staticViewport.width * 0.7;
-  const minWidth = staticViewport.width * 0.4;
+  const xScaleFactor = size.width < 1024 ? 0.65 : 1;
+
+  const maxWidth =
+    size.width >= 1024
+      ? staticViewport.width * 0.7
+      : staticViewport.width * 0.9;
+  const minWidth =
+    size.width >= 1024
+      ? staticViewport.width * 0.4
+      : staticViewport.width * 0.85;
   const maxHeight = staticViewport.height * 0.8;
   const maxAspectRatio = useMemo(() => {
     if (!frames || frames.length === 0) return 1;
@@ -64,10 +72,11 @@ export default function ComicBook() {
         maxHeight,
         minWidth,
         maxAspectRatio,
+        size.width,
       );
       return sizes;
     });
-  }, [frames, maxWidth, maxAspectRatio, minWidth, maxHeight]);
+  }, [frames, maxWidth, maxAspectRatio, minWidth, maxHeight, size.width]);
 
   const totalWidth = useMemo(() => {
     return meshSizes.reduce((acc, curr) => acc + curr.meshWidth, 0);
@@ -92,7 +101,7 @@ export default function ComicBook() {
 
     // Rebuild the same CatmullRom curve used by CameraRig
     const vectors = targets.map((t) =>
-      t.isVector3 ? t : new Vector3(t.x, t.y, t.z),
+      t.isVector3 ? t : new Vector3(t.x * xScaleFactor, t.y, t.z),
     );
     const curve = new CatmullRomCurve3(vectors, false, "catmullrom", 0.5);
     curve.updateArcLengths();
@@ -128,7 +137,7 @@ export default function ComicBook() {
         duration: Math.max(frameEnd - frameStart, 0.001),
       };
     });
-  }, [frames, meshSizes, totalWidth, activeYear]);
+  }, [frames, meshSizes, totalWidth, activeYear, xScaleFactor]);
 
   const framesTimelineRef = useRef([]);
   const framesProgress = useRef(
@@ -164,7 +173,10 @@ export default function ComicBook() {
       <TransitionHandler />
       {frames && frames.length > 0 && (
         <>
-          <CameraRig targets={cameraTargets[activeYear]} />
+          <CameraRig
+            targets={cameraTargets[activeYear]}
+            xScaleFactor={xScaleFactor}
+          />
           <group ref={groupRef}>
             {frames.map((frame, index) => {
               return (
@@ -175,6 +187,7 @@ export default function ComicBook() {
                     index={index}
                     sizes={meshSizes[index]}
                     positions={positions[activeYear][index]}
+                    xScaleFactor={xScaleFactor}
                     framesProgress={framesProgress}
                   />
                   {frame.testo && captionsPositions[activeYear][index] && (
@@ -182,6 +195,7 @@ export default function ComicBook() {
                       geometry={sharedGeometry}
                       src={frame.testo.url}
                       position={captionsPositions[activeYear][index]}
+                      xScaleFactor={xScaleFactor}
                       size={captionSizes[index]}
                       index={index}
                       framesProgress={framesProgress}

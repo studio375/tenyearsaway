@@ -13,6 +13,7 @@ const Caption = function ({
   geometry,
   src,
   position,
+  xScaleFactor = 1,
   size,
   index,
   framesProgress,
@@ -107,8 +108,8 @@ const Caption = function ({
   });
 
   const positionVec = useMemo(
-    () => [position.x, position.y, position.z],
-    [position.x, position.y, position.z],
+    () => [position.x * xScaleFactor, position.y, position.z],
+    [position.x, position.y, position.z, xScaleFactor],
   );
 
   return (

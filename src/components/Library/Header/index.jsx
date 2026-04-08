@@ -153,11 +153,12 @@ export default function Header() {
       overwrite: true,
       ease: "power3.in",
     });
+
   return (
     <header className="fixed top-2 left-0 w-full p-0 z-12 flex justify-center items-center uppercase text-[1.4rem] font-500">
       {activeYear && (
         <div
-          className={`text-[1.4rem] absolute top-1 left-[2.4rem] flex gap-2`}
+          className={`text-[1.4rem] absolute md:top-1 top-10 left-[2rem] md:left-[2.4rem] flex gap-2`}
           ref={currentYear}
         >
           <p className="font-medium uppercase m-0 opacity-0 will-change-transform">
@@ -179,7 +180,7 @@ export default function Header() {
           ref={(el) => (menu.current[0] = el)}
           onMouseEnter={handleEnterLeft}
           onMouseLeave={handleLeaveLeft}
-          className="relative opacity-0 translate-y-100 w-22 h-full flex justify-start items-center will-change-transform pl-3 border-b-1 rounded-tl-[3px] overflow-hidden"
+          className="relative opacity-0 translate-y-100 md:w-22 w-17 h-full flex justify-start items-center will-change-transform pl-3 border-b-1 rounded-tl-[3px] overflow-hidden"
         >
           <div
             ref={hoverBgLeft}
@@ -196,7 +197,7 @@ export default function Header() {
           ref={(el) => (menu.current[2] = el)}
           onMouseEnter={handleEnterRight}
           onMouseLeave={handleLeaveRight}
-          className="relative opacity-0 translate-y-100 w-22 h-full flex justify-end items-center will-change-transform pr-3 border-b-1 rounded-tr-[3px] overflow-hidden"
+          className="relative opacity-0 translate-y-100 md:w-22 w-17 h-full flex justify-end items-center will-change-transform pr-3 border-b-1 rounded-tr-[3px] overflow-hidden"
         >
           <div
             ref={hoverBgRight}

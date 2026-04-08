@@ -9,9 +9,11 @@ uniform float uFrequency;
 uniform sampler2D uMap;
 uniform float uProgress;
 uniform float uLightProgress;
+uniform sampler2D uTrailTexture;
 
 varying vec2 vUv;
 varying vec3 vWorldPosition;
+varying vec4 vClipPosition;
 
 mat2 rotate2d(float angle){
     return mat2(cos(angle), -sin(angle), sin(angle), cos(angle));
@@ -39,7 +41,7 @@ void main() {
 
   // Reveal
   float d = length(uv);
-  d -= cnoise(vec4(vWorldPosition * uFrequency , uTime * 0.05)) * uAmplitude;
+  d -= cnoise(vec4(vWorldPosition * 0.76, uTime * 0.05)) * 1.3;
   float alphaReveal = falloff(d, -uAmplitude, 1.5 + uAmplitude, 0.5, uProgress);
   float alpha = color.a;
   alpha *= alphaReveal;
@@ -49,14 +51,21 @@ void main() {
   float dotSizeMap = 0. + 0.36 * smoothstep(-.5, 1.0, noiseSize); 
   float dotPattern = halftone(vWorldPosition.xy, 19.0, .985, dotSizeMap);
   vec3 dots = vec3(dotPattern);
-  float dotsReveal = 1. - falloff(d, -uAmplitude - 0.3, 1.5 + uAmplitude, .06, uProgress);
+  float dotsReveal = 1. - falloff(d, -uAmplitude - 0.3, 1.5 + uAmplitude, .02, uProgress);
   dotsReveal = pow(dotsReveal, 2.0);
   baseColor += dots * 2. * dotsReveal;
-
 
   // Light
   vec3 light = vec3(0.8, 0.8, 1.);
   baseColor += light * uLightProgress;
+
+  // Trail
+  vec2 screenUv = (vClipPosition.xy / vClipPosition.w) * 0.5 + 0.5;
+  float trailDensity = smoothstep(0.08, 0.4, texture2D(uTrailTexture, screenUv).r);
+  float luma = dot(baseColor, vec3(0.99, 0.9, 0.99));
+  baseColor = mix(baseColor, vec3(luma + 0.95), trailDensity * 0.9);
+  float dotPattern2 = halftone(vWorldPosition.xy, 16.0, .985, 0.2);
+  baseColor = mix(baseColor, vec3(dotPattern2), trailDensity * 0.55);
 
   gl_FragColor = vec4(baseColor, alpha);
   
