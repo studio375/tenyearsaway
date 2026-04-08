@@ -33,10 +33,10 @@ export default function ScrollProvider({ children }) {
         anchors: false,
         duration: 1.5,
         wheelMultiplier: 0.8,
-        touchMultiplier: 2,
         lerp: 0.12,
         autoResize: true,
-        smoothWheel: true,
+        syncTouch: true,
+        touchMultiplier: 0.8,
         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       }}
     >
