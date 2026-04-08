@@ -13,7 +13,6 @@ const Caption = function ({
   geometry,
   src,
   position,
-  xScaleFactor = 1,
   size,
   index,
   framesProgress,
@@ -39,6 +38,7 @@ const Caption = function ({
     tex.needsUpdate = true;
     return tex;
   });
+
   const displacement = useTexture("/textures/perlin.png");
   const material = useMemo(() => {
     return new ShaderMaterial({
@@ -80,7 +80,12 @@ const Caption = function ({
   );
 
   useLenis(({ progress, velocity }) => {
-    if (!meshRef.current || !useStore.getState().active || useStore.getState().transition) return;
+    if (
+      !meshRef.current ||
+      !useStore.getState().active ||
+      useStore.getState().transition
+    )
+      return;
     meshRef.current.material.uniforms.uVelocity.value = velocity * 0.1;
 
     if (
@@ -107,17 +112,12 @@ const Caption = function ({
     easing.dampQ(meshRef.current.quaternion, dummy.quaternion, 0.15, delta);
   });
 
-  const positionVec = useMemo(
-    () => [position.x * xScaleFactor, position.y, position.z],
-    [position.x, position.y, position.z, xScaleFactor],
-  );
-
   return (
     <mesh
       ref={meshRef}
       geometry={geometry}
       material={material}
-      position={positionVec}
+      position={[position.x, position.y, position.z]}
       scale={[size.meshWidth, size.meshHeight, 1]}
     />
   );

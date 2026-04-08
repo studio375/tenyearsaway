@@ -206,3 +206,35 @@ export const generateGridPositions = (layoutConfig) => {
 function mod(n, m) {
   return ((n % m) + m) % m;
 }
+
+export function getCaptionPositions(
+  frames,
+  meshSizes,
+  meshPositions,
+  captionSizes,
+) {
+  return frames.map((frame, index) => {
+    if (!frame.dialogo) return null;
+
+    return frame.dialogo.map((dialogoItem, dialogoIdx) => {
+      const percentage = dialogoItem.posizione.split(",");
+      const px = parseFloat(percentage[0].replace("%", "")) / 100;
+      const py = parseFloat(percentage[1].replace("%", "")) / 100;
+
+      const x =
+        meshPositions[index][0] -
+        meshSizes[index].meshWidth * 0.5 +
+        px * meshSizes[index].meshWidth +
+        captionSizes[index][dialogoIdx].meshWidth * 0.5;
+      const y =
+        meshPositions[index][1] +
+        meshSizes[index].meshHeight * 0.5 -
+        py * meshSizes[index].meshHeight;
+      return {
+        x: x,
+        y: y,
+        z: meshPositions[index][2],
+      };
+    });
+  });
+}

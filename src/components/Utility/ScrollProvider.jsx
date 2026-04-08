@@ -36,7 +36,7 @@ export default function ScrollProvider({ children }) {
         lerp: 0.12,
         autoResize: true,
         syncTouch: true,
-        touchMultiplier: 0.8,
+        touchMultiplier: 1.85,
         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       }}
     >

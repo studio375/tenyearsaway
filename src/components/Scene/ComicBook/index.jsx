@@ -6,17 +6,15 @@ import Mesh from "./Mesh";
 import CameraRig from "./CameraRig";
 import Caption from "./Caption";
 import { positions, cameraTargets } from "@/assets/data";
-import { captionsPositions } from "@/assets/data";
-import { getMeshSizes } from "@/helpers/functions";
+import { getMeshSizes, getCaptionPositions } from "@/helpers/functions";
 import { useLenis } from "lenis/react";
 import TransitionHandler from "./TransitionHandler";
 import Page from "./Page";
-import { useProgress } from "@react-three/drei";
-const sharedGeometry = new PlaneGeometry(1, 1, 64, 64);
+
+const sharedGeometry = new PlaneGeometry(1, 1, 32, 32);
 
 export default function ComicBook() {
   // Main variables
-  const progress = useProgress();
   const { frames, activeYear, page } = useStore();
   const { size } = useThree();
   const staticViewport = useMemo(() => {
@@ -48,11 +46,21 @@ export default function ComicBook() {
   const captionLimit = useMemo(() => {
     const c = Math.max(
       ...frames.map((frame) =>
-        frame.testo ? frame.testo.width / frame.testo.height : 1,
+        Array.isArray(frame.dialogo) && frame.dialogo.length > 0
+          ? Math.max(
+              ...frame.dialogo
+                .filter((dialogoItem) => dialogoItem?.immagine_txt)
+                .map(
+                  (dialogoItem) =>
+                    dialogoItem.immagine_txt.width /
+                    dialogoItem.immagine_txt.height,
+                ),
+            )
+          : 1,
       ),
     );
     return {
-      maxWidth: maxWidth * 0.3,
+      maxWidth: size.width < 1024 ? maxWidth * 0.6 : maxWidth * 0.3,
       maxHeight: maxHeight * 0.3,
       minWidth: minWidth * 0.3,
       maxAspectRatio: c,
@@ -84,15 +92,29 @@ export default function ComicBook() {
 
   const captionSizes = useMemo(() => {
     return frames.map((frame, index) => {
-      return getMeshSizes(
-        frame.testo,
-        captionLimit.maxWidth,
-        captionLimit.maxHeight,
-        captionLimit.minWidth,
-        captionLimit.maxAspectRatio,
-      );
+      if (!Array.isArray(frame?.dialogo) || frame.dialogo.length === 0)
+        return [];
+      return frame.dialogo.map((dialogoItem) => {
+        if (!dialogoItem?.immagine_txt) return null;
+        return getMeshSizes(
+          dialogoItem.immagine_txt,
+          captionLimit.maxWidth,
+          captionLimit.maxHeight,
+          captionLimit.minWidth,
+          captionLimit.maxAspectRatio,
+        );
+      });
     });
   }, [frames, captionLimit]);
+
+  const captionPositions = useMemo(() => {
+    return getCaptionPositions(
+      frames,
+      meshSizes,
+      positions[activeYear],
+      captionSizes,
+    );
+  }, [frames, meshSizes, captionSizes, activeYear]);
 
   const framesTimeline = useMemo(() => {
     if (!frames?.length || !meshSizes.length || totalWidth <= 0) return [];
@@ -190,17 +212,18 @@ export default function ComicBook() {
                     xScaleFactor={xScaleFactor}
                     framesProgress={framesProgress}
                   />
-                  {frame.testo && captionsPositions[activeYear][index] && (
-                    <Caption
-                      geometry={sharedGeometry}
-                      src={frame.testo.url}
-                      position={captionsPositions[activeYear][index]}
-                      xScaleFactor={xScaleFactor}
-                      size={captionSizes[index]}
-                      index={index}
-                      framesProgress={framesProgress}
-                    />
-                  )}
+                  {Array.isArray(frame.dialogo) &&
+                    frame.dialogo.map((dialogoItem, dialogoIdx) => (
+                      <Caption
+                        key={`${activeYear}-${frame.texture.id}-caption-${dialogoIdx}`}
+                        geometry={sharedGeometry}
+                        src={dialogoItem.immagine_txt?.url}
+                        position={captionPositions[index][dialogoIdx]}
+                        size={captionSizes[index][dialogoIdx]}
+                        index={index}
+                        framesProgress={framesProgress}
+                      />
+                    ))}
                 </group>
               );
             })}
