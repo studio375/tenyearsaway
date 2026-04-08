@@ -12,7 +12,6 @@ function ScrollManager() {
   useEffect(() => {
     if (!lenis) return;
     gsap.ticker.lagSmoothing(0);
-    ScrollTrigger.normalizeScroll(true);
     ScrollTrigger.config({ ignoreMobileResize: true });
   }, [lenis]);
 
@@ -34,6 +33,7 @@ export default function ScrollProvider({ children }) {
         anchors: false,
         duration: 1.5,
         wheelMultiplier: 0.8,
+        touchMultiplier: 2,
         lerp: 0.12,
         autoResize: true,
         smoothWheel: true,
