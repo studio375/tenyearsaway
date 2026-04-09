@@ -338,6 +338,7 @@ export default function Book() {
                   : pages[sheetIndex].year
               }
               resetBook={() => resetBook()}
+              yOffset={yOffset}
             />
           );
         })}

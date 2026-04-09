@@ -4,7 +4,7 @@ import { useMemo, useRef, useEffect } from "react";
 import { ShaderMaterial } from "three";
 import vertexShader from "@/assets/shaders/book/vertex.glsl";
 import fragmentShader from "@/assets/shaders/book/fragment.glsl";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import { useRouter } from "next/router";
 const PAGE_DEPTH = 0.003;
 
@@ -22,11 +22,19 @@ export default function Page({
   selectedPage,
   year,
   resetBook,
+  yOffset = 0,
 }) {
   const groupRef = useRef(null);
   const meshRef = useRef(null);
   const [frontTexture, backTexture] = useKTX2([frontUrl, backUrl || frontUrl]);
+  const { gl } = useThree();
   const router = useRouter();
+
+  useEffect(() => {
+    const maxAniso = gl.capabilities.getMaxAnisotropy();
+    if (frontTexture) { frontTexture.anisotropy = maxAniso; frontTexture.needsUpdate = true; }
+    if (backTexture) { backTexture.anisotropy = maxAniso; backTexture.needsUpdate = true; }
+  }, [frontTexture, backTexture]);
 
   const materials = useMemo(() => {
     return [
@@ -148,7 +156,7 @@ export default function Page({
       tl.current
         .to(groupRef.current.position, {
           x: opened ? sizes.width / 2 : -sizes.width / 2,
-          y: 0,
+          y: -yOffset,
           z: 0.5,
         })
         .to(

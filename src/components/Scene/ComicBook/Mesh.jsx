@@ -4,7 +4,7 @@ import { useKTX2 } from "@react-three/drei";
 import { ShaderMaterial } from "three";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import vertexShader from "@/assets/shaders/frame/vertex.glsl";
 import fragmentShader from "@/assets/shaders/frame/fragment.glsl";
 import { useStore } from "@/store/useStore";
@@ -20,7 +20,14 @@ const Mesh = function ({
   const meshRef = useRef(null);
   const tl = useRef(null);
   const texture = useKTX2(src);
+  const { gl } = useThree();
   const { addObject, removeObject, active } = useStore();
+
+  useEffect(() => {
+    if (!texture) return;
+    texture.anisotropy = gl.capabilities.getMaxAnisotropy();
+    texture.needsUpdate = true;
+  }, [texture]);
 
   useEffect(() => {
     if (!meshRef.current) return;

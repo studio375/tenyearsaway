@@ -5,11 +5,18 @@ import { useStore } from "@/store/useStore";
 import vertexShader from "@/assets/shaders/page/vertex.glsl";
 import fragmentShader from "@/assets/shaders/page/fragment.glsl";
 import { useFrame, useThree } from "@react-three/fiber";
+
 const Page = function ({ geometry, page }) {
   const meshRef = useRef(null);
   const texture = useKTX2(page[1].url);
   const { addObject, removeObject } = useStore();
-  const { size } = useThree();
+  const { size, gl } = useThree();
+
+  useEffect(() => {
+    if (!texture) return;
+    texture.anisotropy = gl.capabilities.getMaxAnisotropy();
+    texture.needsUpdate = true;
+  }, [texture]);
   const material = useMemo(() => {
     return new ShaderMaterial({
       vertexShader: vertexShader,
