@@ -34,7 +34,8 @@ float noise(vec2 x) {
 
 // This one has non-ideal tiling properties that I'm still tuning
 float noise(vec3 x) {
-	const vec3 step = vec3(110, 241, 171);
+	// Avoid naming this "step" — shadows GLSL builtin, causes wrong compilation on Intel/some mobile drivers
+	const vec3 s = vec3(110, 241, 171);
 
 	vec3 i = floor(x);
 	vec3 f = fract(x);
@@ -46,10 +47,10 @@ float noise(vec3 x) {
 	highp float n = dot(hi, vec3(110.0, 241.0, 171.0));
 
 	vec3 u = f * f * (3.0 - 2.0 * f);
-	return mix(mix(mix( hash(n + dot(step, vec3(0, 0, 0))), hash(n + dot(step, vec3(1, 0, 0))), u.x),
-                   mix( hash(n + dot(step, vec3(0, 1, 0))), hash(n + dot(step, vec3(1, 1, 0))), u.x), u.y),
-               mix(mix( hash(n + dot(step, vec3(0, 0, 1))), hash(n + dot(step, vec3(1, 0, 1))), u.x),
-                   mix( hash(n + dot(step, vec3(0, 1, 1))), hash(n + dot(step, vec3(1, 1, 1))), u.x), u.y), u.z);
+	return mix(mix(mix( hash(n + dot(s, vec3(0, 0, 0))), hash(n + dot(s, vec3(1, 0, 0))), u.x),
+                   mix( hash(n + dot(s, vec3(0, 1, 0))), hash(n + dot(s, vec3(1, 1, 0))), u.x), u.y),
+               mix(mix( hash(n + dot(s, vec3(0, 0, 1))), hash(n + dot(s, vec3(1, 0, 1))), u.x),
+                   mix( hash(n + dot(s, vec3(0, 1, 1))), hash(n + dot(s, vec3(1, 1, 1))), u.x), u.y), u.z);
 }
 
 // float mod289(float x){return x - floor(x * (1.0 / 289.0)) * 289.0;}
