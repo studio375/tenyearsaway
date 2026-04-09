@@ -203,7 +203,7 @@ export default function BookLabels() {
 
   return (
     <>
-      <div className="fixed left-0 top-0 h-full pointer-events-none z-10 w-1/4">
+      <div className="fixed left-0 top-0 h-full pointer-events-none z-10 w-1/4 max-lg:top-auto max-lg:bottom-[8.5rem] max-lg:h-[6rem] max-lg:w-[45vw]">
         {pages.map((page, i) => {
           if (i % 2 !== 0) return null;
           const sheetNum = i / 2 + 1;
@@ -218,9 +218,9 @@ export default function BookLabels() {
                 bookCurrentPage === sheetNum &&
                 setSelectedPage(sheetNum - 1)
               }
-              className="opacity-0 pointer-events-none absolute inset-0 group cursor-pointer pl-[8vw] text-left flex flex-col justify-center w-full"
+              className="opacity-0 pointer-events-none absolute inset-0 group cursor-pointer pl-[8vw] max-lg:pl-[4vw] text-left flex flex-col justify-center w-full"
             >
-              <p className="block stroke uppercase text-[9vw] leading-[7vw] font-extrabold absolute -left-[1vw] top-1/2 -translate-y-1/2 [writing-mode:vertical-rl] rotate-180 h-full text-center">
+              <p className="block stroke uppercase font-extrabold lg:text-center lg:absolute lg:-left-[1vw] lg:top-1/2 lg:-translate-y-1/2 lg:[writing-mode:vertical-rl] lg:rotate-180 lg:h-full lg:text-[9vw] text-[3rem] lg:leading-[7vw] max-lg:leading-tight max-lg:mb-[0.4rem]">
                 {`Year ${i}`}
               </p>
               <p className="text-[1.4rem] font-medium uppercase mt-[0.6rem] mb-[0.2rem] mx-0">
@@ -234,7 +234,7 @@ export default function BookLabels() {
         })}
       </div>
 
-      <div className="fixed right-0 top-0 h-full pointer-events-none z-10 w-1/4">
+      <div className="fixed right-0 top-0 h-full pointer-events-none z-10 w-1/4 max-lg:top-auto max-lg:bottom-[8.4rem] max-lg:h-[6rem] max-lg:w-[45vw]">
         {pages.map((page, i) => {
           if (i % 2 !== 1) return null;
           const sheetNum = Math.ceil(i / 2);
@@ -249,9 +249,9 @@ export default function BookLabels() {
                 bookCurrentPage === sheetNum &&
                 setSelectedPage(sheetNum)
               }
-              className="opacity-0 pointer-events-none absolute inset-0 group cursor-pointer pr-[8vw] text-right flex flex-col justify-center w-full"
+              className="opacity-0 pointer-events-none absolute inset-0 group cursor-pointer pr-[8vw] max-lg:pr-[4vw] text-right flex flex-col justify-center w-full"
             >
-              <p className="block stroke uppercase text-[9vw] leading-[7vw] font-extrabold absolute -right-[1vw] top-1/2 -translate-y-1/2 [writing-mode:vertical-rl] rotate-180 h-full text-center">
+              <p className="block stroke uppercase font-extrabold lg:text-center lg:absolute lg:-right-[1vw] lg:top-1/2 lg:-translate-y-1/2 lg:[writing-mode:vertical-rl] lg:rotate-180 lg:h-full lg:text-[9vw] lg:leading-[7vw] text-[3rem] max-lg:leading-tight max-lg:mb-[0.4rem]">
                 {`Year ${i}`}
               </p>
               <p className="text-[1.4rem] font-medium uppercase mt-[0.6rem] mb-[0.2rem] mx-0">
@@ -267,9 +267,9 @@ export default function BookLabels() {
 
       <div
         ref={infoRef}
-        className="fixed bottom-5 left-1/2 -translate-x-1/2 pointer-events-none select-none opacity-0 translate-y-10"
+        className="fixed bottom-[1.8rem] left-2 lg:bottom-5 lg:left-1/2 lg:-translate-x-1/2 pointer-events-none select-none opacity-0 translate-y-10"
       >
-        <p className="text-[1.8rem] lowercase font-medium">
+        <p className="lg:text-[1.8rem] text-[1.4rem] lowercase font-medium">
           Swipe to turn pages
         </p>
       </div>

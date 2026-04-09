@@ -1,5 +1,6 @@
 import { useMemo, useRef, useEffect } from "react";
 import { ShaderMaterial, PlaneGeometry } from "three";
+import { useThree } from "@react-three/fiber";
 import gsap from "gsap";
 
 const vert = `
@@ -38,7 +39,7 @@ export default function BookShadow({
   selectedPage = false,
 }) {
   const meshRef = useRef(null);
-
+  const { size } = useThree();
   const mat = useMemo(
     () =>
       new ShaderMaterial({
@@ -74,7 +75,13 @@ export default function BookShadow({
     }).to(
       meshRef.current.position,
       {
-        x: isOpen ? 0 : currentPage !== totalSheets ? 1.6 : -1.9,
+        x: isOpen
+          ? 0
+          : currentPage !== totalSheets
+            ? size.width >= 1024
+              ? 1.4
+              : 1.13
+            : -1.9,
         duration: 0.9,
         ease: "power2.out",
       },

@@ -53,6 +53,7 @@ export default function Book() {
   const router = useRouter();
 
   const { size } = useThree();
+  const yOffset = size.width >= 1024 ? 0 : 0.4;
   const staticViewport = useMemo(() => {
     const distance = 5;
     const fov = (75 * Math.PI) / 180;
@@ -63,7 +64,7 @@ export default function Book() {
 
   const sizes = useMemo(() => {
     if (!pages || pages.length === 0) return { width: 1, height: 1.5 };
-    const width = staticViewport.width * 0.25;
+    const width = Math.max(staticViewport.width * 0.25, 2);
     const aspectRatio = pages[0].full.width / pages[0].full.height;
     const height = width / aspectRatio;
     return { width, height };
@@ -94,37 +95,37 @@ export default function Book() {
   }, [pages]);
 
   // Drag gesture for page swiping
-  const bind = useDrag(
-    ({ event, direction, distance, last, first, active }) => {
-      if (!isEnabled.current || !activeExperience) return;
-      event.stopPropagation();
+  const bind = useDrag(({ event, movement: [mx], distance, last, active }) => {
+    if (!isEnabled.current || !activeExperience) return;
+    event.stopPropagation();
 
-      if (!active) {
-        isDragging.current = false;
-        document.body.style.cursor = "grab";
-      } else {
-        document.body.style.cursor = "grabbing";
-      }
-      if (!last || distance[0] < 1.1) return;
-      isDragging.current = true;
-      if (direction[0] >= 0) {
-        setCurrentPage((prev) => {
+    if (!active) {
+      isDragging.current = false;
+      document.body.style.cursor = "grab";
+    } else {
+      document.body.style.cursor = "grabbing";
+    }
+    if (!last || distance[0] < 1.1) return;
+    isDragging.current = true;
+    if (mx >= 0) {
+      // drag right = go back
+      setCurrentPage((prev) => {
+        setPrevPage(prev);
+        return Math.max(0, prev - 1);
+      });
+    } else {
+      // drag left = go forward
+      setCurrentPage((prev) => {
+        if (prev < totalSheets) {
           setPrevPage(prev);
-          return Math.max(0, prev - 1);
-        });
-      } else {
-        if (currentPage < totalSheets) {
-          setCurrentPage((prev) => {
-            setPrevPage(prev);
-            return prev + 1;
-          });
+          return prev + 1;
         } else {
-          setPrevPage(currentPage);
-          setCurrentPage(0);
+          setPrevPage(prev);
+          return 0;
         }
-      }
-    },
-  );
+      });
+    }
+  });
 
   // Transizioni entrata/uscita
   const tl = useRef();
@@ -143,7 +144,7 @@ export default function Book() {
       // Reset esplicito posizione/rotazione per entrata
       gsap.set(groupRef.current.position, {
         x: -staticViewport.width,
-        y: 0,
+        y: yOffset,
         z: 0,
       });
       gsap.set(groupRef.current.rotation, {
@@ -172,7 +173,7 @@ export default function Book() {
       tl.current
         .to(groupRef.current.position, {
           x: -sizes.width / 2,
-          y: 0,
+          y: yOffset,
           z: 0,
           overwrite: true,
         })
@@ -198,7 +199,7 @@ export default function Book() {
       tl.current
         .to(groupRef.current.position, {
           x: staticViewport.width,
-          y: 0,
+          y: yOffset,
           z: 0,
         })
         .to(
@@ -216,7 +217,7 @@ export default function Book() {
       tl.current?.kill();
       tl.current = null;
     };
-  }, [router.asPath, activeExperience, transition]);
+  }, [router.asPath, activeExperience, transition, yOffset]);
 
   const tlPage = useRef();
   useEffect(() => {
@@ -241,31 +242,29 @@ export default function Book() {
     if (currentPage == 0) {
       tlPage.current.to(groupRef.current.position, {
         x: -sizes.width / 2,
-        y: 0,
+        y: yOffset,
         z: 0,
       });
     } else if (currentPage == totalSheets) {
       tlPage.current.to(groupRef.current.position, {
         x: sizes.width / 2,
-        y: 0,
+        y: yOffset,
         z: 0,
       });
     } else {
-      if (groupRef.current.position.x !== -sizes.width / 2) {
-        tlPage.current.to(groupRef.current.position, { x: 0, y: 0, z: 0 });
-      }
+      tlPage.current.to(groupRef.current.position, { x: 0, y: yOffset, z: 0 });
     }
     return () => {
       tlPage.current?.kill();
       tlPage.current = null;
     };
-  }, [currentPage, activeExperience]);
+  }, [currentPage, activeExperience, yOffset]);
 
   const resetBook = () => {
     setPrevPage(currentPage);
     setCurrentPage(0);
     isEnabled.current = false;
-    groupRef.current.position.set(-staticViewport.width, 0, 0);
+    groupRef.current.position.set(-staticViewport.width, yOffset, 0);
     groupRef.current.rotation.set(Math.PI * 0.33, Math.PI * 0.4, 0);
     groupRef.current.visible = false;
     setSelectedPage(false);
@@ -307,8 +306,8 @@ export default function Book() {
         <BookShadow
           width={sizes.width}
           height={sizes.height}
-          x={1.6}
-          y={-0.2}
+          x={size.width >= 1024 ? 1.4 : 1.13}
+          y={size.width >= 1024 ? -0.2 : -0.1}
           z={-0.3}
           opacity={0.42}
           feather={0.1}
