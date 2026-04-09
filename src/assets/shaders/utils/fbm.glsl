@@ -1,6 +1,8 @@
 //	<https://www.shadertoy.com/view/4dS3Wd>
 //	By Morgan McGuire @morgan3d, http://graphicscodex.com
 //
+precision highp float;
+
 float hash(float n) { highp float hn = n; return fract(sin(hn) * 1e4); }
 float hash(vec2 p) { return fract(1e4 * sin(17.0 * p.x + p.y * 0.1) * (0.1 + abs(sin(p.y * 13.0 + p.x)))); }
 

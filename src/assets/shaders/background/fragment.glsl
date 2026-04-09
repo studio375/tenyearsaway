@@ -29,18 +29,18 @@ void main() {
   float alpha = .8;
 
   // vec3 stretchedPos = vWorldPosition;
-  vec3 localPos = vec3((uv - 0.5) * vec2(3.,4.), 0.0);     
+  vec3 localPos = vec3((uv - 0.5) * uSizes, 0.0);     
   localPos.x += uMovement * 2.;
   // stretchedPos.y *= 1. + (10. * uSpeed);
   alpha *= fbm(localPos * vec3(.4,.8,1.) + vec3(uTime * .15, uTime * .3, 0.), 1);
 
-  // float fbmDiv = fbm(localPos * vec3(.4,.8 * 10.,1.), 3);
-  // float alphaWithFbm = alpha / fbmDiv / 6.; 
-  // alphaWithFbm = clamp(alphaWithFbm, 0.0, 1.0); 
-  // alphaWithFbm = pow(alphaWithFbm, 1.35); 
-  // float speedFactor = smoothstep(0.0, 0.4, uSpeed);
-  // alpha = mix(alpha, alphaWithFbm, speedFactor);
-  // alpha = pow(alpha, 2.); 
+  float fbmDiv = fbm(localPos * vec3(.4,.8 * 10.,1.), 3);
+  float alphaWithFbm = alpha / fbmDiv / 6.; 
+  alphaWithFbm = clamp(alphaWithFbm, 0.0, 1.0); 
+  alphaWithFbm = pow(alphaWithFbm, 1.35); 
+  float speedFactor = smoothstep(0.0, 0.4, uSpeed);
+  alpha = mix(alpha, alphaWithFbm, speedFactor);
+  alpha = pow(alpha, 2.); 
   //alpha *= 2.;
 
   vec3 gray = vec3(0.1, 0.1, 0.1);
