@@ -35,10 +35,10 @@ export default function Home() {
       gsap.to(mobilePaths, {
         strokeDashoffset: 0,
         opacity: 1,
-        duration: 2.6,
-        delay: 0.2,
-        stagger: 0.15,
-        ease: "power1.inOut",
+        duration: 2,
+        delay: 0.14,
+        stagger: 0.07,
+        ease: "snake",
       });
     }
 
@@ -182,6 +182,7 @@ export default function Home() {
         <div className="fixed bottom-[3.7rem] left-0 right-0 px-[1.5rem] pointer-events-none lg:hidden block">
           <svg
             width="100%"
+            height="100%"
             viewBox="0 0 342 572"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
