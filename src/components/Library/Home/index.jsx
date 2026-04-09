@@ -179,10 +179,10 @@ export default function Home() {
             />
           </svg>
         </div>
-        <div className="fixed bottom-[4rem] left-0 right-0 px-[1.5rem] pointer-events-none lg:hidden block">
+        <div className="fixed bottom-4 left-0 w-full px-[1.5rem] flex justify-center items-end pointer-events-none lg:hidden block overflow-hidden max-h-[calc(100svh-100px)]">
           <svg
+            height="auto"
             width="100%"
-            height="100%"
             viewBox="0 0 342 572"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
