@@ -179,7 +179,7 @@ export default function Home() {
             />
           </svg>
         </div>
-        <div className="fixed bottom-[3.7rem] left-0 right-0 px-[1.5rem] pointer-events-none lg:hidden block">
+        <div className="fixed bottom-[4rem] left-0 right-0 px-[1.5rem] pointer-events-none lg:hidden block">
           <svg
             width="100%"
             height="100%"
