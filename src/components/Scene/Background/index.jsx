@@ -130,7 +130,7 @@ export default function Background({ geometry }) {
       scale={[sizes.width, sizes.height, 1]}
       geometry={geometry}
       material={material}
-      renderOrder={-1}
+      renderOrder={-2}
       receiveShadow={true}
     />
   );

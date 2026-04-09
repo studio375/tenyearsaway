@@ -94,7 +94,7 @@ export default function Footer() {
       </div>
       <div
         ref={(el) => (infoRef.current[0] = el)}
-        className="opacity-0 translate-y-100 md:block hidden pb-2 lgx:pb-0"
+        className="opacity-0 translate-y-100 lg:block hidden pb-2 lgx:pb-0"
       >
         TEN YEARS AWAY...one year later... ops: a grapghic novel, of a true
         story, based on... us.
