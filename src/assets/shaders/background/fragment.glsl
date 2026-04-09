@@ -1,8 +1,4 @@
-#ifdef GL_FRAGMENT_PRECISION_HIGH
-  precision highp float;
-#else
-  precision mediump float;
-#endif
+precision mediump float;
 
 #pragma glslify: falloff = require(../utils/functions.glsl)
 #pragma glslify: cnoise = require(../utils/perlin.glsl)

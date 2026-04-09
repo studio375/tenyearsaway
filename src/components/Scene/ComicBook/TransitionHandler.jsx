@@ -172,7 +172,8 @@ export default function TransitionHandler() {
 
     if (transition === "exit") {
       lenis.stop();
-      objects.forEach(({ ref }) => {
+      objects.forEach(({ ref, type }) => {
+        if (type == "card") return;
         gsap.killTweensOf(ref.position);
         gsap.killTweensOf(ref.scale);
         if (ref.material?.uniforms) {
@@ -219,6 +220,7 @@ export default function TransitionHandler() {
           "<",
         );
       objects.forEach(({ ref, index, type }) => {
+        if (type == "card") return;
         transitionTl.current
           .to(
             ref.position,

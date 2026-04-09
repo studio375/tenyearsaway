@@ -1,7 +1,7 @@
 //	<https://www.shadertoy.com/view/4dS3Wd>
 //	By Morgan McGuire @morgan3d, http://graphicscodex.com
 //
-float hash(float n) { return fract(sin(n) * 1e4); }
+float hash(float n) { highp float hn = n; return fract(sin(hn) * 1e4); }
 float hash(vec2 p) { return fract(1e4 * sin(17.0 * p.x + p.y * 0.1) * (0.1 + abs(sin(p.y * 13.0 + p.x)))); }
 
 float noise(float x) {
@@ -38,10 +38,12 @@ float noise(vec3 x) {
 
 	vec3 i = floor(x);
 	vec3 f = fract(x);
- 
-	// For performance, compute the base input to a 1D hash from the integer part of the argument and the 
+
+	// For performance, compute the base input to a 1D hash from the integer part of the argument and the
 	// incremental change to the 1D based on the 3D -> 1D wrapping
-    float n = dot(i, step);
+	// Use highp locally to avoid mediump overflow on mobile (dot product can exceed mediump max)
+	highp vec3 hi = vec3(i);
+	highp float n = dot(hi, vec3(110.0, 241.0, 171.0));
 
 	vec3 u = f * f * (3.0 - 2.0 * f);
 	return mix(mix(mix( hash(n + dot(step, vec3(0, 0, 0))), hash(n + dot(step, vec3(1, 0, 0))), u.x),
@@ -117,7 +119,9 @@ float fbm(vec3 x, int numOctaves) {
 	float v = 0.0;
 	float a = 1.0;
   float normalization = 0.0;
-	vec3 shift = vec3(100);
+	// Shift of 1.7 instead of 100 prevents coordinate explosion across octaves
+	// (shift=100 causes mediump overflow after 2+ octaves on mobile GPUs)
+	vec3 shift = vec3(1.7);
 	for (int i = 0; i < numOctaves; ++i) {
     normalization += a;
 		v += a * noise(x);
@@ -125,7 +129,7 @@ float fbm(vec3 x, int numOctaves) {
 		a *= 0.5;
 	}
   v /= normalization;
-  
+
 	return v;
 }
 
