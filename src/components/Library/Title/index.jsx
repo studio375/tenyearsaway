@@ -21,7 +21,9 @@ export default function Title() {
     const root = rootRef.current;
 
     const scale =
-      typeof window !== "undefined" ? (window.innerWidth / 1710) * 1.4 : 1.5;
+      typeof window !== "undefined"
+        ? Math.max((window.innerWidth / 1710) * 1.4, 1.2)
+        : 1.5;
     const rootHeight = root.clientHeight;
     // Translate the root container itself: no SVG coordinate system involved,
     // so the y value is in plain CSS pixels and requires no scale compensation.

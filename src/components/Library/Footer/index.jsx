@@ -58,7 +58,7 @@ export default function Footer() {
         infoRef.current[1],
         {
           autoAlpha: 1,
-          yPercent: -50,
+          yPercent: 0,
           y: 0,
           duration: 1,
           ease: "power2.out",
@@ -83,8 +83,8 @@ export default function Footer() {
   }, [router.asPath]);
 
   return (
-    <footer className="fixed lg:bottom-0 bottom-[11.5rem] left-0 w-full lgx:h-5 h-auto z-12 flex justify-center items-center font-500 text-[1.2rem] md:px-5 px-[2rem]">
-      <div className="flex justify-center items-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+    <footer className="fixed bottom-0 left-0 w-full lgx:h-5 h-auto z-12 flex justify-center items-center font-500 text-[1.2rem] lg:px-5 px-[2rem]">
+      <div className="flex justify-center items-center absolute lgx:top-1/2 bottom-[10.5rem] md:bottom-[16rem] lg:bottom-[4rem] lgx:bottom-auto left-1/2 -translate-x-1/2 lgx:-translate-y-1/2">
         <span
           ref={startRef}
           className="lowercase text-text-blue opacity-0 translate-y-3 will-change-transform"
@@ -94,14 +94,14 @@ export default function Footer() {
       </div>
       <div
         ref={(el) => (infoRef.current[0] = el)}
-        className="opacity-0 translate-y-100 md:block hidden"
+        className="opacity-0 translate-y-100 md:block hidden pb-2 lgx:pb-0"
       >
         TEN YEARS AWAY...one year later... ops: a grapghic novel, of a true
         story, based on... us.
       </div>
       <div
         ref={(el) => (infoRef.current[1] = el)}
-        className="opacity-0 text-right absolute md:right-5 right-[2rem] md:top-1/2 translate-y-100 bottom-[1.1rem] md:bottom-auto"
+        className="opacity-0 text-right absolute lg:right-5 right-[2rem] translate-y-100 bottom-[1.9rem] lg:bottom-2 lgx:bottom-[2.5] lgx:bottom-auto"
       >
         <Link href="https://375.studio" target="_blank">
           375.studio

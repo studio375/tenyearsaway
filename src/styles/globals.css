@@ -23,10 +23,11 @@
 
   /* responsive */
   --breakpoint-2xl: 2000px;
-  --breakpoint-xl: 1711px;
+  --breakpoint-xxl: 1820px;
+  --breakpoint-xl: 1670px;
   --breakpoint-lgx: 1360px;
   --breakpoint-lg: 1024px;
-  --breakpoint-md: 800px;
+  --breakpoint-md: 760px;
   --breakpoint-sm: 648px;
 }
 
@@ -39,10 +40,11 @@
 
     /* responsive */
     --breakpoint-2xl: 2000px;
+    --breakpoint-xxl: 1820px;
     --breakpoint-xl: 1711px;
     --breakpoint-lgx: 1360px;
     --breakpoint-lg: 1024px;
-    --breakpoint-md: 800px;
+    --breakpoint-md: 760px;
     --breakpoint-sm: 648px;
   }
 }
