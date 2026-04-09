@@ -15,6 +15,21 @@ float noise(float x) {
 	return mix(hash(i), hash(i + 1.0), u);
 }
 
+// nel main, dopo gli #pragma glslify
+float fbmPerlin(vec3 x, int numOctaves) {
+  float v = 0.0;
+  float a = 1.0;
+  float normalization = 0.0;
+  vec3 shift = vec3(1.7);
+  for (int i = 0; i < numOctaves; ++i) {
+    normalization += a;
+    v += a * cnoise(x);
+    x = x * 2.0 + shift;
+    a *= 0.5;
+  }
+  return v / normalization;
+}
+
 uniform float uTime;
 uniform float uSpeed;
 uniform float uMovement;
@@ -32,7 +47,8 @@ void main() {
   vec3 localPos = vec3((uv - 0.5) * uSizes, 0.0);     
   localPos.x += uMovement * 2.;
   // stretchedPos.y *= 1. + (10. * uSpeed);
-  alpha *= fbm(localPos * vec3(.4,.8,1.) + vec3(uTime * .15, uTime * .3, 0.), 1);
+  alpha *= fbmPerlin(localPos * vec3(.4,.8,1.) + vec3(uTime * .15, uTime * .3, 0.), 1);
+  // alpha *= fbm(localPos * vec3(.4,.8,1.) + vec3(uTime * .15, uTime * .3, 0.), 1);
 
   float fbmDiv = fbm(localPos * vec3(.4,.8 * 10.,1.), 3);
   float alphaWithFbm = alpha / fbmDiv / 6.; 
