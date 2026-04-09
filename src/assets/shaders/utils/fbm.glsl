@@ -117,6 +117,34 @@ float fbm(vec2 x, int numOctaves) {
 	return v;
 }
 
+// 1. Aggiungi questa funzione Hash che accetta un vec3 e restituisce un float.
+// È "sine-less" e applica subito il fract, mantenendo i numeri piccolissimi.
+float hashPerf(vec3 p3) {
+    p3  = fract(p3 * 0.1031);
+    p3 += dot(p3, p3.yzx + 33.33); // Questo dot ora moltiplica numeri < 1.0, zero rischio overflow
+    return fract((p3.x + p3.y) * p3.z);
+}
+
+// 2. Sostituisci la tua funzione noise con questa versione pulita
+float noisePerf(vec3 x) {
+    vec3 i = floor(x);
+    vec3 f = fract(x);
+
+    // Curva di smoothing (Hermite interpolation)
+    vec3 u = f * f * (3.0 - 2.0 * f);
+
+    // Mixiamo gli 8 angoli del cubo passando direttamente il vec3 all'hash.
+    // Nessuna moltiplicazione gigante, nessun rischio di overflow su Intel!
+    return mix(mix(mix( hashPerf(i + vec3(0.0,0.0,0.0)), 
+                        hashPerf(i + vec3(1.0,0.0,0.0)), u.x),
+                   mix( hashPerf(i + vec3(0.0,1.0,0.0)), 
+                        hashPerf(i + vec3(1.0,1.0,0.0)), u.x), u.y),
+               mix(mix( hashPerf(i + vec3(0.0,0.0,1.0)), 
+                        hashPerf(i + vec3(1.0,0.0,1.0)), u.x),
+                   mix( hashPerf(i + vec3(0.0,1.0,1.0)), 
+                        hashPerf(i + vec3(1.0,1.0,1.0)), u.x), u.y), u.z);
+}
+
 
 float fbm(vec3 x, int numOctaves) {
 	float v = 0.0;
@@ -127,7 +155,7 @@ float fbm(vec3 x, int numOctaves) {
 	vec3 shift = vec3(1.7);
 	for (int i = 0; i < numOctaves; ++i) {
     normalization += a;
-		v += a * noise(x);
+		v += a * noisePerf(x);
 		x = x * 2.0 + shift;
 		a *= 0.5;
 	}
