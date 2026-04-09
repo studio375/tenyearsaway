@@ -106,20 +106,20 @@ export default function Home() {
 
   return (
     <div>
-      <main className="relative z-1 h-screen w-screen">
-        <div className="pt-[18vh] lgx:px-5 px-[2rem]  flex justify-between items-start flex-wrap">
-          <div className="lgx:pl-[8rem] md:pl-[5rem] order-2 lg:order-1">
+      <main className="relative z-1 h-svh w-screen">
+        <div className="pt-[18vh] lgx:px-5 px-[1.5rem] flex lg:flex-row flex-col justify-between items-start flex-wrap pointer-events-none lg:h-auto h-full">
+          <div className="lgx:pl-[8rem] lg:pl-[5rem] pl-0 order-2 lg:order-1 w-full lg:w-auto mb-1 lg:mb-0">
             <p
               ref={leftTextRef}
-              className="text-text-blue text-[2rem] font-[200] xl:w-[10vw] lgx:w-[13vw] md:w-[16vw] sm:w-[20vw] w-full opacity-0"
+              className="text-text-blue lg:text-[2rem] text-center lg:text-left text-[1.5rem] font-[200] xl:w-[10vw] lgx:w-[13vw] w-full opacity-0"
             >
               A graphic novel, of a true story, based on... us.
             </p>
           </div>
-          <div className="order-1 lg:order-2">
+          <div className="order-1 lg:order-2 w-full lg:w-auto">
             <p
               ref={rightTextRef}
-              className="font-[500] italic text-[#cce8eb] text-[2rem] -mt-[2rem] opacity-0"
+              className="font-[500] italic text-[#cce8eb] lg:text-[2rem] text-[1.55rem] -mt-[2rem] lg:ml-0 -ml-[0.8rem] opacity-0 lg:w-auto w-full text-center lg:text-left"
             >
               ...one year later... opss
             </p>

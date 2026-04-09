@@ -168,7 +168,7 @@ export default function Intro({ geometry }) {
           textRef.current.position,
           { y: staticViewport.height },
           {
-            y: staticViewport.height / 2,
+            y: staticViewport.height / 2 - (size.width < 1024 ? 0.07 : 0),
             duration: 1.4,
             delay: 0.3,
             ease: "power3.out",
@@ -191,7 +191,7 @@ export default function Intro({ geometry }) {
     ref2.current.material.uniforms.uTime.value = time;
   });
 
-  const isMobile = size.width < 1024;
+  const isMobile = useMemo(() => size.width < 1024, [size.width]);
   return (
     <group renderOrder={-2}>
       <Text
@@ -201,9 +201,9 @@ export default function Intro({ geometry }) {
         anchorX="center"
         anchorY="top-cap"
         textAlign="center"
-        position={[0, staticViewport.height - (isMobile ? 0 : 0.2), 0.1]}
-        fontSize={staticViewport.width * (isMobile ? 0.175 : 0.105)}
-        lineHeight={0.8}
+        position={[0, staticViewport.height, 0.1]}
+        fontSize={staticViewport.width * (isMobile ? 0.165 : 0.105)}
+        lineHeight={0.78}
         letterSpacing={-0.06}
         material-toneMapped={false}
         receiveShadow
