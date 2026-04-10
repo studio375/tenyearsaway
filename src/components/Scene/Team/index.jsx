@@ -44,11 +44,57 @@ export default function Team() {
     ]);
   }, [team, staticViewport]);
 
+  const circleParams = useMemo(() => {
+    let multipliers = {
+      radius: 0.764,
+      spread: 1.4,
+      centerYHeight: -1.05,
+      centerYWidth: -0.2,
+    };
+
+    if (size.width <= 380) {
+      multipliers = {
+        radius: 3,
+        spread: 1.2,
+        centerYHeight: -1.78,
+        centerYWidth: -0.02,
+      };
+    } else if (size.width <= 600) {
+      multipliers = {
+        radius: 2,
+        spread: 1.6,
+        centerYHeight: -1.43,
+        centerYWidth: -0.02,
+      };
+    } else if (size.width <= 800) {
+      multipliers = {
+        radius: 1.9,
+        spread: 1.4,
+        centerYHeight: -1.5,
+        centerYWidth: -0.03,
+      };
+    } else if (size.width <= 1024) {
+      multipliers = {
+        radius: 1.1,
+        spread: 1.4,
+        centerYHeight: -1.6,
+        centerYWidth: -0.05,
+      };
+    }
+
+    // 3. Calcolo finale usando i moltiplicatori stabiliti
+    return {
+      radius: staticViewport.width * multipliers.radius,
+      spread: Math.PI * multipliers.spread,
+      centerY:
+        staticViewport.height * multipliers.centerYHeight -
+        staticViewport.width * Math.abs(multipliers.centerYWidth), // Math.abs nel caso inserissi il segno meno nell'oggetto
+    };
+  }, [size.width, staticViewport]);
+
   const circleLayout = useMemo(() => {
-    const radius = staticViewport.width * 0.764;
-    const spread = Math.PI * 1.4;
+    const { radius, spread, centerY } = circleParams;
     const startAngle = Math.PI / 2 - spread / 2;
-    const centerY = -staticViewport.height * 1.05 - staticViewport.width * 0.2;
     const spacing = spread / team.length;
 
     return team.map((_, index) => {
@@ -62,7 +108,7 @@ export default function Team() {
         rotation: angle - Math.PI / 2,
       };
     });
-  }, [team, staticViewport]);
+  }, [team, circleParams]);
 
   useEffect(() => {
     if (!loaded || !active || transition) return;
@@ -211,10 +257,8 @@ export default function Team() {
       1 - Math.exp(-6 * delta),
     );
 
-    const radius = staticViewport.width * 0.764;
-    const spread = Math.PI * 1.4;
+    const { radius, spread, centerY } = circleParams;
     const startAngle = Math.PI / 2 - spread / 2;
-    const centerY = -staticViewport.height * 1.05 - staticViewport.width * 0.2;
     const spacing = spread / team.length;
     const totalRange = team.length * spacing;
 
