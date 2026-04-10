@@ -6,7 +6,13 @@ import Link from "next/link";
 export default function Footer() {
   const startRef = useRef(null);
   const infoRef = useRef([]);
+  const prevRef = useRef(null);
   const { active, loaded } = useStore();
+  const activeYear = useStore((state) => state.activeYear);
+  const prevYear =
+    activeYear && activeYear !== "2015"
+      ? String(parseInt(activeYear) - 1)
+      : null;
   const router = useRouter();
   useEffect(() => {
     if (!loaded) return;
@@ -73,12 +79,27 @@ export default function Footer() {
   }, [loaded, active]);
 
   useEffect(() => {
+    if (!prevRef.current || !active) return;
+    gsap.set(prevRef.current, { autoAlpha: 0, y: 10 });
+    gsap.to(prevRef.current, {
+      autoAlpha: 1,
+      y: 0,
+      duration: 1,
+      delay: 0.23,
+      ease: "power2.out",
+    });
+  }, [activeYear, active]);
+
+  useEffect(() => {
     if (router.asPath === "/") {
       gsap.to(infoRef.current, {
         autoAlpha: 0,
         yPercent: 100,
         y: 0,
       });
+      if (prevRef.current) {
+        gsap.to(prevRef.current, { autoAlpha: 0, yPercent: 100, y: 0 });
+      }
     }
   }, [router.asPath]);
 
@@ -107,6 +128,14 @@ export default function Footer() {
           375.studio
         </Link>
       </div>
+      {prevYear && (
+        <div
+          ref={prevRef}
+          className="opacity-0 absolute lg:left-5 left-[2rem] bottom-[1.9rem] lg:bottom-2 lgx:bottom-[2.5] lgx:bottom-auto"
+        >
+          <Link href={`/year/${prevYear}`}>previous</Link>
+        </div>
+      )}
     </footer>
   );
 }

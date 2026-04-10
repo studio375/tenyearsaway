@@ -128,13 +128,13 @@ export default function Header() {
   useEffect(() => {
     const isYearPage = router.asPath == "/year";
     const isAboutPage = router.asPath.startsWith("/about");
-    gsap.to(hoverBgLeft.current, {
+    gsap.to(hoverBgLeft?.current, {
       scaleX: isYearPage ? 1 : 0,
       duration: 0.5,
       overwrite: true,
       ease: "power3.out",
     });
-    gsap.to(hoverBgRight.current, {
+    gsap.to(hoverBgRight?.current, {
       scaleX: isAboutPage ? 1 : 0,
       duration: 0.5,
       overwrite: true,
@@ -167,7 +167,7 @@ export default function Header() {
   };
   const handleLeaveRight = () => {
     if (router.asPath.startsWith("/about")) return;
-    gsap.to(hoverBgRight.current, {
+    gsap.to(hoverBgRight?.current, {
       scaleX: 0,
       duration: 0.5,
       overwrite: true,
@@ -179,7 +179,7 @@ export default function Header() {
     <header className="fixed top-[10px] md:top-2 left-0 w-full p-0 z-12 flex justify-center items-center uppercase text-[1.4rem] font-500">
       {activeYear && (
         <div
-          className={`text-[1.4rem] lg:absolute fixed lg:top-1 bottom-[1.77rem] lg:bottom-auto left-[2rem] lg:left-[2.4rem] flex gap-2`}
+          className={`text-[1.2rem] lg:text-[1.4rem] absolute fixed top-9 lg:top-1 left-[2rem] lg:left-[2.4rem] flex lg:gap-2 gap-1`}
           ref={currentYear}
         >
           <p className="font-medium uppercase m-0 opacity-0 will-change-transform">
@@ -195,7 +195,7 @@ export default function Header() {
       )}
       <div
         ref={box}
-        className="opacity-0 translate-y-100 inline-flex justify-center items-center w-auto h-[2.7rem] md:h-[3.3rem]"
+        className="opacity-0 translate-y-100 inline-flex justify-center items-center w-auto h-[2.5rem] md:h-[3.3rem]"
       >
         <div
           ref={(el) => (menu.current[0] = el)}
@@ -209,7 +209,7 @@ export default function Header() {
           />
           <Link
             href="/year"
-            className="relative z-10 w-full h-full flex justify-start items-center"
+            className="relative z-10 w-full h-full flex justify-start items-center max-md:text-[1.14rem] max-md:leading-[1.3]"
           >
             Years
           </Link>
@@ -226,7 +226,7 @@ export default function Header() {
           />
           <Link
             href="/about"
-            className="relative z-10 w-full h-full flex justify-end items-center"
+            className="relative z-10 w-full h-full flex justify-end items-center max-md:text-[1.14rem] max-md:leading-[1.3]"
           >
             About
           </Link>
