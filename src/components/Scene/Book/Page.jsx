@@ -27,13 +27,19 @@ export default function Page({
   const groupRef = useRef(null);
   const meshRef = useRef(null);
   const [frontTexture, backTexture] = useKTX2([frontUrl, backUrl || frontUrl]);
-  const { gl } = useThree();
+  const { gl, size } = useThree();
   const router = useRouter();
 
   useEffect(() => {
     const maxAniso = gl.capabilities.getMaxAnisotropy();
-    if (frontTexture) { frontTexture.anisotropy = maxAniso; frontTexture.needsUpdate = true; }
-    if (backTexture) { backTexture.anisotropy = maxAniso; backTexture.needsUpdate = true; }
+    if (frontTexture) {
+      frontTexture.anisotropy = maxAniso;
+      frontTexture.needsUpdate = true;
+    }
+    if (backTexture) {
+      backTexture.anisotropy = maxAniso;
+      backTexture.needsUpdate = true;
+    }
   }, [frontTexture, backTexture]);
 
   const materials = useMemo(() => {
@@ -190,7 +196,7 @@ export default function Page({
         );
     } else {
       tl.current.to(groupRef.current.position, {
-        y: -sizes.height * 1.5,
+        y: size.width <= 1024 ? -sizes.height * 2.5 : -sizes.height * 1.5,
         z: -0.5,
         x: 0,
         delay: 0.1,
@@ -228,8 +234,14 @@ export default function Page({
         material={materials}
         frustumCulled={false}
         castShadow={true}
-        onPointerOver={(e) => { e.stopPropagation(); document.body.style.cursor = 'grab'; }}
-        onPointerOut={(e) => { e.stopPropagation(); document.body.style.cursor = 'auto'; }}
+        onPointerOver={(e) => {
+          e.stopPropagation();
+          document.body.style.cursor = "grab";
+        }}
+        onPointerOut={(e) => {
+          e.stopPropagation();
+          document.body.style.cursor = "auto";
+        }}
       />
     </group>
   );
