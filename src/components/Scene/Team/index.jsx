@@ -35,14 +35,14 @@ export default function Team() {
   const positions = useMemo(() => {
     return team.map((_, index) => [
       staticViewport.width *
-        0.7 *
+        (size.width > 1440 ? 0.7 : 1.3) *
         Math.cos((2 * Math.PI * index) / team.length),
       staticViewport.height *
         1.2 *
         Math.sin((2 * Math.PI * index) / team.length),
       0,
     ]);
-  }, [team, staticViewport]);
+  }, [team, staticViewport, size.width]);
 
   const circleParams = useMemo(() => {
     let multipliers = {
