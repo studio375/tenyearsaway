@@ -50,7 +50,19 @@ export default function Team() {
       spread: 1.4,
       multiplierY: 1,
     };
-    if (size.width <= 400 && size.height < 700) {
+    if (size.width <= 370 && size.height < 690) {
+      multipliers = {
+        radius: 2.7,
+        spread: 1.37,
+        multiplierY: 1.89,
+      };
+    } else if (size.width <= 400 && size.height < 658) {
+      multipliers = {
+        radius: 2.4,
+        spread: 1.4,
+        multiplierY: 1.87,
+      };
+    } else if (size.width <= 400 && size.height < 700) {
       multipliers = {
         radius: 2.4,
         spread: 1.4,
