@@ -155,7 +155,7 @@ export default function Header() {
     });
 
   return (
-    <header className="fixed top-2 left-0 w-full p-0 z-12 flex justify-center items-center uppercase text-[1.4rem] font-500">
+    <header className="fixed top-[5px] md:top-2 left-0 w-full p-0 z-12 flex justify-center items-center uppercase text-[1.4rem] font-500">
       {activeYear && (
         <div
           className={`text-[1.4rem] lg:absolute fixed lg:top-1 bottom-[1.77rem] lg:bottom-auto left-[2rem] lg:left-[2.4rem] flex gap-2`}

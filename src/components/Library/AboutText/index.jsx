@@ -94,9 +94,9 @@ export default function AboutText() {
     <>
       <div
         ref={leftRef}
-        className="fixed top-[8rem] left-[2.4rem] z-10 max-w-[22rem] pointer-events-none opacity-0"
+        className="fixed lg:top-[8rem] top-[10rem] md:top-[15rem] left-[2.4rem] z-10 lg:max-w-[22rem] max-w-full pr-2 pointer-events-none opacity-0"
       >
-        <p className="text-[1.3rem] leading-[1.6] uppercase font-medium text-storm m-0">
+        <p className="lg:text-[1.3rem] text-[1.2rem] lg:leading-[1.6] leading-[1.3] uppercase font-medium text-storm m-0">
           Ten Years Away è un fumetto interattivo che racconta dieci anni di
           storia attraverso le persone che hanno preso parte a questo
           straordinario viaggio.
@@ -104,9 +104,9 @@ export default function AboutText() {
       </div>
       <div
         ref={rightRef}
-        className="fixed top-[8rem] right-[2.4rem] z-10 max-w-[22rem] text-right pointer-events-none opacity-0"
+        className="fixed bottom-2 left-[2rem] lg:bottom-auto lg:left-auto  lg:top-[8rem] lg:right-[2.4rem] z-10 lg:max-w-[22rem] max-w-[70vw] lg:text-right text-left pointer-events-none opacity-0"
       >
-        <p className="text-[1.3rem] leading-[1.6] uppercase font-medium text-storm m-0">
+        <p className="text-[1.2rem] lg:text-[1.3rem] lg:leading-[1.6] leading-[1.3] uppercase font-medium text-storm m-0">
           Studio375 è un'agenzia di comunicazione, grafica e web con sede a
           Vicenza. Illustrazioni di Davide Grazi.
         </p>
