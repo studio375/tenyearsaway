@@ -126,7 +126,7 @@ export default function Header() {
   }, [router.asPath, activeYear]);
 
   useEffect(() => {
-    const isYearPage = router.asPath.startsWith("/year");
+    const isYearPage = router.asPath == "/year";
     const isAboutPage = router.asPath.startsWith("/about");
     gsap.to(hoverBgLeft.current, {
       scaleX: isYearPage ? 1 : 0,
