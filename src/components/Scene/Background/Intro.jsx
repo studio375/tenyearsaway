@@ -57,7 +57,7 @@ export default function Intro({ geometry }) {
         uProgress: { value: 0 },
       },
     });
-  }, [sizes.width, sizes.height]);
+  }, []);
 
   const texture = useKTX2("/textures/cop_noTitle.ktx2");
   const materialPage = useMemo(() => {
@@ -231,7 +231,7 @@ export default function Intro({ geometry }) {
           z={-0.25}
           opacity={0.8}
           feather={0.05}
-          renderOrder={-2}
+          renderOrder={-1}
         />
         <mesh
           ref={ref2}
@@ -239,7 +239,7 @@ export default function Intro({ geometry }) {
           scale={pageScale} // 4 x 5.714
           geometry={geometry}
           material={materialPage}
-          renderOrder={-2}
+          renderOrder={-1}
           receiveShadow={true}
           castShadow={true}
         />

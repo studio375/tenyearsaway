@@ -5,6 +5,7 @@ import React, {
   useRef,
   useImperativeHandle,
   useEffect,
+  useState,
 } from "react";
 import vertexShader from "@/assets/shaders/card/vertex.glsl";
 import fragmentShader from "@/assets/shaders/card/fragment.glsl";
@@ -23,6 +24,15 @@ const Card = forwardRef(function Card(
   const descRef = useRef(null);
   const { addObject, removeObject } = useStore();
   const { asPath } = useRouter();
+  const [isSmall, setIsSmall] = useState(
+    () => typeof window !== "undefined" && window.innerWidth < 600,
+  );
+
+  useEffect(() => {
+    const onResize = () => setIsSmall(window.innerWidth < 600);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
   useImperativeHandle(ref, () => meshRef.current);
 
   useEffect(() => {
@@ -107,8 +117,10 @@ const Card = forwardRef(function Card(
     ref.material.uniforms.uTime.value = state.clock.getElapsedTime();
   });
 
+  const s = isSmall ? 0.9 : 1;
+
   return (
-    <group>
+    <group scale={[s, s, 1]}>
       <mesh
         ref={meshRef}
         geometry={geometry}

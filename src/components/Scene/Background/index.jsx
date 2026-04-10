@@ -45,7 +45,7 @@ export default function Background({ geometry }) {
         uAlpha: { value: 0 },
       },
     });
-  }, [sizes.width, sizes.height]);
+  }, []);
 
   const mounted = useRef(false);
   useEffect(() => {

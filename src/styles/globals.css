@@ -59,6 +59,9 @@ body {
     display: none !important;
   }
   scrollbar-width: 0;
+  * {
+    user-select: none;
+  }
 }
 
 html {

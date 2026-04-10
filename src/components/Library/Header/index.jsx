@@ -125,6 +125,23 @@ export default function Header() {
     };
   }, [router.asPath, activeYear]);
 
+  useEffect(() => {
+    const isYearPage = router.asPath.startsWith("/year");
+    const isAboutPage = router.asPath.startsWith("/about");
+    gsap.to(hoverBgLeft.current, {
+      scaleX: isYearPage ? 1 : 0,
+      duration: 0.5,
+      overwrite: true,
+      ease: "power3.out",
+    });
+    gsap.to(hoverBgRight.current, {
+      scaleX: isAboutPage ? 1 : 0,
+      duration: 0.5,
+      overwrite: true,
+      ease: "power3.out",
+    });
+  }, [router.asPath]);
+
   const handleEnterLeft = () => {
     gsap.to(hoverBgLeft.current, {
       scaleX: 1,
@@ -132,13 +149,15 @@ export default function Header() {
       ease: "power3.out",
     });
   };
-  const handleLeaveLeft = () =>
+  const handleLeaveLeft = () => {
+    if (router.asPath.startsWith("/year")) return;
     gsap.to(hoverBgLeft.current, {
       scaleX: 0,
       duration: 0.5,
       overwrite: true,
       ease: "power3.in",
     });
+  };
   const handleEnterRight = () => {
     gsap.to(hoverBgRight.current, {
       scaleX: 1,
@@ -146,16 +165,18 @@ export default function Header() {
       ease: "power3.out",
     });
   };
-  const handleLeaveRight = () =>
+  const handleLeaveRight = () => {
+    if (router.asPath.startsWith("/about")) return;
     gsap.to(hoverBgRight.current, {
       scaleX: 0,
       duration: 0.5,
       overwrite: true,
       ease: "power3.in",
     });
+  };
 
   return (
-    <header className="fixed top-[5px] md:top-2 left-0 w-full p-0 z-12 flex justify-center items-center uppercase text-[1.4rem] font-500">
+    <header className="fixed top-[10px] md:top-2 left-0 w-full p-0 z-12 flex justify-center items-center uppercase text-[1.4rem] font-500">
       {activeYear && (
         <div
           className={`text-[1.4rem] lg:absolute fixed lg:top-1 bottom-[1.77rem] lg:bottom-auto left-[2rem] lg:left-[2.4rem] flex gap-2`}
@@ -174,7 +195,7 @@ export default function Header() {
       )}
       <div
         ref={box}
-        className="opacity-0 translate-y-100 inline-flex justify-center items-center w-auto h-[3.3rem]"
+        className="opacity-0 translate-y-100 inline-flex justify-center items-center w-auto h-[2.7rem] md:h-[3.3rem]"
       >
         <div
           ref={(el) => (menu.current[0] = el)}

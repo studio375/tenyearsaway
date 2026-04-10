@@ -54,7 +54,7 @@ export default function Team() {
       multipliers = {
         radius: 2.7,
         spread: 1.37,
-        multiplierY: 1.89,
+        multiplierY: 1.97,
       };
     } else if (size.width <= 400 && size.height < 658) {
       multipliers = {
@@ -233,10 +233,18 @@ export default function Team() {
       target: window,
       type: "wheel,touch,pointer",
       onChangeY: (self) => {
-        targetOffset.current += self.deltaY * 0.001;
+        const isTouch =
+          self.event.type?.startsWith("touch") ||
+          self.event.pointerType === "touch";
+        const multiplier = isTouch ? -0.003 : 0.001;
+        targetOffset.current += self.deltaY * multiplier;
       },
       onChangeX: (self) => {
-        targetOffset.current -= self.deltaX * 0.001;
+        const isTouch =
+          self.event.type?.startsWith("touch") ||
+          self.event.pointerType === "touch";
+        const multiplier = isTouch ? 0.003 : 0.001;
+        targetOffset.current -= self.deltaX * multiplier;
       },
       tolerance: 10,
       preventDefault: true,
