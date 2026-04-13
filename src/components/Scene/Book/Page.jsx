@@ -1,7 +1,7 @@
-import { useKTX2 } from "@react-three/drei";
+import { useKTX2, useTexture } from "@react-three/drei";
 import gsap from "gsap";
 import { useMemo, useRef, useEffect } from "react";
-import { LinearFilter, ShaderMaterial } from "three";
+import { ShaderMaterial } from "three";
 import vertexShader from "@/assets/shaders/book/vertex.glsl";
 import fragmentShader from "@/assets/shaders/book/fragment.glsl";
 import { useFrame, useThree } from "@react-three/fiber";
@@ -26,23 +26,29 @@ export default function Page({
 }) {
   const groupRef = useRef(null);
   const meshRef = useRef(null);
-  const [frontTexture, backTexture] = useKTX2([frontUrl, backUrl || frontUrl]);
+  const [frontTexture, backTexture] = useTexture([
+    frontUrl,
+    backUrl || frontUrl,
+  ]);
   const { gl, size } = useThree();
   const router = useRouter();
 
-  useEffect(() => {
-    const maxAniso = gl.capabilities.getMaxAnisotropy();
-    if (frontTexture) {
-      frontTexture.anisotropy = maxAniso;
-      frontTexture.minFilter = LinearFilter;
-      frontTexture.needsUpdate = true;
-    }
-    if (backTexture) {
-      backTexture.anisotropy = maxAniso;
-      backTexture.minFilter = LinearFilter;
-      backTexture.needsUpdate = true;
-    }
-  }, [frontTexture, backTexture]);
+  // useEffect(() => {
+  //   if (frontTexture) {
+  //     frontTexture.minFilter = LinearMipmapLinearFilter; // trilinear
+  //     frontTexture.magFilter = LinearFilter;
+  //     frontTexture.anisotropy = gl.capabilities.getMaxAnisotropy();
+  //     frontTexture.generateMipmaps = false; // le hai già embedded!
+  //     frontTexture.needsUpdate = true;
+  //   }
+  //   if (backTexture) {
+  //     backTexture.minFilter = LinearMipmapLinearFilter; // trilinear
+  //     backTexture.magFilter = LinearFilter;
+  //     backTexture.anisotropy = gl.capabilities.getMaxAnisotropy();
+  //     backTexture.generateMipmaps = false; // le hai già embedded!
+  //     backTexture.needsUpdate = true;
+  //   }
+  // }, [frontTexture, backTexture]);
 
   const materials = useMemo(() => {
     return [

@@ -19,8 +19,8 @@ const PAGE_DEPTH = 0.003;
 const PAGE_SEGMENTS = 30;
 const sharedGeometry = new BoxGeometry(1, 1, PAGE_DEPTH, PAGE_SEGMENTS, 2);
 
-const COVER_URL = "/textures/fullCopertina.ktx2";
-const BACK_COVER_URL = "/textures/copertina-retro.ktx2";
+const COVER_URL = "/textures/fullCopertina.jpeg";
+const BACK_COVER_URL = "/textures/copertina-retro.png";
 
 const pageMaterials = [
   new MeshBasicMaterial({ color: "#fff" }), // Bordo Destro
@@ -72,7 +72,8 @@ export default function Book() {
 
   const textures = useMemo(() => {
     if (!pages) return [];
-    const contentUrls = pages.map((p) => p.fullTexture.url);
+    console.log(pages);
+    const contentUrls = pages.map((p) => p.full.url);
     return [COVER_URL, ...contentUrls, BACK_COVER_URL];
   }, [pages]);
 
