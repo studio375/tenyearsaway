@@ -6,7 +6,9 @@ import { gsap } from "@/lib/gsap";
 export default function End() {
   const { setTransition } = useStore();
   const [end, setEnd] = useState(false);
+  const [hovered, setHovered] = useState(false);
   const endRef = useRef(null);
+  const wrapperRef = useRef(null);
   const endStateRef = useRef(false);
 
   useLenis(({ progress }) => {
@@ -51,7 +53,19 @@ export default function End() {
     };
   }, [end]);
 
+  const handleMouseEnter = () => {
+    setHovered(true);
+    wrapperRef.current?.classList.add("is-hovered");
+  };
+
+  const handleMouseLeave = () => {
+    setHovered(false);
+    wrapperRef.current?.classList.remove("is-hovered");
+  };
+
   const handleClick = () => {
+    setHovered(false);
+    wrapperRef.current?.classList.remove("is-hovered");
     const mm = gsap.matchMedia();
     mm.add("(min-width: 1024px)", () => {
       gsap.to(endRef.current, {
@@ -81,10 +95,15 @@ export default function End() {
   };
 
   return (
-    <div className="fixed lg:top-1/2 bottom-[8rem] lg:bottom-auto -translate-y-1/2 lg:right-0 left-1/2 lg:left-auto -translate-x-1/2 lg:translate-x-0 group">
+    <div
+      ref={wrapperRef}
+      className="fixed lg:top-1/2 bottom-[8rem] lg:bottom-auto -translate-y-1/2 lg:right-0 left-1/2 lg:left-auto -translate-x-1/2 lg:translate-x-0 group"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
       <div
         ref={endRef}
-        className="stroke cursor-pointer bg-gradient-to-r from-bg-blue to-text-color from-50% to-50% bg-[length:200%_100%] bg-left hover:bg-right transition-all duration-300 bg-clip-text text-transparent uppercase text-[9vw] leading-[6vw] font-extrabold pointer-events-auto px-2 lg:[writing-mode:vertical-rl] lg:rotate-180 rotate-0 lg:translate-x-full opacity-0"
+        className={`stroke cursor-pointer bg-gradient-to-r from-bg-blue to-text-color from-50% to-50% bg-[length:200%_100%] ${hovered ? "bg-right" : "bg-left"} transition-all duration-300 bg-clip-text text-transparent uppercase text-[9vw] leading-[6vw] font-extrabold pointer-events-auto px-2 lg:[writing-mode:vertical-rl] lg:rotate-180 rotate-0 lg:translate-x-full opacity-0`}
         onClick={handleClick}
       >
         next

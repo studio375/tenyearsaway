@@ -72,6 +72,7 @@ export default function BookLabels() {
       const rightEl = rightElsRef.current[rightIdx];
 
       if (leftEl) {
+        leftEl.classList.remove("is-hovered");
         gsap.killTweensOf(leftEl);
         gsap.to(leftEl, {
           x: -24,
@@ -82,6 +83,7 @@ export default function BookLabels() {
         });
       }
       if (rightEl) {
+        rightEl.classList.remove("is-hovered");
         gsap.killTweensOf(rightEl);
         gsap.to(rightEl, {
           x: 24,
@@ -145,7 +147,8 @@ export default function BookLabels() {
     pageTl.current = gsap.timeline();
 
     // Out: vecchie label
-    if (prevLeftEl)
+    if (prevLeftEl) {
+      prevLeftEl.classList.remove("is-hovered");
       pageTl.current.to(
         prevLeftEl,
         {
@@ -157,7 +160,9 @@ export default function BookLabels() {
         },
         0,
       );
-    if (prevRightEl)
+    }
+    if (prevRightEl) {
+      prevRightEl.classList.remove("is-hovered");
       pageTl.current.to(
         prevRightEl,
         {
@@ -169,6 +174,7 @@ export default function BookLabels() {
         },
         0,
       );
+    }
 
     // In: nuove label
     if (nextLeftEl)
@@ -213,11 +219,14 @@ export default function BookLabels() {
               ref={(el) => {
                 leftElsRef.current[i] = el;
               }}
-              onClick={() =>
-                isOpen &&
-                bookCurrentPage === sheetNum &&
-                setSelectedPage(sheetNum - 1)
-              }
+              onClick={(e) => {
+                if (isOpen && bookCurrentPage === sheetNum) {
+                  e.currentTarget.classList.remove("is-hovered");
+                  setSelectedPage(sheetNum - 1);
+                }
+              }}
+              onMouseEnter={(e) => e.currentTarget.classList.add("is-hovered")}
+              onMouseLeave={(e) => e.currentTarget.classList.remove("is-hovered")}
               className="opacity-0 pointer-events-none absolute inset-0 group cursor-pointer pl-[8vw] max-lg:pl-[4vw] text-left flex flex-col justify-center w-full"
             >
               <p className="block stroke uppercase font-extrabold lg:text-center lg:absolute lg:-left-[1vw] lg:top-1/2 lg:-translate-y-1/2 lg:[writing-mode:vertical-rl] lg:rotate-180 lg:h-full lg:text-[9vw] text-[3rem] lg:leading-[7vw] max-lg:leading-tight max-lg:mb-[0.4rem]">
@@ -244,11 +253,14 @@ export default function BookLabels() {
               ref={(el) => {
                 rightElsRef.current[i] = el;
               }}
-              onClick={() =>
-                isOpen &&
-                bookCurrentPage === sheetNum &&
-                setSelectedPage(sheetNum)
-              }
+              onClick={(e) => {
+                if (isOpen && bookCurrentPage === sheetNum) {
+                  e.currentTarget.classList.remove("is-hovered");
+                  setSelectedPage(sheetNum);
+                }
+              }}
+              onMouseEnter={(e) => e.currentTarget.classList.add("is-hovered")}
+              onMouseLeave={(e) => e.currentTarget.classList.remove("is-hovered")}
               className="opacity-0 pointer-events-none absolute inset-0 group cursor-pointer pr-[8vw] max-lg:pr-[4vw] text-right flex flex-col justify-center w-full"
             >
               <p className="block stroke uppercase font-extrabold lg:text-center lg:absolute lg:-right-[1vw] lg:top-1/2 lg:-translate-y-1/2 lg:[writing-mode:vertical-rl] lg:rotate-180 lg:h-full lg:text-[9vw] lg:leading-[7vw] text-[3rem] max-lg:leading-tight max-lg:mb-[0.4rem]">

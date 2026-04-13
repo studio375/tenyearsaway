@@ -102,6 +102,39 @@ export default function TransitionHandler() {
               "<=80%",
             );
         }
+        if (type == "shadow") {
+          const page = ref;
+          page.position.set(camera.position.x, camera.position.y, -2);
+          page.visible = true;
+          tl.to(
+            page.position,
+            {
+              z: 0,
+              duration: 2,
+              ease: "power2.out",
+              delay: 0.7,
+            },
+            1,
+          )
+            .to(
+              page.material.uniforms.uOpacity,
+              { value: 0.65, duration: 1.5, ease: "power2.out", delay: 1.45 },
+              1,
+            )
+            .to(
+              page.position,
+              {
+                y: page.position.y + viewport.height / 2 + page.scale.y / 1.5,
+                duration: 1.5,
+                ease: "expo.inOut",
+                onComplete: () => {
+                  page.material.uniforms.uOpacity.value = 0;
+                  page.visible = false;
+                },
+              },
+              "<=72%",
+            );
+        }
         if (type == "frame") {
           const mesh = ref;
           if (finalTargets[index]) {

@@ -1,4 +1,4 @@
-import { useMemo, useRef, useEffect } from "react";
+import { forwardRef, useMemo, useRef, useEffect } from "react";
 import { ShaderMaterial, PlaneGeometry } from "three";
 import { useThree } from "@react-three/fiber";
 import gsap from "gsap";
@@ -23,21 +23,25 @@ void main() {
 }
 `;
 
-const geo = new PlaneGeometry(1, 1);
+const geo = new PlaneGeometry(1, 1, 1, 1);
 
-export default function BookShadow({
-  width,
-  height,
-  x = 0,
-  y = 0,
-  z = -0.3,
-  opacity = 0.7,
-  feather = 0.18,
-  renderOrder = -0.5,
-  currentPage,
-  totalSheets,
-  selectedPage = false,
-}) {
+const BookShadow = forwardRef(function BookShadow(
+  {
+    width,
+    height,
+    x = 0,
+    y = 0,
+    z = -0.3,
+    opacity = 0.7,
+    feather = 0.18,
+    renderOrder = -0.5,
+    currentPage,
+    totalSheets,
+    selectedPage = false,
+    ...props
+  },
+  forwardedRef,
+) {
   const meshRef = useRef(null);
   const { size } = useThree();
   const mat = useMemo(
@@ -117,12 +121,22 @@ export default function BookShadow({
 
   return (
     <mesh
-      ref={meshRef}
+      ref={(node) => {
+        meshRef.current = node;
+        if (typeof forwardedRef === "function") {
+          forwardedRef(node);
+        } else if (forwardedRef) {
+          forwardedRef.current = node;
+        }
+      }}
       position={[x, y, z]}
       scale={[width * 1.24, height * 1.2, 1]}
       geometry={geo}
       material={mat}
       renderOrder={renderOrder}
+      {...props}
     />
   );
-}
+});
+
+export default BookShadow;

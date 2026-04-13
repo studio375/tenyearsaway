@@ -195,7 +195,7 @@ export default function Header() {
       )}
       <div
         ref={box}
-        className="opacity-0 translate-y-100 inline-flex justify-center items-center w-auto h-[2.5rem] md:h-[3.3rem]"
+        className="opacity-0 translate-y-100 inline-flex justify-center items-center w-auto h-[2.5rem] md:h-[3.8rem]"
       >
         <div
           ref={(el) => (menu.current[0] = el)}

@@ -5,9 +5,11 @@ import { useStore } from "@/store/useStore";
 import vertexShader from "@/assets/shaders/page/vertex.glsl";
 import fragmentShader from "@/assets/shaders/page/fragment.glsl";
 import { useFrame, useThree } from "@react-three/fiber";
+import BookShadow from "../Book/Shadow";
 
 const Page = function ({ geometry, page }) {
   const meshRef = useRef(null);
+  const shadowRef = useRef(null);
   const texture = useKTX2(page[1].url);
   const { addObject, removeObject } = useStore();
   const { size, gl } = useThree();
@@ -48,12 +50,16 @@ const Page = function ({ geometry, page }) {
   }, [page, size.width]);
 
   useEffect(() => {
-    if (!meshRef.current) return;
+    if (!meshRef.current || !shadowRef.current) return;
     const ref = meshRef.current;
+    const shadowref = shadowRef.current;
     const obj = { ref, type: "page" };
     addObject(obj);
+    const shadowObj = { ref: shadowref, type: "shadow" };
+    addObject(shadowObj);
     return () => {
       removeObject(ref.uuid);
+      removeObject(shadowref.uuid);
       ref.material?.dispose();
     };
   }, [page]);
@@ -67,6 +73,18 @@ const Page = function ({ geometry, page }) {
 
   return (
     <>
+      <BookShadow
+        ref={shadowRef}
+        width={size >= 1024 ? sizes.meshWidth - 1.1 : sizes.meshWidth - 0.75}
+        height={size >= 1024 ? sizes.meshHeight - 1.1 : sizes.meshHeight - 0.75}
+        x={-0.085}
+        y={-0.07}
+        z={-0.25}
+        opacity={0}
+        feather={0.05}
+        renderOrder={-1}
+        visible={false}
+      />
       <mesh
         ref={meshRef}
         geometry={geometry}
