@@ -179,7 +179,7 @@ export default function Header() {
     <header className="fixed top-[10px] md:top-2 left-0 w-full p-0 z-12 flex justify-center items-center uppercase text-[1.4rem] font-500">
       {activeYear && (
         <div
-          className={`text-[1.2rem] lg:text-[1.4rem] absolute fixed top-9 lg:top-1 left-[2rem] lg:left-[2.4rem] flex lg:gap-2 gap-1`}
+          className={`text-[1.2rem] lg:text-[1.4rem] absolute fixed top-9 lg:top-4 left-[2rem] lg:left-[2.4rem] flex lg:gap-2 gap-1`}
           ref={currentYear}
         >
           <p className="font-medium uppercase m-0 opacity-0 will-change-transform">

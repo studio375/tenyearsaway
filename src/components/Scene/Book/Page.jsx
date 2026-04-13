@@ -1,7 +1,7 @@
 import { useKTX2 } from "@react-three/drei";
 import gsap from "gsap";
 import { useMemo, useRef, useEffect } from "react";
-import { ShaderMaterial } from "three";
+import { LinearFilter, ShaderMaterial } from "three";
 import vertexShader from "@/assets/shaders/book/vertex.glsl";
 import fragmentShader from "@/assets/shaders/book/fragment.glsl";
 import { useFrame, useThree } from "@react-three/fiber";
@@ -34,10 +34,12 @@ export default function Page({
     const maxAniso = gl.capabilities.getMaxAnisotropy();
     if (frontTexture) {
       frontTexture.anisotropy = maxAniso;
+      frontTexture.minFilter = LinearFilter;
       frontTexture.needsUpdate = true;
     }
     if (backTexture) {
       backTexture.anisotropy = maxAniso;
+      backTexture.minFilter = LinearFilter;
       backTexture.needsUpdate = true;
     }
   }, [frontTexture, backTexture]);
