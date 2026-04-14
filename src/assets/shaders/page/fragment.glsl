@@ -43,15 +43,6 @@ void main() {
   float alphaReveal = falloff(d, -uAmplitude, 1.5 + uAmplitude, 0.5, uProgress);
   float alpha = color.a;
   alpha *= alphaReveal;
-  
-  // Dots
-  // float noiseSize = cnoise(vec4(vWorldPosition * 0.5, 1.0));
-  // float dotSizeMap = 0. + 0.8 * smoothstep(-.5, 1.0, noiseSize); 
-  // float dotPattern = halftone(vWorldPosition.xy, 19.0, .985, dotSizeMap);
-  // vec3 dots = vec3(dotPattern);
-  // float dotsReveal = 1. - falloff(d, -uAmplitude - 0.3, 1.5 + uAmplitude, .56, uProgress);
-  // dotsReveal = pow(dotsReveal, 2.0);
-  // baseColor += dots * 2. * dotsReveal;
 
   // Light: fa comparire il base color illuminato, poi svanisce per uProgress → 1 (colori originali)
   vec3 light = vec3(0.8, 0.9, 1.);

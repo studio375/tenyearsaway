@@ -33,9 +33,13 @@ export default function AboutText() {
     if (isAbout && active) {
       const entryDelay = prevActiveRef.current ? 0.3 : 1.2;
 
-      splitLeftRef.current = new SplitText(leftRef.current, { type: "words" });
+      splitLeftRef.current = new SplitText(leftRef.current, {
+        type: "words",
+        wordsClass: "word",
+      });
       splitRightRef.current = new SplitText(rightRef.current, {
         type: "words",
+        wordsClass: "word",
       });
 
       gsap.set([splitLeftRef.current.words, splitRightRef.current.words], {

@@ -25,7 +25,4 @@ void main() {
     alpha *= alphaReveal;
 
     gl_FragColor = vec4(col.rgb, alphaReveal);
-
-    #include <tonemapping_fragment>
-    #include <colorspace_fragment>
 }

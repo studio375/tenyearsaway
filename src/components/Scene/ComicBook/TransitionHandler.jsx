@@ -228,30 +228,11 @@ export default function TransitionHandler() {
           });
         },
       });
-      transitionTl.current
-        .to(background.material.uniforms.uAlpha, {
-          value: 0,
-          duration: 0.4,
-          ease: "power2.out",
-        })
-        .to(
-          background.material.uniforms.uMovement,
-          {
-            value: 0,
-            duration: 0.4,
-            ease: "power2.out",
-          },
-          "<",
-        )
-        .to(
-          background.material.uniforms.uSpeed,
-          {
-            value: 0,
-            duration: 0.4,
-            ease: "power2.out",
-          },
-          "<",
-        );
+      transitionTl.current.to(background.material.uniforms.uAlpha, {
+        value: 0,
+        duration: 0.4,
+        ease: "power2.out",
+      });
       objects.forEach(({ ref, index, type }) => {
         if (type == "card") return;
         transitionTl.current

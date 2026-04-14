@@ -79,7 +79,9 @@ body {
   overscroll-behavior: none;
   touch-action: none;
 }
-
+.word {
+  will-change: transform;
+}
 .noise {
   background-color: transparent;
   background-image: url("/textures/noise.webp");

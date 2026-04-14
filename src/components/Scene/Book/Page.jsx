@@ -1,4 +1,4 @@
-import { useKTX2, useTexture } from "@react-three/drei";
+import { useTexture } from "@react-three/drei";
 import gsap from "gsap";
 import { useMemo, useRef, useEffect } from "react";
 import { ShaderMaterial } from "three";
@@ -30,25 +30,8 @@ export default function Page({
     frontUrl,
     backUrl || frontUrl,
   ]);
-  const { gl, size } = useThree();
+  const { size } = useThree();
   const router = useRouter();
-
-  // useEffect(() => {
-  //   if (frontTexture) {
-  //     frontTexture.minFilter = LinearMipmapLinearFilter; // trilinear
-  //     frontTexture.magFilter = LinearFilter;
-  //     frontTexture.anisotropy = gl.capabilities.getMaxAnisotropy();
-  //     frontTexture.generateMipmaps = false; // le hai già embedded!
-  //     frontTexture.needsUpdate = true;
-  //   }
-  //   if (backTexture) {
-  //     backTexture.minFilter = LinearMipmapLinearFilter; // trilinear
-  //     backTexture.magFilter = LinearFilter;
-  //     backTexture.anisotropy = gl.capabilities.getMaxAnisotropy();
-  //     backTexture.generateMipmaps = false; // le hai già embedded!
-  //     backTexture.needsUpdate = true;
-  //   }
-  // }, [frontTexture, backTexture]);
 
   const materials = useMemo(() => {
     return [

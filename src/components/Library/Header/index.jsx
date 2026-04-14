@@ -150,7 +150,7 @@ export default function Header() {
     });
   };
   const handleLeaveLeft = () => {
-    if (router.asPath.startsWith("/year")) return;
+    if (router.asPath == "/year") return;
     gsap.to(hoverBgLeft.current, {
       scaleX: 0,
       duration: 0.5,

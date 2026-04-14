@@ -79,11 +79,9 @@ export default function Trail() {
     return { rtA, rtB, trailMat, halftoneMat, offScene, offCamera, offGeo };
   }, []);
 
-  // Ping-pong refs — read from one RT, write to the other
   const readTarget = useRef(objs.rtA);
   const writeTarget = useRef(objs.rtB);
 
-  // Sync resolution + aspect uniforms on window resize
   useEffect(() => {
     objs.halftoneMat.uniforms.uResolution.value = [size.width, size.height];
     objs.trailMat.uniforms.uAspect.value = size.width / size.height;
@@ -133,17 +131,15 @@ export default function Trail() {
       prevMouseRef.current = [...mouseRef.current];
       mouseRef.current = [
         e.clientX / window.innerWidth,
-        1.0 - e.clientY / window.innerHeight, // flip Y: UV origin is bottom-left
+        1.0 - e.clientY / window.innerHeight,
       ];
       if (!loaded) return;
 
-      // Aspect-corrected direction for use in trail shader
       const aspect = window.innerWidth / window.innerHeight;
       const dx = (mouseRef.current[0] - prevMouseRef.current[0]) * aspect;
       const dy = mouseRef.current[1] - prevMouseRef.current[1];
       const len = Math.sqrt(dx * dx + dy * dy);
 
-      // Clamp velocity to [0, 1]; scale factor 40 maps typical mouse deltas to ~0-1
       velocityRef.current = Math.min(len * 40, 1.0);
 
       if (len > 0.0001) {
@@ -155,7 +151,6 @@ export default function Trail() {
     return () => window.removeEventListener("pointermove", onPointerMove);
   }, [loaded]);
 
-  // Dispose on unmount
   useEffect(() => {
     return () => {
       objs.rtA.dispose();
@@ -169,23 +164,19 @@ export default function Trail() {
   useFrame((state) => {
     const { trailMat, halftoneMat, offScene, offCamera } = objs;
 
-    // Update trail uniforms from current mouse state
     trailMat.uniforms.uPrevTrail.value = readTarget.current.texture;
     trailMat.uniforms.uMouse.value = mouseRef.current;
     trailMat.uniforms.uMouseDir.value = dirRef.current;
     trailMat.uniforms.uVelocity.value = velocityRef.current;
 
-    // Render trail to write target
     const prevRT = gl.getRenderTarget();
     gl.setRenderTarget(writeTarget.current);
     gl.clear();
     gl.render(offScene, offCamera);
     gl.setRenderTarget(prevRT);
 
-    // Point halftone shader at the freshly written texture
     halftoneMat.uniforms.uTrailTexture.value = writeTarget.current.texture;
 
-    // Push trail texture to all registered frame meshes for bleach effect
     const trailTex = writeTarget.current.texture;
     useStore.getState().objects.forEach(({ ref }) => {
       if (ref?.material?.uniforms?.uTrailTexture) {
@@ -193,17 +184,14 @@ export default function Trail() {
       }
     });
 
-    // Swap ping-pong
     const tmp = readTarget.current;
     readTarget.current = writeTarget.current;
     writeTarget.current = tmp;
 
-    // Bleed velocity to zero between frames
     velocityRef.current *= 0.8;
 
-    // Keep mesh centered on camera and correctly sized regardless of camera Z
     const cam = state.camera;
-    const meshZ = ref.current.position.z; // stays at 0
+    const meshZ = ref.current.position.z;
     const dist = cam.position.z - meshZ;
     const fov = (cam.fov * Math.PI) / 180;
     const h = 2 * Math.tan(fov / 2) * dist;

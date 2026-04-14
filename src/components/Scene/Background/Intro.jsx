@@ -4,14 +4,14 @@ import vertexShader from "@/assets/shaders/storm/vertex.glsl";
 import fragmentShader from "@/assets/shaders/storm/fragment.glsl";
 import pageVertexShader from "@/assets/shaders/frame/vertex.glsl";
 import pageFragmentShader from "@/assets/shaders/storm/pageFragment.glsl";
-import { ShaderMaterial, DoubleSide } from "three";
+import { ShaderMaterial, DoubleSide, SRGBColorSpace } from "three";
 import gsap from "gsap";
 import { useRouter } from "next/router";
-import { useKTX2, Text } from "@react-three/drei";
+import { useTexture, Text } from "@react-three/drei";
 import { useStore } from "@/store/useStore";
 import BookShadow from "@/components/Scene/Book/Shadow";
 export default function Intro({ geometry }) {
-  const { size } = useThree();
+  const { size, gl } = useThree();
   const ref = useRef(null);
   const ref2 = useRef(null);
   const pageRef = useRef(null);
@@ -59,7 +59,8 @@ export default function Intro({ geometry }) {
     });
   }, []);
 
-  const texture = useKTX2("/textures/cop_noTitle.ktx2");
+  const texture = useTexture("/textures/cop_notitle.png");
+
   const materialPage = useMemo(() => {
     return new ShaderMaterial({
       vertexShader: pageVertexShader,
@@ -240,8 +241,8 @@ export default function Intro({ geometry }) {
           geometry={geometry}
           material={materialPage}
           renderOrder={-1}
-          receiveShadow={true}
-          castShadow={true}
+          receiveShadow={false}
+          castShadow={false}
         />
       </group>
     </group>

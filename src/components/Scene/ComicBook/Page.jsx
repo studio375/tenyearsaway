@@ -75,8 +75,12 @@ const Page = function ({ geometry, page }) {
     <>
       <BookShadow
         ref={shadowRef}
-        width={size >= 1024 ? sizes.meshWidth - 1.1 : sizes.meshWidth - 0.75}
-        height={size >= 1024 ? sizes.meshHeight - 1.1 : sizes.meshHeight - 0.75}
+        width={
+          size.width >= 1024 ? sizes.meshWidth - 0.9 : sizes.meshWidth - 0.75
+        }
+        height={
+          size.width >= 1024 ? sizes.meshHeight - 0.9 : sizes.meshHeight - 0.75
+        }
         x={-0.085}
         y={-0.07}
         z={-0.25}

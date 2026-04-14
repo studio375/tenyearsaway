@@ -72,7 +72,6 @@ export default function Book() {
 
   const textures = useMemo(() => {
     if (!pages) return [];
-    console.log(pages);
     const contentUrls = pages.map((p) => p.full.url);
     return [COVER_URL, ...contentUrls, BACK_COVER_URL];
   }, [pages]);
@@ -334,9 +333,9 @@ export default function Book() {
               totalSheets={totalSheets}
               selectedPage={selectedPage}
               year={
-                currentPage > sheetIndex && sheetIndex !== 0
-                  ? pages[sheetIndex + 1].year
-                  : pages[sheetIndex].year
+                currentPage > sheetIndex
+                  ? pages[2 * sheetIndex]?.year
+                  : pages[2 * sheetIndex - 1]?.year
               }
               resetBook={() => resetBook()}
               yOffset={yOffset}

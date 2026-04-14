@@ -43,30 +43,6 @@ export default function ComicBook() {
     );
   }, [frames]);
 
-  const captionLimit = useMemo(() => {
-    const c = Math.max(
-      ...frames.map((frame) =>
-        Array.isArray(frame.dialogo) && frame.dialogo.length > 0
-          ? Math.max(
-              ...frame.dialogo
-                .filter((dialogoItem) => dialogoItem?.immagine_txt)
-                .map(
-                  (dialogoItem) =>
-                    dialogoItem.immagine_txt.width /
-                    dialogoItem.immagine_txt.height,
-                ),
-            )
-          : 1,
-      ),
-    );
-    return {
-      maxWidth: size.width < 1024 ? maxWidth * 0.6 : maxWidth * 0.3,
-      maxHeight: maxHeight * 0.3,
-      minWidth: minWidth * 0.3,
-      maxAspectRatio: c,
-    };
-  }, [frames, maxWidth, minWidth, maxHeight]);
-
   // Ref
   const groupRef = useRef(null);
 
@@ -91,21 +67,30 @@ export default function ComicBook() {
   }, [meshSizes]);
 
   const captionSizes = useMemo(() => {
+    if (!meshSizes.length) return [];
     return frames.map((frame, index) => {
       if (!Array.isArray(frame?.dialogo) || frame.dialogo.length === 0)
         return [];
+      const mesh = meshSizes[index];
+      const capMaxW = mesh.meshWidth * 0.6;
+      const capMaxH = mesh.meshHeight * 0.3;
+      const capMinW = mesh.meshWidth * 0.15;
       return frame.dialogo.map((dialogoItem) => {
         if (!dialogoItem?.immagine_txt) return null;
+        const itemAR =
+          dialogoItem.immagine_txt.width / dialogoItem.immagine_txt.height;
+        const wideFactor = itemAR > 4.8 ? 0.75 : 1;
+        console.log(itemAR);
         return getMeshSizes(
           dialogoItem.immagine_txt,
-          captionLimit.maxWidth,
-          captionLimit.maxHeight,
-          captionLimit.minWidth,
-          captionLimit.maxAspectRatio,
+          capMaxW * wideFactor,
+          capMaxH,
+          capMinW,
+          itemAR,
         );
       });
     });
-  }, [frames, captionLimit]);
+  }, [frames, meshSizes]);
 
   const captionPositions = useMemo(() => {
     return getCaptionPositions(

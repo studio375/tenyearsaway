@@ -20,8 +20,10 @@ export default function Scene() {
           antialias: true,
           stencil: false,
           powerPreference: "high-performance",
+          shadowMap: false,
         }}
         dpr={[1, 1.5]}
+        shadows={false}
       >
         <Suspense fallback={null}>
           <ComicBook />

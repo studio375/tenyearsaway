@@ -155,6 +155,9 @@ export function getMeshSizes(
   if (meshW < minWidth) {
     meshW = minWidth;
   }
+  if (meshW > maxWidth) {
+    meshW = maxWidth;
+  }
   if (windowWidth && windowWidth < 1024 && meshW >= maxWidth) {
     meshW = meshW * 1.8;
   }
