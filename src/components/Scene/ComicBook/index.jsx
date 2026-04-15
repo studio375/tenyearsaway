@@ -25,7 +25,7 @@ export default function ComicBook() {
     return { width, height };
   }, [size]);
 
-  const xScaleFactor = Math.max(0.7, Math.min(1, size.width / 1440));
+  const xScaleFactor = Math.max(0.7, Math.min(1, size.width / 1280));
 
   const maxWidth =
     size.width >= 1024
@@ -73,21 +73,26 @@ export default function ComicBook() {
         return [];
       return frame.dialogo.map((dialogoItem) => {
         if (!dialogoItem?.immagine_txt) return null;
-        const minH = 0.5;
+        const refDim = size.width < 1024 ? size.height : size.width;
+        const isTablet = size.width >= 600 && size.width < 1024;
+        const scaleFloor = isTablet ? 0.35 : 0.196;
+        const minHFloor = isTablet ? 0.38 : 0.3;
+        const scale = Math.max(scaleFloor, (0.38 / 1920) * refDim);
+        const minH = Math.max(minHFloor, (0.5 / 1920) * refDim);
         const ar =
           dialogoItem.immagine_txt.width / dialogoItem.immagine_txt.height;
-        const rawH = (dialogoItem.immagine_txt.height / viewport.factor) * 0.4;
+        const rawH =
+          (dialogoItem.immagine_txt.height / viewport.factor) * scale;
         const h = Math.max(rawH, minH);
         const w =
           h > rawH
             ? minH * ar
-            : (dialogoItem.immagine_txt.width / viewport.factor) * 0.4;
+            : (dialogoItem.immagine_txt.width / viewport.factor) * scale;
 
-        console.log(w, h);
         return { meshWidth: w, meshHeight: h };
       });
     });
-  }, [frames, meshSizes, viewport.factor]);
+  }, [frames, meshSizes, viewport.factor, size.width, size.height]);
 
   const captionPositions = useMemo(() => {
     return getCaptionPositions(

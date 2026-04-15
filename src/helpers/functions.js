@@ -227,17 +227,16 @@ export function getCaptionPositions(
       const py = parseFloat(percentage[1].replace("%", "")) / 100;
 
       const x =
-        meshPositions[index][0] -
+        meshPositions[index][0] * xScaleFactor -
         meshSizes[index].meshWidth * 0.5 +
-        px * meshSizes[index].meshWidth +
-        captionSizes[index][dialogoIdx].meshWidth * 0.5;
+        px * meshSizes[index].meshWidth;
       const y =
         meshPositions[index][1] +
         meshSizes[index].meshHeight * 0.5 -
         py * meshSizes[index].meshHeight;
       return {
-        x: x * xScaleFactor,
-        y: y,
+        x,
+        y,
         z: meshPositions[index][2],
       };
     });
