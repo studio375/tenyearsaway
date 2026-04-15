@@ -226,10 +226,12 @@ export default function BookLabels() {
                 }
               }}
               onMouseEnter={(e) => e.currentTarget.classList.add("is-hovered")}
-              onMouseLeave={(e) => e.currentTarget.classList.remove("is-hovered")}
+              onMouseLeave={(e) =>
+                e.currentTarget.classList.remove("is-hovered")
+              }
               className="opacity-0 pointer-events-none absolute inset-0 group cursor-pointer pl-[8vw] max-lg:pl-[4vw] text-left flex flex-col justify-center w-full"
             >
-              <p className="block stroke uppercase font-extrabold lg:text-center lg:absolute lg:-left-[1vw] lg:top-1/2 lg:-translate-y-1/2 lg:[writing-mode:vertical-rl] lg:rotate-180 lg:h-full lg:text-[9vw] text-[3rem] lg:leading-[7vw] max-lg:leading-tight max-lg:mb-[0.4rem]">
+              <p className="block stroke uppercase font-extrabold lg:text-center lg:absolute lg:-left-[1vw] lg:top-1/2 lg:-translate-y-1/2 lg:[writing-mode:vertical-rl] lg:rotate-180 lg:h-full lg:text-[9vw] text-[3rem] lg:leading-[0.9em] max-lg:leading-tight max-lg:mb-[0.4rem]">
                 {`Year ${i}`}
               </p>
               <p className="text-[1.4rem] font-medium uppercase mt-[0.6rem] mb-[0.2rem] mx-0">
@@ -260,10 +262,12 @@ export default function BookLabels() {
                 }
               }}
               onMouseEnter={(e) => e.currentTarget.classList.add("is-hovered")}
-              onMouseLeave={(e) => e.currentTarget.classList.remove("is-hovered")}
+              onMouseLeave={(e) =>
+                e.currentTarget.classList.remove("is-hovered")
+              }
               className="opacity-0 pointer-events-none absolute inset-0 group cursor-pointer pr-[8vw] max-lg:pr-[4vw] text-right flex flex-col justify-center w-full"
             >
-              <p className="block stroke uppercase font-extrabold lg:text-center lg:absolute lg:-right-[1vw] lg:top-1/2 lg:-translate-y-1/2 lg:[writing-mode:vertical-rl] lg:rotate-180 lg:h-full lg:text-[9vw] lg:leading-[7vw] text-[3rem] max-lg:leading-tight max-lg:mb-[0.4rem]">
+              <p className="block stroke uppercase font-extrabold lg:text-center lg:absolute lg:-right-[1vw] lg:top-1/2 lg:-translate-y-1/2 lg:[writing-mode:vertical-rl] lg:rotate-180 lg:h-full lg:text-[9vw] lg:leading-[0.9em] text-[3rem] max-lg:leading-tight max-lg:mb-[0.4rem]">
                 {`Year ${i}`}
               </p>
               <p className="text-[1.4rem] font-medium uppercase mt-[0.6rem] mb-[0.2rem] mx-0">

@@ -16,7 +16,7 @@ const sharedGeometry = new PlaneGeometry(1, 1, 32, 32);
 export default function ComicBook() {
   // Main variables
   const { frames, activeYear, page } = useStore();
-  const { size } = useThree();
+  const { size, viewport } = useThree();
   const staticViewport = useMemo(() => {
     const distance = 5; // z fisso della mia camera
     const fov = (75 * Math.PI) / 180; // fov fisso della mia camera
@@ -25,7 +25,7 @@ export default function ComicBook() {
     return { width, height };
   }, [size]);
 
-  const xScaleFactor = Math.max(0.7, Math.min(1, size.width / 1280));
+  const xScaleFactor = Math.max(0.7, Math.min(1, size.width / 1440));
 
   const maxWidth =
     size.width >= 1024
@@ -71,26 +71,23 @@ export default function ComicBook() {
     return frames.map((frame, index) => {
       if (!Array.isArray(frame?.dialogo) || frame.dialogo.length === 0)
         return [];
-      const mesh = meshSizes[index];
-      const capMaxW = mesh.meshWidth * 0.6;
-      const capMaxH = mesh.meshHeight * 0.3;
-      const capMinW = mesh.meshWidth * 0.15;
       return frame.dialogo.map((dialogoItem) => {
         if (!dialogoItem?.immagine_txt) return null;
-        const itemAR =
+        const minH = 0.5;
+        const ar =
           dialogoItem.immagine_txt.width / dialogoItem.immagine_txt.height;
-        const wideFactor = itemAR > 4.8 ? 0.75 : 1;
-        console.log(itemAR);
-        return getMeshSizes(
-          dialogoItem.immagine_txt,
-          capMaxW * wideFactor,
-          capMaxH,
-          capMinW,
-          itemAR,
-        );
+        const rawH = (dialogoItem.immagine_txt.height / viewport.factor) * 0.4;
+        const h = Math.max(rawH, minH);
+        const w =
+          h > rawH
+            ? minH * ar
+            : (dialogoItem.immagine_txt.width / viewport.factor) * 0.4;
+
+        console.log(w, h);
+        return { meshWidth: w, meshHeight: h };
       });
     });
-  }, [frames, meshSizes]);
+  }, [frames, meshSizes, viewport.factor]);
 
   const captionPositions = useMemo(() => {
     return getCaptionPositions(
@@ -98,8 +95,9 @@ export default function ComicBook() {
       meshSizes,
       positions[activeYear],
       captionSizes,
+      xScaleFactor,
     );
-  }, [frames, meshSizes, captionSizes, activeYear]);
+  }, [frames, meshSizes, captionSizes, activeYear, xScaleFactor]);
 
   const framesTimeline = useMemo(() => {
     if (!frames?.length || !meshSizes.length || totalWidth <= 0) return [];

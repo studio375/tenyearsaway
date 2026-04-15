@@ -216,6 +216,7 @@ export function getCaptionPositions(
   meshSizes,
   meshPositions,
   captionSizes,
+  xScaleFactor,
 ) {
   return frames.map((frame, index) => {
     if (!frame.dialogo) return null;
@@ -235,7 +236,7 @@ export function getCaptionPositions(
         meshSizes[index].meshHeight * 0.5 -
         py * meshSizes[index].meshHeight;
       return {
-        x: x,
+        x: x * xScaleFactor,
         y: y,
         z: meshPositions[index][2],
       };
