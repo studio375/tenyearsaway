@@ -16,7 +16,7 @@ const sharedGeometry = new PlaneGeometry(1, 1, 32, 32);
 export default function ComicBook() {
   // Main variables
   const { frames, activeYear, page } = useStore();
-  const { size, viewport } = useThree();
+  const { size } = useThree();
   const staticViewport = useMemo(() => {
     const distance = 5; // z fisso della mia camera
     const fov = (75 * Math.PI) / 180; // fov fisso della mia camera
@@ -25,8 +25,10 @@ export default function ComicBook() {
     return { width, height };
   }, [size]);
 
-  const xScaleFactor = Math.max(0.7, Math.min(1, size.width / 1280));
-
+  let xScaleFactor = Math.max(0.7, Math.min(1, size.width / 1280));
+  if (size.width / size.height <= 0.8 && size.width / size.height >= 0.65) {
+    xScaleFactor = 0.83;
+  }
   const maxWidth =
     size.width >= 1024
       ? staticViewport.width * 0.7
@@ -66,6 +68,8 @@ export default function ComicBook() {
     return meshSizes.reduce((acc, curr) => acc + curr.meshWidth, 0);
   }, [meshSizes]);
 
+  const staticFactor = size.height / staticViewport.height;
+
   const captionSizes = useMemo(() => {
     if (!meshSizes.length) return [];
     return frames.map((frame, index) => {
@@ -75,24 +79,42 @@ export default function ComicBook() {
         if (!dialogoItem?.immagine_txt) return null;
         const refDim = size.width < 1024 ? size.height : size.width;
         const isTablet = size.width >= 600 && size.width < 1024;
-        const scaleFloor = isTablet ? 0.35 : 0.196;
-        const minHFloor = isTablet ? 0.38 : 0.3;
+        const scaleFloor = isTablet ? 0.4 : 0.196;
+        const minHFloor = isTablet ? 0.38 : 0.35;
         const scale = Math.max(scaleFloor, (0.38 / 1920) * refDim);
         const minH = Math.max(minHFloor, (0.5 / 1920) * refDim);
         const ar =
           dialogoItem.immagine_txt.width / dialogoItem.immagine_txt.height;
         const rawH =
-          (dialogoItem.immagine_txt.height / viewport.factor) * scale;
+          (dialogoItem.immagine_txt.height / staticFactor) * scale;
         const h = Math.max(rawH, minH);
         const w =
           h > rawH
             ? minH * ar
-            : (dialogoItem.immagine_txt.width / viewport.factor) * scale;
+            : (dialogoItem.immagine_txt.width / staticFactor) * scale;
 
-        return { meshWidth: w, meshHeight: h };
+        const sizeMultiplier = activeYear === "2016" ? 1.25 : 1;
+        const minCaptionW =
+          meshSizes[index].meshWidth >= 8.5 ? 1 : staticViewport.width * 0.075;
+        const scaledW = w * sizeMultiplier;
+        const scaledH = h * sizeMultiplier;
+        const finalW = Math.max(scaledW, minCaptionW);
+        const finalH = finalW > scaledW ? minCaptionW / ar : scaledH;
+        return {
+          meshWidth: finalW,
+          meshHeight: finalH,
+        };
       });
     });
-  }, [frames, meshSizes, viewport.factor, size.width, size.height]);
+  }, [
+    frames,
+    meshSizes,
+    staticFactor,
+    size.width,
+    size.height,
+    staticViewport,
+    activeYear,
+  ]);
 
   const captionPositions = useMemo(() => {
     return getCaptionPositions(
