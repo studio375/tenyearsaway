@@ -25,10 +25,6 @@ export default function ComicBook() {
     return { width, height };
   }, [size]);
 
-  let xScaleFactor = Math.max(0.7, Math.min(1, size.width / 1280));
-  if (size.width / size.height <= 0.8 && size.width / size.height >= 0.65) {
-    xScaleFactor = 0.83;
-  }
   const maxWidth =
     size.width >= 1024
       ? staticViewport.width * 0.7
@@ -48,11 +44,11 @@ export default function ComicBook() {
   // Ref
   const groupRef = useRef(null);
 
-  // Sizes
+  // Sizes first — xScaleFactor depends on these
   const meshSizes = useMemo(() => {
     if (!frames) return [];
-    return frames.map((frame, index) => {
-      const sizes = getMeshSizes(
+    return frames.map((frame) => {
+      return getMeshSizes(
         frame.immagine,
         maxWidth,
         maxHeight,
@@ -60,9 +56,76 @@ export default function ComicBook() {
         maxAspectRatio,
         size.width,
       );
-      return sizes;
     });
   }, [frames, maxWidth, maxAspectRatio, minWidth, maxHeight, size.width]);
+
+  const isMobile = size.width < 1024;
+
+  const xScaleFactor = useMemo(() => {
+    if (isMobile) return 1;
+    const aspectFactor = Math.min(
+      1,
+      staticViewport.width / (staticViewport.height * (16 / 9)),
+    );
+    if (aspectFactor >= 1) return 1;
+
+    const yearPositions = positions[activeYear];
+    if (!yearPositions || yearPositions.length < 2 || meshSizes.length < 2)
+      return aspectFactor;
+
+    const minGap = staticViewport.width * 0.15;
+    let maxNeededFactor = aspectFactor;
+
+    for (let i = 1; i < yearPositions.length; i++) {
+      const dx = Math.abs(yearPositions[i][0] - yearPositions[i - 1][0]);
+      if (dx === 0) continue;
+      const halfLeft = meshSizes[i - 1].meshWidth * 0.5;
+      const halfRight = meshSizes[i].meshWidth * 0.5;
+      const neededSpacing = halfLeft + halfRight + minGap;
+      const neededFactor = neededSpacing / dx;
+      maxNeededFactor = Math.max(maxNeededFactor, neededFactor);
+    }
+
+    return Math.min(1, maxNeededFactor);
+  }, [isMobile, staticViewport, activeYear, meshSizes]);
+
+  const mobileGap = staticViewport.height * 0.12;
+
+  const mobilePositions = useMemo(() => {
+    if (!meshSizes.length) return [];
+    const result = [];
+    console.log(meshSizes[0].meshWidth, staticViewport.width);
+    const x0 =
+      meshSizes[0].meshWidth > staticViewport.width
+        ? meshSizes[0].meshWidth / 2
+        : 0;
+    let currentX = x0;
+    meshSizes.forEach((s, i) => {
+      if (i === 0) {
+        result.push([x0, 0, 0.0011]);
+      } else {
+        currentX +=
+          meshSizes[i - 1].meshWidth / 2 + mobileGap + s.meshWidth / 2;
+        result.push([currentX, 0, (i + 1) * 0.001]);
+      }
+    });
+    return result;
+  }, [meshSizes, mobileGap, staticViewport.width]);
+
+  const mobileCameraTargets = useMemo(() => {
+    if (!mobilePositions.length) return [];
+    return mobilePositions.map((p, i) => ({ x: i === 0 ? 0 : p[0], y: 0, z: 5 }));
+  }, [mobilePositions]);
+
+  const activePositions = useMemo(
+    () => (isMobile ? mobilePositions : positions[activeYear]),
+    [isMobile, mobilePositions, activeYear],
+  );
+
+  const activeTargets = useMemo(
+    () => (isMobile ? mobileCameraTargets : cameraTargets[activeYear]),
+    [isMobile, mobileCameraTargets, activeYear],
+  );
 
   const totalWidth = useMemo(() => {
     return meshSizes.reduce((acc, curr) => acc + curr.meshWidth, 0);
@@ -85,8 +148,7 @@ export default function ComicBook() {
         const minH = Math.max(minHFloor, (0.5 / 1920) * refDim);
         const ar =
           dialogoItem.immagine_txt.width / dialogoItem.immagine_txt.height;
-        const rawH =
-          (dialogoItem.immagine_txt.height / staticFactor) * scale;
+        const rawH = (dialogoItem.immagine_txt.height / staticFactor) * scale;
         const h = Math.max(rawH, minH);
         const w =
           h > rawH
@@ -117,18 +179,19 @@ export default function ComicBook() {
   ]);
 
   const captionPositions = useMemo(() => {
+    if (!activePositions?.length) return [];
     return getCaptionPositions(
       frames,
       meshSizes,
-      positions[activeYear],
+      activePositions,
       captionSizes,
       xScaleFactor,
     );
-  }, [frames, meshSizes, captionSizes, activeYear, xScaleFactor]);
+  }, [frames, meshSizes, captionSizes, activePositions, xScaleFactor]);
 
   const framesTimeline = useMemo(() => {
     if (!frames?.length || !meshSizes.length || totalWidth <= 0) return [];
-    const targets = cameraTargets[activeYear];
+    const targets = activeTargets;
     if (!targets || targets.length < 2) return [];
 
     // Rebuild the same CatmullRom curve used by CameraRig
@@ -169,7 +232,7 @@ export default function ComicBook() {
         duration: Math.max(frameEnd - frameStart, 0.001),
       };
     });
-  }, [frames, meshSizes, totalWidth, activeYear, xScaleFactor]);
+  }, [frames, meshSizes, totalWidth, activeTargets, xScaleFactor]);
 
   const framesTimelineRef = useRef([]);
   const framesProgress = useRef(
@@ -205,10 +268,7 @@ export default function ComicBook() {
       <TransitionHandler />
       {frames && frames.length > 0 && (
         <>
-          <CameraRig
-            targets={cameraTargets[activeYear]}
-            xScaleFactor={xScaleFactor}
-          />
+          <CameraRig targets={activeTargets} xScaleFactor={xScaleFactor} />
           <group ref={groupRef}>
             {frames.map((frame, index) => {
               return (
@@ -218,7 +278,7 @@ export default function ComicBook() {
                     src={frame.texture.url}
                     index={index}
                     sizes={meshSizes[index]}
-                    positions={positions[activeYear][index]}
+                    positions={activePositions[index]}
                     xScaleFactor={xScaleFactor}
                     framesProgress={framesProgress}
                   />

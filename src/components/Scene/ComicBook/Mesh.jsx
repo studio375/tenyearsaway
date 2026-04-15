@@ -109,7 +109,12 @@ const Mesh = function ({
   );
 
   useLenis(({ progress, velocity }) => {
-    if (!meshRef.current || !useStore.getState().active || useStore.getState().transition) return;
+    if (
+      !meshRef.current ||
+      !useStore.getState().active ||
+      useStore.getState().transition
+    )
+      return;
     meshRef.current.material.uniforms.uVelocity.value = velocity * 0.1;
     if (index == 0 || !framesProgress.current[index] || !tl.current) return;
     if (framesProgress.current[index].progress >= 1) {
