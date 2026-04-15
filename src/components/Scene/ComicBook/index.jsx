@@ -94,10 +94,9 @@ export default function ComicBook() {
   const mobilePositions = useMemo(() => {
     if (!meshSizes.length) return [];
     const result = [];
-    console.log(meshSizes[0].meshWidth, staticViewport.width);
     const x0 =
       meshSizes[0].meshWidth > staticViewport.width
-        ? meshSizes[0].meshWidth / 2
+        ? meshSizes[0].meshWidth / 3
         : 0;
     let currentX = x0;
     meshSizes.forEach((s, i) => {
@@ -114,7 +113,11 @@ export default function ComicBook() {
 
   const mobileCameraTargets = useMemo(() => {
     if (!mobilePositions.length) return [];
-    return mobilePositions.map((p, i) => ({ x: i === 0 ? 0 : p[0], y: 0, z: 5 }));
+    return mobilePositions.map((p, i) => ({
+      x: i === 0 ? 0 : p[0],
+      y: 0,
+      z: 5,
+    }));
   }, [mobilePositions]);
 
   const activePositions = useMemo(
