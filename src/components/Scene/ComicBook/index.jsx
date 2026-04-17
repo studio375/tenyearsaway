@@ -33,7 +33,7 @@ export default function ComicBook() {
     size.width >= 1024
       ? staticViewport.width * 0.4
       : staticViewport.width * 0.85;
-  const maxHeight = staticViewport.height * 0.8;
+  const maxHeight = staticViewport.height * 0.65;
   const maxAspectRatio = useMemo(() => {
     if (!frames || frames.length === 0) return 1;
     return Math.max(
@@ -47,6 +47,27 @@ export default function ComicBook() {
   // Sizes first — xScaleFactor depends on these
   const meshSizes = useMemo(() => {
     if (!frames) return [];
+    if (size.width >= 1024) {
+      // Proporzioni originali, screen-agnostic, cross-year consistenti.
+      // GLOBAL_REF_WIDTH = larghezza massima vista tra tutti gli anni (2015: 1272px).
+      // Clampiamo da sotto così anni con immagini piccole non sovra-scalano.
+      const GLOBAL_REF_WIDTH = 1284;
+      const maxImageWidth = Math.max(
+        GLOBAL_REF_WIDTH,
+        ...frames.map((f) => f.immagine.width),
+      );
+      const vpPerPx = maxWidth / maxImageWidth;
+      return frames.map((frame) => {
+        const ar = frame.immagine.width / frame.immagine.height;
+        let meshW = frame.immagine.width * vpPerPx * 0.9;
+        let meshH = frame.immagine.height * vpPerPx * 0.9;
+        if (meshH > maxHeight) {
+          meshH = maxHeight;
+          meshW = meshH * ar;
+        }
+        return { meshWidth: meshW, meshHeight: meshH };
+      });
+    }
     return frames.map((frame) => {
       return getMeshSizes(
         frame.immagine,
@@ -57,7 +78,15 @@ export default function ComicBook() {
         size.width,
       );
     });
-  }, [frames, maxWidth, maxAspectRatio, minWidth, maxHeight, size.width]);
+  }, [
+    frames,
+    maxWidth,
+    maxAspectRatio,
+    minWidth,
+    maxHeight,
+    size.width,
+    staticViewport.width,
+  ]);
 
   const isMobile = size.width < 1024;
 
@@ -159,12 +188,14 @@ export default function ComicBook() {
             : (dialogoItem.immagine_txt.width / staticFactor) * scale;
 
         const sizeMultiplier = activeYear === "2016" ? 1.25 : 1;
+        const isMobile = size.width <= 500;
         const minCaptionW =
           meshSizes[index].meshWidth >= 8.5 ? 1 : staticViewport.width * 0.075;
+        const mobileMinW = isMobile ? staticViewport.width * 0.2 : 0;
         const scaledW = w * sizeMultiplier;
         const scaledH = h * sizeMultiplier;
-        const finalW = Math.max(scaledW, minCaptionW);
-        const finalH = finalW > scaledW ? minCaptionW / ar : scaledH;
+        const finalW = Math.max(scaledW, minCaptionW, mobileMinW);
+        const finalH = finalW > scaledW ? finalW / ar : scaledH;
         return {
           meshWidth: finalW,
           meshHeight: finalH,

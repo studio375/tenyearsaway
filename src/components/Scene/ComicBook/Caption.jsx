@@ -1,5 +1,5 @@
 import React, { useRef, useMemo, useState, useEffect } from "react";
-import { ShaderMaterial, SRGBColorSpace, Object3D } from "three";
+import { ShaderMaterial, SRGBColorSpace, LinearFilter, Object3D } from "three";
 import { useTexture } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useLenis } from "lenis/react";
@@ -35,8 +35,10 @@ const Caption = function ({
 
   const texture = useTexture(src, (tex) => {
     tex.colorSpace = SRGBColorSpace;
+    tex.minFilter = LinearFilter;
+    tex.magFilter = LinearFilter;
+    tex.anisotropy = 16;
     tex.needsUpdate = true;
-    return tex;
   });
 
   const displacement = useTexture("/textures/perlin.png");

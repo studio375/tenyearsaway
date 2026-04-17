@@ -1,7 +1,6 @@
-precision mediump float;
+precision highp float;
 
 uniform sampler2D uMap;
-uniform sampler2D uDisplacement;
 uniform float uProgress;
 
 varying vec2 vUv;
@@ -9,17 +8,14 @@ varying vec2 vUv;
 void main() {
   vec2 uv = vUv;
 
-  vec4 color = texture(uMap, uv);
-  float noise = texture(uDisplacement, uv).r;
+  // Scale UV from center — caption inflates like balloon
+  float p = max(uProgress, 0.001);
+  vec2 scaledUv = (uv - 0.5) / p + 0.5;
 
-  float edge = 0.1;
-  float alpha = smoothstep(
-    uProgress - edge,
-    uProgress + edge,
-    noise
-  );
+  float inBounds = step(0.0, scaledUv.x) * step(scaledUv.x, 1.0)
+                 * step(0.0, scaledUv.y) * step(scaledUv.y, 1.0);
 
-  color.a *= 1. - alpha;
+  vec4 color = texture(uMap, scaledUv) * inBounds;
 
   if (color.a < 0.001) discard;
 

@@ -8,34 +8,57 @@
  * Usage: node scripts/generate-positions.mjs
  */
 
-import readline from 'readline';
-import { readFileSync, writeFileSync } from 'fs';
-import { fileURLToPath } from 'url';
-import { dirname, resolve } from 'path';
+import readline from "readline";
+import { readFileSync, writeFileSync } from "fs";
+import { fileURLToPath } from "url";
+import { dirname, resolve } from "path";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const DATA_PATH = resolve(__dirname, '../src/assets/data.js');
-const BASE_URL = 'https://admin10.375.studio/wp-json/wp/v2';
+const DATA_PATH = resolve(__dirname, "../src/assets/data.js");
+const BASE_URL = "https://admin10.375.studio/wp-json/wp/v2";
 
 // ─── Viewport reference (desktop 1280×720, fov=75°, camera z=5) ────────────
 const CAM_Z = 5;
 const FOV_RAD = (75 * Math.PI) / 180;
-const VP_HEIGHT = 2 * Math.tan(FOV_RAD / 2) * CAM_Z;   // ≈ 7.67
-const VP_WIDTH  = VP_HEIGHT * (1280 / 720);              // ≈ 13.64
+const VP_HEIGHT = 2 * Math.tan(FOV_RAD / 2) * CAM_Z; // ≈ 7.67
+const VP_WIDTH = VP_HEIGHT * (1280 / 720); // ≈ 13.64
 
-const MAX_WIDTH  = VP_WIDTH  * 0.7;
-const MIN_WIDTH  = VP_WIDTH  * 0.4;
-const MAX_HEIGHT = VP_HEIGHT * 0.8;
+const MAX_WIDTH = VP_WIDTH * 0.7;
+const MIN_WIDTH = VP_WIDTH * 0.4;
+const MAX_HEIGHT = VP_HEIGHT * 0.65;
 
 // ─── Replicated from src/helpers/functions.js ───────────────────────────────
 function getMeshSizes(image, maxWidth, maxHeight, minWidth, maxAspectRatio) {
   const ar = image.width / image.height;
   let w = maxWidth * (ar / maxAspectRatio);
-  if (w < minWidth)  w = minWidth;
-  if (w > maxWidth)  w = maxWidth;
+  if (w < minWidth) w = minWidth;
+  if (w > maxWidth) w = maxWidth;
   let h = w / ar;
-  if (h > maxHeight) { h = maxHeight; w = h * ar; }
+  if (h > maxHeight) {
+    h = maxHeight;
+    w = h * ar;
+  }
   return { meshWidth: w, meshHeight: h };
+}
+
+// Proporzioni originali, cross-year consistenti (specchio di index.jsx desktop)
+const GLOBAL_REF_WIDTH = 1300;
+function getMeshSizesProportional(frames) {
+  const maxImageWidth = Math.max(
+    GLOBAL_REF_WIDTH,
+    ...frames.map((f) => f.immagine.width),
+  );
+  const vpPerPx = MAX_WIDTH / maxImageWidth;
+  return frames.map((f) => {
+    const ar = f.immagine.width / f.immagine.height;
+    let meshW = f.immagine.width * vpPerPx * 0.9;
+    let meshH = f.immagine.height * vpPerPx * 0.9;
+    if (meshH > MAX_HEIGHT) {
+      meshH = MAX_HEIGHT;
+      meshW = meshH * ar;
+    }
+    return { meshWidth: meshW, meshHeight: meshH };
+  });
 }
 
 // ─── Position generator ──────────────────────────────────────────────────────
@@ -44,8 +67,8 @@ function getMeshSizes(image, maxWidth, maxHeight, minWidth, maxAspectRatio) {
  * for a cinematic comic-strip feel.
  */
 function generatePositions(meshSizes) {
-  const MIN_GAP = VP_WIDTH * 0.04;
-  const MAX_GAP = VP_WIDTH * 0.12;
+  const MIN_GAP = VP_WIDTH * 0.1;
+  const MAX_GAP = VP_WIDTH * 0.18;
 
   const positions = [];
   let currentX = 0;
@@ -63,7 +86,7 @@ function generatePositions(meshSizes) {
 
     const dir = Math.random() > 0.5 ? 1 : -1;
     let y = lastY + dir * (VP_HEIGHT / 5) * Math.random();
-    const maxY =  VP_HEIGHT / 2 - mesh.meshHeight / 2;
+    const maxY = VP_HEIGHT / 2 - mesh.meshHeight / 2;
     const minY = -VP_HEIGHT / 2 + mesh.meshHeight / 2;
     y = Math.min(Math.max(y, minY), maxY);
 
@@ -105,11 +128,15 @@ async function fetchYear(slug) {
 
 /** Evaluate the current data.js and return plain objects. */
 function readCurrentData() {
-  const src = readFileSync(DATA_PATH, 'utf-8')
-    .replace(/export const /g, 'var ');
+  const src = readFileSync(DATA_PATH, "utf-8").replace(
+    /export const /g,
+    "var ",
+  );
 
   // Use Function so const/let are function-scoped and returnable
-  const fn = new Function(`${src}; return { positions, cameraTargets, comicLayouts };`);
+  const fn = new Function(
+    `${src}; return { positions, cameraTargets, comicLayouts };`,
+  );
   return fn();
 }
 
@@ -117,10 +144,10 @@ function readCurrentData() {
 function serializePositions(yearData) {
   const inner = Object.entries(yearData)
     .map(([year, arr]) => {
-      const rows = arr.map(([x, y, z]) => `    [${x}, ${y}, ${z}]`).join(',\n');
+      const rows = arr.map(([x, y, z]) => `    [${x}, ${y}, ${z}]`).join(",\n");
       return `  ${year}: [\n${rows},\n  ]`;
     })
-    .join(',\n');
+    .join(",\n");
   return `export const positions = {\n${inner},\n};\n`;
 }
 
@@ -129,11 +156,14 @@ function serializeCameraTargets(yearData) {
   const inner = Object.entries(yearData)
     .map(([year, arr]) => {
       const rows = arr
-        .map(({ x, y, z }) => `    {\n      x: ${x},\n      y: ${y},\n      z: ${z},\n    }`)
-        .join(',\n');
+        .map(
+          ({ x, y, z }) =>
+            `    {\n      x: ${x},\n      y: ${y},\n      z: ${z},\n    }`,
+        )
+        .join(",\n");
       return `  ${year}: [\n${rows},\n  ]`;
     })
-    .join(',\n');
+    .join(",\n");
   return `export const cameraTargets = {\n${inner},\n};\n`;
 }
 
@@ -144,11 +174,11 @@ function serializeComicLayouts(data) {
       const { settings, items } = layout;
       const settingsStr = JSON.stringify(settings);
       const itemsStr = items
-        .map((it) => '      ' + JSON.stringify(it))
-        .join(',\n');
+        .map((it) => "      " + JSON.stringify(it))
+        .join(",\n");
       return `  ${year}: {\n    settings: ${settingsStr},\n    items: [\n${itemsStr},\n    ],\n  }`;
     })
-    .join(',\n');
+    .join(",\n");
   return `export const comicLayouts = {\n${inner},\n};\n`;
 }
 
@@ -157,22 +187,25 @@ function writeDataFile(positions, cameraTargets, comicLayouts) {
     serializePositions(positions),
     serializeCameraTargets(cameraTargets),
     serializeComicLayouts(comicLayouts),
-  ].join('\n');
-  writeFileSync(DATA_PATH, out, 'utf-8');
+  ].join("\n");
+  writeFileSync(DATA_PATH, out, "utf-8");
 }
 
 // ─── Main ────────────────────────────────────────────────────────────────────
-const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
 const ask = (q) => new Promise((resolve) => rl.question(q, resolve));
 
 (async () => {
   try {
-    const input = (await ask('Anno (es: 2015): ')).trim();
+    const input = (await ask("Anno (es: 2015): ")).trim();
     rl.close();
 
     const year = parseInt(input, 10);
     if (isNaN(year) || year < 2000 || year > 2100) {
-      console.error('Anno non valido.');
+      console.error("Anno non valido.");
       process.exit(1);
     }
     const slug = String(year);
@@ -186,14 +219,13 @@ const ask = (q) => new Promise((resolve) => rl.question(q, resolve));
     const frames = yearData.acf.vignette;
     console.log(`✓ ${frames.length} vignette trovate`);
 
-    // 2. Compute mesh sizes
-    const maxAspectRatio = Math.max(...frames.map((f) => f.immagine.width / f.immagine.height));
-    const meshSizes = frames.map((f) =>
-      getMeshSizes(f.immagine, MAX_WIDTH, MAX_HEIGHT, MIN_WIDTH, maxAspectRatio),
-    );
+    // 2. Compute mesh sizes (proporzionale alle dimensioni originali, cross-year)
+    const meshSizes = getMeshSizesProportional(frames);
 
     meshSizes.forEach((s, i) => {
-      console.log(`  [${i}] ${frames[i].immagine.width}×${frames[i].immagine.height} → mesh ${s.meshWidth.toFixed(3)} × ${s.meshHeight.toFixed(3)}`);
+      console.log(
+        `  [${i}] ${frames[i].immagine.width}×${frames[i].immagine.height} → mesh ${s.meshWidth.toFixed(3)} × ${s.meshHeight.toFixed(3)}`,
+      );
     });
 
     // 3. Generate positions
@@ -202,24 +234,31 @@ const ask = (q) => new Promise((resolve) => rl.question(q, resolve));
     // 4. Generate camera targets
     const newCameraTargets = generateCameraTargets(newPositions);
 
-    console.log('\nPositions:');
-    newPositions.forEach((p, i) => console.log(`  [${i}] [${p.map((v) => v.toFixed(4)).join(', ')}]`));
-    console.log('\nCamera targets:');
-    newCameraTargets.forEach((t, i) => console.log(`  [${i}] x:${t.x.toFixed(4)} y:${t.y.toFixed(4)} z:${t.z}`));
+    console.log("\nPositions:");
+    newPositions.forEach((p, i) =>
+      console.log(`  [${i}] [${p.map((v) => v.toFixed(4)).join(", ")}]`),
+    );
+    console.log("\nCamera targets:");
+    newCameraTargets.forEach((t, i) =>
+      console.log(`  [${i}] x:${t.x.toFixed(4)} y:${t.y.toFixed(4)} z:${t.z}`),
+    );
 
     // 5. Read current data and merge
     const current = readCurrentData();
 
-    current.positions[year]      = newPositions;
-    current.cameraTargets[year]  = newCameraTargets;
+    current.positions[year] = newPositions;
+    current.cameraTargets[year] = newCameraTargets;
     // comicLayouts is untouched
 
     // 6. Write back
-    writeDataFile(current.positions, current.cameraTargets, current.comicLayouts);
+    writeDataFile(
+      current.positions,
+      current.cameraTargets,
+      current.comicLayouts,
+    );
     console.log(`\n✓ data.js aggiornato per l'anno ${year}`);
-
   } catch (err) {
-    console.error('Errore:', err.message);
+    console.error("Errore:", err.message);
     process.exit(1);
   }
 })();
