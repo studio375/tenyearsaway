@@ -236,14 +236,12 @@ export default function TransitionHandler() {
         if (ref.material?.uniforms?.uProgress) {
           transitionTl.current.to(
             ref.material.uniforms.uProgress,
-            { value: 0, duration: 1.25, ease: "power2.out", overwrite: true },
+            { value: 0, duration: 1.5, ease: "power2.out", overwrite: true },
             "<",
           );
         }
       });
-      transitionTl.current
-        .call(() => setEndText(true))
-        .to({}, { duration: 1.5 });
+      transitionTl.current.call(() => setEndText(true)).to({}, { duration: 2 });
     }
 
     if (transition === "exit") {

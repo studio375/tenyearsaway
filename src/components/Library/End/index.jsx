@@ -70,11 +70,12 @@ export default function End() {
     const tl = gsap.timeline();
     tl.to(tbcRef.current, {
       opacity: endText ? 1 : 0,
-      duration: 0.6,
+      duration: 0.8,
       ease: "power2.out",
     }).to(tbcRef.current, {
       opacity: 0,
       duration: 0.6,
+      delay: 0.5,
       ease: "power2.inOut",
     });
   }, [endText]);
