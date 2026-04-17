@@ -5,7 +5,7 @@ import { useRef, useMemo, useLayoutEffect } from "react";
 import Mesh from "./Mesh";
 import CameraRig from "./CameraRig";
 import Caption from "./Caption";
-import { positions, cameraTargets } from "@/assets/data";
+import { positions, cameraTargets, ZOOM_START_2025 } from "@/assets/data";
 import { getMeshSizes, getCaptionPositions } from "@/helpers/functions";
 import { useLenis } from "lenis/react";
 import TransitionHandler from "./TransitionHandler";
@@ -286,12 +286,17 @@ export default function ComicBook() {
   useLenis(({ progress }) => {
     const timeline = framesTimelineRef.current;
     if (!timeline.length) return;
+    const normalizedProgress =
+      useStore.getState().activeYear === "2025"
+        ? Math.min(progress / ZOOM_START_2025, 1)
+        : progress;
     framesProgress.current = timeline.map((_, index) => ({
       progress: Math.max(
         0,
         Math.min(
           1,
-          (progress - timeline[index].frameStart) / timeline[index].duration,
+          (normalizedProgress - timeline[index].frameStart) /
+            timeline[index].duration,
         ),
       ),
     }));

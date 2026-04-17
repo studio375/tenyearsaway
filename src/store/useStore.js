@@ -25,6 +25,8 @@ export const useStore = create((set) => ({
   clearObjects: () => set({ objects: [] }),
   transition: false,
   setTransition: (transition) => set({ transition }),
+  endText: false,
+  setEndText: (endText) => set({ endText }),
   background: null,
   setBackground: (background) => set({ background }),
   team: [],

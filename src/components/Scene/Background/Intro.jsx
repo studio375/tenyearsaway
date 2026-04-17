@@ -86,7 +86,9 @@ export default function Intro({ geometry }) {
 
   const tlInOut = useRef(null);
   useEffect(() => {
-    if (!ref.current || !loaded || transition) return;
+    console.log("transition", transition);
+    if (!ref.current || !loaded || (transition && transition !== "home"))
+      return;
 
     tlInOut.current = gsap.timeline({
       onStart: () => {
@@ -232,7 +234,7 @@ export default function Intro({ geometry }) {
           z={-0.25}
           opacity={0.8}
           feather={0.05}
-          renderOrder={-1}
+          renderOrder={-1.5}
         />
         <mesh
           ref={ref2}
@@ -240,7 +242,7 @@ export default function Intro({ geometry }) {
           scale={pageScale} // 4 x 5.714
           geometry={geometry}
           material={materialPage}
-          renderOrder={-1}
+          renderOrder={-1.5}
           receiveShadow={false}
           castShadow={false}
         />

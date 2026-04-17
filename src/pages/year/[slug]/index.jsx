@@ -28,9 +28,13 @@ export async function getStaticProps({ params }) {
 }
 
 export default function Year({ year }) {
+  const slug = year?.slug;
+  const isLastYear = slug === "2025";
   return (
     <div>
-      <main className="pointer-events-none relative z-10 h-[1000vh]">
+      <main
+        className={`pointer-events-none relative z-10 ${isLastYear ? "h-[1300vh]" : "h-[1000vh]"}`}
+      >
         <End />
         <Bridge year={year} />
       </main>

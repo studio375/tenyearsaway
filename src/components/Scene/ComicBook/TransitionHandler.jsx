@@ -15,6 +15,7 @@ export default function TransitionHandler() {
     clearObjects,
     setYearData,
     background,
+    setEndText,
   } = useStore();
   const { camera, viewport, size } = useThree();
   const lenis = useLenis();
@@ -35,6 +36,9 @@ export default function TransitionHandler() {
           clearObjects();
           requestAnimationFrame(() => {
             router.push(`/year/${nextYear}`);
+            if (nextYear === 2025) {
+              lenis.scrollTo(0, { immediate: true });
+            }
             lenis.start();
             lenis.resize();
           });
@@ -201,6 +205,45 @@ export default function TransitionHandler() {
           );
         }
       });
+    }
+
+    if (transition === "home") {
+      lenis.stop();
+      transitionTl.current = gsap.timeline({
+        onComplete: () => {
+          setEndText(false);
+          camera.position.set(0, 0, 5);
+          background.material.uniforms.uMovement.value = 0;
+          background.material.uniforms.uSpeed.value = 0;
+          setYearData(null, [], null);
+          clearObjects();
+          requestAnimationFrame(() => {
+            setTransition(false);
+            lenis.resize();
+            lenis.start();
+            lenis.scrollTo(0, { immediate: true });
+            router.push("/");
+          });
+        },
+      });
+      transitionTl.current.to(background.material.uniforms.uAlpha, {
+        value: 0,
+        duration: 1,
+        ease: "power2.out",
+      });
+      objects.forEach(({ ref, type }) => {
+        if (type === "card") return;
+        if (ref.material?.uniforms?.uProgress) {
+          transitionTl.current.to(
+            ref.material.uniforms.uProgress,
+            { value: 0, duration: 1.25, ease: "power2.out", overwrite: true },
+            "<",
+          );
+        }
+      });
+      transitionTl.current
+        .call(() => setEndText(true))
+        .to({}, { duration: 1.5 });
     }
 
     if (transition === "exit") {

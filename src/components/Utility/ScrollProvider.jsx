@@ -16,8 +16,9 @@ function ScrollManager() {
   }, [lenis]);
 
   useLayoutEffect(() => {
-    if (!lenis || activeYear) return;
+    if (!lenis) return;
     lenis.resize();
+    if (activeYear) return;
     lenis.scrollTo(0, { immediate: true });
   }, [asPath, lenis]);
 

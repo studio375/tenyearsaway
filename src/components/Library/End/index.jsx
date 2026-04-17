@@ -4,10 +4,11 @@ import { useLenis } from "lenis/react";
 import { gsap } from "@/lib/gsap";
 
 export default function End() {
-  const { setTransition } = useStore();
+  const { setTransition, activeYear, endText } = useStore();
   const [end, setEnd] = useState(false);
   const [hovered, setHovered] = useState(false);
   const endRef = useRef(null);
+  const tbcRef = useRef(null);
   const wrapperRef = useRef(null);
   const endStateRef = useRef(false);
 
@@ -62,6 +63,35 @@ export default function End() {
     setHovered(false);
     wrapperRef.current?.classList.remove("is-hovered");
   };
+
+  useEffect(() => {
+    if (!tbcRef.current) return;
+    gsap.killTweensOf(tbcRef.current);
+    const tl = gsap.timeline();
+    tl.to(tbcRef.current, {
+      opacity: endText ? 1 : 0,
+      duration: 0.6,
+      ease: "power2.out",
+    }).to(tbcRef.current, {
+      opacity: 0,
+      duration: 0.6,
+      ease: "power2.inOut",
+    });
+  }, [endText]);
+
+  if (activeYear === "2025") {
+    return (
+      <div
+        ref={tbcRef}
+        style={{ opacity: 0 }}
+        className="pointer-events-none fixed inset-0 z-50 flex items-center justify-center"
+      >
+        <p className="text-[--text-color] text-[7rem] uppercase font-[800]">
+          to be continued...
+        </p>
+      </div>
+    );
+  }
 
   const handleClick = () => {
     setHovered(false);
