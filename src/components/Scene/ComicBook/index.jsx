@@ -47,36 +47,24 @@ export default function ComicBook() {
   // Sizes first — xScaleFactor depends on these
   const meshSizes = useMemo(() => {
     if (!frames) return [];
-    if (size.width >= 1024) {
-      // Proporzioni originali, screen-agnostic, cross-year consistenti.
-      // GLOBAL_REF_WIDTH = larghezza massima vista tra tutti gli anni (2015: 1272px).
-      // Clampiamo da sotto così anni con immagini piccole non sovra-scalano.
-      const GLOBAL_REF_WIDTH = 1284;
-      const maxImageWidth = Math.max(
-        GLOBAL_REF_WIDTH,
-        ...frames.map((f) => f.immagine.width),
-      );
-      const vpPerPx = maxWidth / maxImageWidth;
-      return frames.map((frame) => {
-        const ar = frame.immagine.width / frame.immagine.height;
-        let meshW = frame.immagine.width * vpPerPx * 0.9;
-        let meshH = frame.immagine.height * vpPerPx * 0.9;
-        if (meshH > maxHeight) {
-          meshH = maxHeight;
-          meshW = meshH * ar;
-        }
-        return { meshWidth: meshW, meshHeight: meshH };
-      });
-    }
+    // Proporzioni originali, screen-agnostic, cross-year consistenti.
+    // GLOBAL_REF_WIDTH = larghezza massima vista tra tutti gli anni (2015: 1272px).
+    const GLOBAL_REF_WIDTH = 1284;
+    const maxImageWidth = Math.max(
+      GLOBAL_REF_WIDTH,
+      ...frames.map((f) => f.immagine.width),
+    );
+    const vpPerPx = maxWidth / maxImageWidth;
+    const mobileBoost = size.width < 1024 ? 1.9 : 1;
     return frames.map((frame) => {
-      return getMeshSizes(
-        frame.immagine,
-        maxWidth,
-        maxHeight,
-        minWidth,
-        maxAspectRatio,
-        size.width,
-      );
+      const ar = frame.immagine.width / frame.immagine.height;
+      let meshW = frame.immagine.width * vpPerPx * 0.9 * mobileBoost;
+      let meshH = frame.immagine.height * vpPerPx * 0.9 * mobileBoost;
+      if (meshH > maxHeight) {
+        meshH = maxHeight;
+        meshW = meshH * ar;
+      }
+      return { meshWidth: meshW, meshHeight: meshH };
     });
   }, [
     frames,
@@ -130,7 +118,7 @@ export default function ComicBook() {
     let currentX = x0;
     meshSizes.forEach((s, i) => {
       if (i === 0) {
-        result.push([x0, 0, 0.0011]);
+        result.push([x0, 0 - staticViewport.height * 0.03, 0.0011]);
       } else {
         currentX +=
           meshSizes[i - 1].meshWidth / 2 + mobileGap + s.meshWidth / 2;
@@ -138,7 +126,7 @@ export default function ComicBook() {
       }
     });
     return result;
-  }, [meshSizes, mobileGap, staticViewport.width]);
+  }, [meshSizes, mobileGap, staticViewport]);
 
   const mobileCameraTargets = useMemo(() => {
     if (!mobilePositions.length) return [];

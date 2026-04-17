@@ -1,7 +1,7 @@
 import React, { useRef, useMemo, useEffect } from "react";
 import { useLenis } from "lenis/react";
 import { useKTX2 } from "@react-three/drei";
-import { ShaderMaterial } from "three";
+import { ShaderMaterial, Vector3 } from "three";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { useFrame, useThree } from "@react-three/fiber";
@@ -19,8 +19,9 @@ const Mesh = function ({
 }) {
   const meshRef = useRef(null);
   const tl = useRef(null);
+  const projVec = useRef(new Vector3());
   const texture = useKTX2(src);
-  const { gl } = useThree();
+  const { gl, camera } = useThree();
   const { addObject, removeObject, active } = useStore();
 
   useEffect(() => {
@@ -60,6 +61,7 @@ const Mesh = function ({
           uVelocity: { value: 0 },
           uLightProgress: { value: 0 },
           uTrailTexture: { value: null },
+          uClipX: { value: 0 },
         },
         transparent: true,
         alphaTest: 0,
@@ -129,6 +131,8 @@ const Mesh = function ({
     if (!meshRef.current || !active) return;
     meshRef.current.material.uniforms.uTime.value =
       clock.getElapsedTime() * 0.7;
+    projVec.current.copy(meshRef.current.position).project(camera);
+    meshRef.current.material.uniforms.uClipX.value = projVec.current.x;
   });
 
   const positionVec = useMemo(

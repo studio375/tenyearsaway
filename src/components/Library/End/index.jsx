@@ -87,7 +87,7 @@ export default function End() {
         style={{ opacity: 0 }}
         className="pointer-events-none fixed inset-0 z-50 flex items-center justify-center"
       >
-        <p className="text-[--text-color] text-[7rem] uppercase font-[800]">
+        <p className="text-[--text-color] text-[2rem] lg:text-[4rem] xl:text-[7rem] font-[500] italic">
           to be continued...
         </p>
       </div>

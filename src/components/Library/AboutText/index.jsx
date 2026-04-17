@@ -112,7 +112,10 @@ export default function AboutText() {
       >
         <p className="text-[1.1rem] lg:text-[1.3rem] lg:leading-[1.6] leading-[1.3] uppercase font-medium text-storm m-0">
           Studio375 è un'agenzia di comunicazione, grafica e web con sede a
-          Vicenza. Illustrazioni di Davide Grazi.
+          Vicenza.
+          <span className="text-[1rem] block mt-1">
+            Illustrazioni di Davide Grazi.
+          </span>
         </p>
       </div>
     </>

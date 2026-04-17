@@ -8,11 +8,19 @@ import { ZOOM_START_2025 } from "@/assets/data";
 
 export default function CameraRig({ targets, xScaleFactor = 1 }) {
   const tl = useRef(null);
-  const { camera } = useThree();
+  const { camera, size } = useThree();
   const activeYear = useStore((state) => state.activeYear);
   const setTransition = useStore((state) => state.setTransition);
   const redirectTriggeredRef = useRef(false);
   const lastTargetRef = useRef(null);
+  const staticViewport = useMemo(() => {
+    const distance = 5; // z fisso della mia camera
+    const fov = (75 * Math.PI) / 180; // fov fisso della mia camera
+    const height = 2 * Math.tan(fov / 2) * distance;
+    const width = height * (size.width / size.height);
+    return { width, height };
+  }, [size]);
+  const limit = size.width > 1024 ? 0.5 : 0.7;
 
   // Reset redirect gate each time activeYear changes (handles browser back/forward to 2025)
   useEffect(() => {
@@ -62,7 +70,7 @@ export default function CameraRig({ targets, xScaleFactor = 1 }) {
         const zoomProgress =
           (progress - ZOOM_START_2025) / (1 - ZOOM_START_2025);
         camera.position.setZ(lastTargetRef.current.z * (1 - zoomProgress));
-        if (zoomProgress >= 0.5 && !redirectTriggeredRef.current) {
+        if (zoomProgress >= limit && !redirectTriggeredRef.current) {
           redirectTriggeredRef.current = true;
           setTransition("home");
         }

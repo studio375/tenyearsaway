@@ -1,5 +1,3 @@
-// For 2025 (last year): 1000vh comic + 300vh zoom-in = 1300vh total page
-// Lenis progress 0→ZOOM_START_2025 = comic, ZOOM_START_2025→1 = camera zoom to home
 export const ZOOM_START_2025 = 1000 / 1300;
 
 export const positions = {
@@ -54,9 +52,10 @@ export const positions = {
   ],
   2020: [
     [0, 0, 0.0011],
-    [8.787022628711043, -0.16198606570871685, 0.002],
-    [17.0466105882888, 0.20922670649223093, 0.003],
-    [23.632192720262676, 0.3767826176608502, 0.004],
+    [8.793060282101823, 0.13268865739878818, 0.002],
+    [18.014252396628105, 0.03833453946803195, 0.003],
+    [26.04467698761047, -1.1011044753282877, 0.004],
+    [32.308018025613805, -1.3831343153701168, 0.005],
   ],
   2021: [
     [0, 0, 0.0011],
@@ -317,19 +316,24 @@ export const cameraTargets = {
       z: 5,
     },
     {
-      x: 8.787022628711043,
-      y: -0.16198606570871685,
-      z: 5.6589,
+      x: 8.793060282101823,
+      y: 0.13268865739878818,
+      z: 5.5017,
     },
     {
-      x: 17.0466105882888,
-      y: 0.20922670649223093,
-      z: 5.0817,
+      x: 18.014252396628105,
+      y: 0.03833453946803195,
+      z: 3.21,
     },
     {
-      x: 23.632192720262676,
-      y: 0.3767826176608502,
-      z: 5.766,
+      x: 26.04467698761047,
+      y: -1.1011044753282877,
+      z: 5.1567,
+    },
+    {
+      x: 32.308018025613805,
+      y: -1.3831343153701168,
+      z: 4.4775,
     },
   ],
   2021: [
@@ -553,7 +557,14 @@ export const comicLayouts = {
       { row: 0, col: 0, spanW: 2, spanH: 2 },
       { row: 0, col: 2, spanW: 2, spanH: 1 },
       { row: 1, col: 2, spanW: 2, spanH: 1 },
-      { row: 2, col: 0, spanW: 1, spanH: 1 },
+      {
+        row: 2,
+        col: 0,
+        spanW: 1,
+        spanH: 1,
+        maintainAspect: true,
+        aspectRatio: 0.56,
+      },
       { row: 2, col: 1, spanW: 2, spanH: 1 },
       { row: 2, col: 3, spanW: 1, spanH: 1 },
       { row: 3, col: 0, spanW: 2, spanH: 2 },
@@ -625,7 +636,8 @@ export const comicLayouts = {
       pageHeight: 7.07,
     },
     items: [
-      { row: 0, col: 0, spanW: 2, spanH: 3 },
+      { row: 0, col: 0, spanW: 2, spanH: 2 },
+      { row: 2, col: 0, spanW: 2, spanH: 1 },
       { row: 3, col: 0, spanW: 2, spanH: 1 },
       { row: 4, col: 0, spanW: 1, spanH: 1 },
       { row: 4, col: 1, spanW: 1, spanH: 1 },
