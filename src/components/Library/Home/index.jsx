@@ -60,32 +60,36 @@ export default function Home() {
       });
     }
 
-    const splitLeft = new SplitText(leftTextRef.current, { type: "words" });
-    const splitRight = new SplitText(rightTextRef.current, { type: "words" });
+    let splitLeft, splitRight;
+    const rafId = requestAnimationFrame(() => {
+      splitLeft = new SplitText(leftTextRef.current, { type: "words" });
+      splitRight = new SplitText(rightTextRef.current, { type: "words" });
 
-    gsap.set([leftTextRef.current, rightTextRef.current], { opacity: 1 });
+      gsap.set([leftTextRef.current, rightTextRef.current], { opacity: 1 });
 
-    gsap.from(splitLeft.words, {
-      y: 20,
-      opacity: 0,
-      duration: 0.9,
-      delay: 0.4,
-      stagger: 0.06,
-      ease: "power3.out",
-    });
+      gsap.from(splitLeft.words, {
+        y: 20,
+        opacity: 0,
+        duration: 0.9,
+        delay: 0.4,
+        stagger: 0.06,
+        ease: "power3.out",
+      });
 
-    gsap.from(splitRight.words, {
-      y: -20,
-      opacity: 0,
-      duration: 0.9,
-      delay: 0.6,
-      stagger: 0.08,
-      ease: "power3.out",
+      gsap.from(splitRight.words, {
+        y: -20,
+        opacity: 0,
+        duration: 0.9,
+        delay: 0.6,
+        stagger: 0.08,
+        ease: "power3.out",
+      });
     });
 
     return () => {
-      splitLeft.revert();
-      splitRight.revert();
+      cancelAnimationFrame(rafId);
+      splitLeft?.revert();
+      splitRight?.revert();
     };
   }, [loaded, isHome, transition]);
 
