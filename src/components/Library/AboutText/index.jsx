@@ -1,7 +1,8 @@
 import { useRef, useEffect } from "react";
 import { useStore } from "@/store/useStore";
 import { gsap, SplitText } from "@/lib/gsap";
-import { useRouter } from "next/router";
+import { usePathname, useLocale } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 
 export default function AboutText() {
   const leftRef = useRef();
@@ -14,8 +15,10 @@ export default function AboutText() {
   const active = useStore((state) => state.active);
   const loaded = useStore((state) => state.loaded);
 
-  const router = useRouter();
-  const isAbout = router.asPath.startsWith("/about");
+  const pathname = usePathname();
+  const isAbout = pathname.startsWith("/about");
+  const locale = useLocale();
+  const t = useTranslations("about");
 
   useEffect(() => {
     gsap.set([leftRef.current, rightRef.current], { opacity: 0 });
@@ -92,7 +95,7 @@ export default function AboutText() {
       splitLeftRef.current = null;
       splitRightRef.current = null;
     };
-  }, [isAbout, active, loaded]);
+  }, [isAbout, active, loaded, locale]);
 
   return (
     <>
@@ -101,9 +104,7 @@ export default function AboutText() {
         className="fixed lg:top-[8rem] top-[10rem] md:top-[15rem] left-[2.4rem] z-10 lg:max-w-[22rem] max-w-full pr-2 pointer-events-none opacity-0"
       >
         <p className="lg:text-[1.3rem] text-[1.1rem] lg:leading-[1.6] leading-[1.3] uppercase font-medium text-storm m-0">
-          Ten Years Away è un fumetto interattivo che racconta dieci anni di
-          storia attraverso le persone che hanno preso parte a questo
-          straordinario viaggio.
+          {t("description")}
         </p>
       </div>
       <div
@@ -111,10 +112,9 @@ export default function AboutText() {
         className="fixed bottom-2 left-[2rem] lg:bottom-auto lg:left-auto  lg:top-[8rem] lg:right-[2.4rem] z-10 lg:max-w-[22rem] max-w-[78vw] lg:text-right text-left pointer-events-none opacity-0"
       >
         <p className="text-[1.1rem] lg:text-[1.3rem] lg:leading-[1.6] leading-[1.3] uppercase font-medium text-storm m-0">
-          Studio375 è un'agenzia di comunicazione, grafica e web con sede a
-          Vicenza.
+          {t("studio")}
           <span className="text-[1rem] block mt-1">
-            Illustrazioni di Davide Grazi.
+            {t("illustrations")}
           </span>
         </p>
       </div>

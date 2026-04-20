@@ -2,6 +2,18 @@ import { useEffect, useRef, useState } from "react";
 import { useStore } from "@/store/useStore";
 import { gsap, SplitText } from "@/lib/gsap";
 import { useRouter } from "next/router";
+import { usePathname } from "@/i18n/navigation";
+import { routing } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
+
+function stripLocale(path) {
+  for (const locale of routing.locales) {
+    if (locale === routing.defaultLocale) continue;
+    if (path.startsWith(`/${locale}/`)) return path.slice(locale.length + 1);
+    if (path === `/${locale}`) return "/";
+  }
+  return path;
+}
 
 export default function Home() {
   const loaded = useStore((state) => state.loaded);
@@ -12,7 +24,13 @@ export default function Home() {
   const leftTextRef = useRef(null);
   const rightTextRef = useRef(null);
   const router = useRouter();
-  const [isHome, setIsHome] = useState(router.pathname === "/");
+  const pathname = usePathname();
+  const t = useTranslations("home");
+  const [isHome, setIsHome] = useState(false);
+
+  useEffect(() => {
+    setIsHome(pathname === "/");
+  }, []);
 
   useEffect(() => {
     if (!isHome) return;
@@ -73,7 +91,7 @@ export default function Home() {
 
   useEffect(() => {
     const handleStart = () => {
-      if (router.pathname !== "/") return;
+      if (!isHome) return;
 
       gsap.to([leftTextRef.current, rightTextRef.current], {
         opacity: 0,
@@ -104,7 +122,7 @@ export default function Home() {
     };
 
     const handleComplete = (url) => {
-      if (url === "/") setIsHome(true);
+      if (stripLocale(url) === "/") setIsHome(true);
     };
 
     router.events.on("routeChangeStart", handleStart);
@@ -113,7 +131,7 @@ export default function Home() {
       router.events.off("routeChangeStart", handleStart);
       router.events.off("routeChangeComplete", handleComplete);
     };
-  }, [router]);
+  }, [router, isHome]);
 
   if (!isHome) return null;
 
@@ -141,7 +159,7 @@ export default function Home() {
               ref={leftTextRef}
               className="text-text-blue lg:text-[2rem] text-center lg:text-left text-[1.4rem] font-[200] xl:w-[10vw] lgx:w-[13vw] lg:w-[16vw] w-full opacity-0"
             >
-              A graphic novel, of a true story, based on... us.
+              {t("tagline")}
             </p>
           </div>
           <div className="order-1 lg:order-2 w-full lg:w-auto">
@@ -149,7 +167,7 @@ export default function Home() {
               ref={rightTextRef}
               className="font-[500] italic text-[#cce8eb] lg:text-[2rem] text-[1.55rem] -mt-[2rem] lg:ml-0 -ml-[0.8rem] opacity-0 lg:w-auto w-full text-center lg:text-left"
             >
-              ...one year later... opss
+              {t("subtitle")}
             </p>
           </div>
         </div>

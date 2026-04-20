@@ -1,8 +1,7 @@
 import { useRef, useEffect } from "react";
 import gsap from "gsap";
 import InertiaPlugin from "gsap/InertiaPlugin";
-import { useRouter } from "next/router";
-import Link from "next/link";
+import { usePathname, Link } from "@/i18n/navigation";
 import { useStore } from "@/store/useStore";
 
 gsap.registerPlugin(InertiaPlugin);
@@ -10,7 +9,7 @@ gsap.registerPlugin(InertiaPlugin);
 export default function Title() {
   const ref = useRef(null);
   const rootRef = useRef(null);
-  const { asPath } = useRouter();
+  const asPath = usePathname();
   const { loaded, transition } = useStore();
 
   const firstLoad = useRef(true);

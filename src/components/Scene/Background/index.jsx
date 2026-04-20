@@ -6,7 +6,7 @@ import fragmentShader from "@/assets/shaders/background/fragment.glsl";
 import { ShaderMaterial, MathUtils } from "three";
 import { useStore } from "@/store/useStore";
 import gsap from "gsap";
-import { useRouter } from "next/router";
+import { usePathname } from "@/i18n/navigation";
 export default function Background({ geometry }) {
   const { size, viewport } = useThree();
   const ref = useRef(null);
@@ -14,7 +14,7 @@ export default function Background({ geometry }) {
   const transition = useStore((state) => state.transition);
   const setBackground = useStore((state) => state.setBackground);
   const loaded = useStore((state) => state.loaded);
-  const { asPath } = useRouter();
+  const asPath = usePathname();
   const staticViewport = useMemo(() => {
     const distance = 5;
     const fov = (75 * Math.PI) / 180;

@@ -12,7 +12,7 @@ import fragmentShader from "@/assets/shaders/card/fragment.glsl";
 import { useTexture, Text } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { gsap } from "@/lib/gsap";
-import { useRouter } from "next/router";
+import { usePathname } from "@/i18n/navigation";
 import { useStore } from "@/store/useStore";
 const Card = forwardRef(function Card(
   { card, geometry, index = 0, active = false },
@@ -23,7 +23,7 @@ const Card = forwardRef(function Card(
   const nameRef = useRef(null);
   const descRef = useRef(null);
   const { addObject, removeObject } = useStore();
-  const { asPath } = useRouter();
+  const asPath = usePathname();
   const [isSmall, setIsSmall] = useState(
     () => typeof window !== "undefined" && window.innerWidth < 600,
   );

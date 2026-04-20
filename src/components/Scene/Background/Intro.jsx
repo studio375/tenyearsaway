@@ -6,7 +6,7 @@ import pageVertexShader from "@/assets/shaders/frame/vertex.glsl";
 import pageFragmentShader from "@/assets/shaders/storm/pageFragment.glsl";
 import { ShaderMaterial, DoubleSide, SRGBColorSpace } from "three";
 import gsap from "gsap";
-import { useRouter } from "next/router";
+import { usePathname } from "@/i18n/navigation";
 import { useTexture, Text } from "@react-three/drei";
 import { useStore } from "@/store/useStore";
 import BookShadow from "@/components/Scene/Book/Shadow";
@@ -16,7 +16,7 @@ export default function Intro({ geometry }) {
   const ref2 = useRef(null);
   const pageRef = useRef(null);
   const textRef = useRef(null);
-  const { asPath } = useRouter();
+  const asPath = usePathname();
   const { loaded, setActive, transition } = useStore();
   const staticViewport = useMemo(() => {
     const distance = 5;

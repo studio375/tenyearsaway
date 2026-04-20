@@ -1,0 +1,24 @@
+{
+  "common": {
+    "year": "Year {number}"
+  },
+  "about": {
+    "description": "Ten Years Away is an interactive graphic novel that tells ten years of history through the people who took part in this extraordinary journey.",
+    "studio": "Studio375 is a communication, graphic design and web agency based in Vicenza.",
+    "illustrations": "Illustrations by Davide Grazi."
+  },
+  "end": {
+    "tbc": "to be continued...",
+    "next": "next"
+  },
+  "book": {
+    "swipe": "Swipe to turn pages"
+  },
+  "footer": {
+    "tagline": "TEN YEARS AWAY...one year later... ops: a grapghic novel, of a true story, based on... us."
+  },
+  "home": {
+    "tagline": "A graphic novel, of a true story, based on... us.",
+    "subtitle": "...one year later... opss"
+  }
+}

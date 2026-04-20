@@ -1,8 +1,8 @@
 import { useRef, useEffect } from "react";
 import gsap from "gsap";
 import { useStore } from "@/store/useStore";
-import { useRouter } from "next/router";
-import Link from "next/link";
+import { useRouter, usePathname, Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 export default function Footer() {
   const startRef = useRef(null);
   const infoRef = useRef([]);
@@ -14,6 +14,8 @@ export default function Footer() {
       ? String(parseInt(activeYear) - 1)
       : null;
   const router = useRouter();
+  const pathname = usePathname();
+  const t = useTranslations("footer");
   useEffect(() => {
     if (!loaded) return;
     const tl = gsap.timeline();
@@ -91,7 +93,7 @@ export default function Footer() {
   }, [activeYear, active]);
 
   useEffect(() => {
-    if (router.asPath === "/") {
+    if (pathname === "/") {
       gsap.to(infoRef.current, {
         autoAlpha: 0,
         yPercent: 100,
@@ -101,7 +103,7 @@ export default function Footer() {
         gsap.to(prevRef.current, { autoAlpha: 0, yPercent: 100, y: 0 });
       }
     }
-  }, [router.asPath]);
+  }, [pathname]);
 
   return (
     <footer className="fixed bottom-0 left-0 w-full lgx:h-5 h-auto z-12 flex justify-center items-center font-500 text-[1.2rem] lg:px-5 px-[2rem]">
@@ -117,8 +119,7 @@ export default function Footer() {
         ref={(el) => (infoRef.current[0] = el)}
         className="opacity-0 translate-y-100 lg:block hidden pb-2 lgx:pb-0"
       >
-        TEN YEARS AWAY...one year later... ops: a grapghic novel, of a true
-        story, based on... us.
+        {t("tagline")}
       </div>
       <div
         ref={(el) => (infoRef.current[1] = el)}

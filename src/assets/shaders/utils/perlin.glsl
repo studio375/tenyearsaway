@@ -1,7 +1,7 @@
 //	Classic Perlin 2D Noise 
 //	by Stefan Gustavson (https://github.com/stegu/webgl-noise)
 //
-vec2 fade(vec2 t) {return t*t*t*(t*(t*6.0-15.0)+10.0);}
+vec2 fade2(vec2 t) {return t*t*t*(t*(t*6.0-15.0)+10.0);}
 vec4 permute(vec4 x){return mod(((x*34.0)+1.0)*x, 289.0);}
 
 float cnoise(vec2 P){
@@ -21,7 +21,7 @@ float cnoise(vec2 P){
   vec2 g10 = vec2(gx.y,gy.y);
   vec2 g01 = vec2(gx.z,gy.z);
   vec2 g11 = vec2(gx.w,gy.w);
-  vec4 norm = 1.79284291400159 - 0.85373472095314 * 
+  vec4 norm = 1.79284291400159 - 0.85373472095314 *
     vec4(dot(g00, g00), dot(g01, g01), dot(g10, g10), dot(g11, g11));
   g00 *= norm.x;
   g01 *= norm.y;
@@ -31,17 +31,17 @@ float cnoise(vec2 P){
   float n10 = dot(g10, vec2(fx.y, fy.y));
   float n01 = dot(g01, vec2(fx.z, fy.z));
   float n11 = dot(g11, vec2(fx.w, fy.w));
-  vec2 fade_xy = fade(Pf.xy);
+  vec2 fade_xy = fade2(Pf.xy);
   vec2 n_x = mix(vec2(n00, n01), vec2(n10, n11), fade_xy.x);
   float n_xy = mix(n_x.x, n_x.y, fade_xy.y);
   return 2.3 * n_xy;
 }
 
-//	Classic Perlin 3D Noise 
+//	Classic Perlin 3D Noise
 //	by Stefan Gustavson (https://github.com/stegu/webgl-noise)
 //
 vec4 taylorInvSqrt(vec4 r){return 1.79284291400159 - 0.85373472095314 * r;}
-vec3 fade(vec3 t) {return t*t*t*(t*(t*6.0-15.0)+10.0);}
+vec3 fade3(vec3 t) {return t*t*t*(t*(t*6.0-15.0)+10.0);}
 
 float cnoise(vec3 P){
   vec3 Pi0 = floor(P); // Integer part for indexing
@@ -104,14 +104,14 @@ float cnoise(vec3 P){
   float n011 = dot(g011, vec3(Pf0.x, Pf1.yz));
   float n111 = dot(g111, Pf1);
 
-  vec3 fade_xyz = fade(Pf0);
+  vec3 fade_xyz = fade3(Pf0);
   vec4 n_z = mix(vec4(n000, n100, n010, n110), vec4(n001, n101, n011, n111), fade_xyz.z);
   vec2 n_yz = mix(n_z.xy, n_z.zw, fade_xyz.y);
   float n_xyz = mix(n_yz.x, n_yz.y, fade_xyz.x); 
   return 2.2 * n_xyz;
 }
 
-vec4 fade(vec4 t) {return t*t*t*(t*(t*6.0-15.0)+10.0);}
+vec4 fade4(vec4 t) {return t*t*t*(t*(t*6.0-15.0)+10.0);}
 
 float cnoise(vec4 P){
   vec4 Pi0 = floor(P); // Integer part for indexing
@@ -237,7 +237,7 @@ float cnoise(vec4 P){
   float n0111 = dot(g0111, vec4(Pf0.x, Pf1.yzw));
   float n1111 = dot(g1111, Pf1);
 
-  vec4 fade_xyzw = fade(Pf0);
+  vec4 fade_xyzw = fade4(Pf0);
   vec4 n_0w = mix(vec4(n0000, n1000, n0100, n1100), vec4(n0001, n1001, n0101, n1101), fade_xyzw.w);
   vec4 n_1w = mix(vec4(n0010, n1010, n0110, n1110), vec4(n0011, n1011, n0111, n1111), fade_xyzw.w);
   vec4 n_zw = mix(n_0w, n_1w, fade_xyzw.z);

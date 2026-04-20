@@ -1,9 +1,10 @@
 import { useRef, useEffect } from "react";
 import { useStore } from "@/store/useStore";
 import { gsap } from "@/lib/gsap";
-import { useRouter } from "next/router";
+import { usePathname, useLocale, Link } from "@/i18n/navigation";
+import { routing } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
 import Title from "../Title";
-import Link from "next/link";
 
 export default function Header() {
   const box = useRef();
@@ -16,7 +17,9 @@ export default function Header() {
   const activeYear = useStore((state) => state.activeYear);
   const transition = useStore((state) => state.transition);
 
-  const router = useRouter();
+  const pathname = usePathname();
+  const locale = useLocale();
+  const t = useTranslations("common");
   const isVisible = useRef(false);
 
   useEffect(() => {
@@ -32,7 +35,7 @@ export default function Header() {
 
   useEffect(() => {
     const tl = gsap.timeline();
-    if (active && router.asPath !== "/" && !isVisible.current) {
+    if (active && pathname !== "/" && !isVisible.current) {
       isVisible.current = true;
       tl.to(box.current, {
         opacity: 1,
@@ -53,7 +56,7 @@ export default function Header() {
         "<",
       );
     }
-    if (router.asPath == "/") {
+    if (pathname == "/") {
       isVisible.current = false;
       tl.to(menu.current, {
         opacity: 0,
@@ -79,14 +82,14 @@ export default function Header() {
     return () => {
       tl?.kill();
     };
-  }, [active, router.asPath]);
+  }, [active, pathname]);
 
   useEffect(() => {
     if (!currentYear.current) return;
     const tl = gsap.timeline();
     const p = currentYear.current.querySelectorAll("p");
     if (
-      (router.asPath.startsWith("/year/") && !useStore.getState().transition) ||
+      (pathname.startsWith("/year/") && !useStore.getState().transition) ||
       !useStore.getState().transition == "exit"
     ) {
       gsap.set(p, {
@@ -106,7 +109,7 @@ export default function Header() {
       });
     } else {
       if (
-        !router.asPath.startsWith("/year/") ||
+        !pathname.startsWith("/year/") ||
         useStore.getState().transition == "next"
       ) {
         tl.to(p, {
@@ -123,11 +126,11 @@ export default function Header() {
     return () => {
       tl?.kill();
     };
-  }, [router.asPath, activeYear]);
+  }, [pathname, activeYear]);
 
   useEffect(() => {
-    const isYearPage = router.asPath == "/year";
-    const isAboutPage = router.asPath.startsWith("/about");
+    const isYearPage = pathname == "/year";
+    const isAboutPage = pathname.startsWith("/about");
     gsap.to(hoverBgLeft?.current, {
       scaleX: isYearPage ? 1 : 0,
       duration: 0.5,
@@ -140,7 +143,7 @@ export default function Header() {
       overwrite: true,
       ease: "power3.out",
     });
-  }, [router.asPath]);
+  }, [pathname]);
 
   const handleEnterLeft = () => {
     gsap.to(hoverBgLeft.current, {
@@ -150,7 +153,7 @@ export default function Header() {
     });
   };
   const handleLeaveLeft = () => {
-    if (router.asPath == "/year") return;
+    if (pathname == "/year") return;
     gsap.to(hoverBgLeft.current, {
       scaleX: 0,
       duration: 0.5,
@@ -166,7 +169,7 @@ export default function Header() {
     });
   };
   const handleLeaveRight = () => {
-    if (router.asPath.startsWith("/about")) return;
+    if (pathname.startsWith("/about")) return;
     gsap.to(hoverBgRight?.current, {
       scaleX: 0,
       duration: 0.5,
@@ -183,7 +186,7 @@ export default function Header() {
           ref={currentYear}
         >
           <p className="font-medium uppercase m-0 opacity-0 will-change-transform">
-            Year {Math.abs(2015 - parseInt(activeYear)) ?? ""}
+            {t("year", { number: Math.abs(2015 - parseInt(activeYear)) })}
           </p>
           <p className="font-bold mx-0 opacity-0  will-change-transform">
             {activeYear ?? ""}
@@ -232,6 +235,29 @@ export default function Header() {
           </Link>
         </div>
       </div>
+      {active && pathname !== "/" && (
+        <div className="absolute top-4 md:top-2 right-[2rem] md:right-[2.4rem] flex items-center gap-[0.6rem] text-[1.2rem] tracking-widest">
+          {routing.locales.map((loc, i) => (
+            <span key={loc} className="flex items-center gap-[0.6rem]">
+              {i > 0 && <span className="opacity-30">|</span>}
+              {loc === locale ? (
+                <span className="font-bold">{loc.toUpperCase()}</span>
+              ) : (
+                <a
+                  href={
+                    loc === routing.defaultLocale
+                      ? pathname
+                      : `/${loc}${pathname}`
+                  }
+                  className="font-medium opacity-60 hover:opacity-100 transition-opacity"
+                >
+                  {loc.toUpperCase()}
+                </a>
+              )}
+            </span>
+          ))}
+        </div>
+      )}
       <Title />
     </header>
   );

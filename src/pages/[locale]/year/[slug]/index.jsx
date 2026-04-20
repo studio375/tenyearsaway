@@ -1,12 +1,15 @@
 import { fetchAPI } from "@/helpers/api/fetch-api";
 import Bridge from "@/components/Utility/Bridge";
 import End from "@/components/Library/End";
+import { routing } from "@/i18n/routing";
 
 export async function getStaticPaths() {
   const years = await fetchAPI("anno", { _fields: "slug", per_page: 100 });
-  const paths = years.map((year) => ({
-    params: { slug: year.slug },
-  }));
+  const paths = routing.locales.flatMap((locale) =>
+    years.map((year) => ({
+      params: { locale, slug: year.slug },
+    }))
+  );
 
   return {
     paths,
@@ -15,14 +18,17 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
+  const { locale, slug } = params;
+  const messages = (await import(`@/i18n/messages/${locale}.json`)).default;
   const year = await fetchAPI("anno", {
-    slug: params.slug,
+    slug,
     acf_format: "standard",
     per_page: 100,
+    lang: locale,
   });
 
   return {
-    props: { year },
+    props: { year, messages, locale },
     revalidate: 10,
   };
 }

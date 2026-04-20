@@ -1,6 +1,6 @@
 import { useStore } from "@/store/useStore";
 import { useRef, useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/router";
+import { usePathname } from "@/i18n/navigation";
 import { gsap, Observer } from "@/lib/gsap";
 import { useThree, useFrame } from "@react-three/fiber";
 import { MathUtils, PlaneGeometry } from "three";
@@ -16,9 +16,9 @@ export default function Team() {
   const loaded = useStore((state) => state.loaded);
   const active = useStore((state) => state.active);
   const transition = useStore((state) => state.transition);
-  const router = useRouter();
+  const pathname = usePathname();
   const { size } = useThree();
-  const isAbout = router.asPath.startsWith("/about");
+  const isAbout = pathname.startsWith("/about");
   const staticViewport = useMemo(() => {
     const distance = 5;
     const fov = (75 * Math.PI) / 180;

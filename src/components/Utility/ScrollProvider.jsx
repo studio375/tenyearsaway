@@ -1,12 +1,12 @@
 import { useLayoutEffect, useEffect } from "react";
 import { ReactLenis, useLenis } from "lenis/react";
-import { useRouter } from "next/router";
+import { usePathname } from "@/i18n/navigation";
 import gsap from "gsap";
 import { useStore } from "@/store/useStore";
 import { ScrollTrigger } from "@/lib/gsap";
 function ScrollManager() {
   const lenis = useLenis();
-  const { asPath } = useRouter();
+  const asPath = usePathname();
   const { activeYear } = useStore();
 
   useEffect(() => {

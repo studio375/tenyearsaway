@@ -2,6 +2,7 @@ import "@/styles/globals.css";
 import Layout from "@/components/Layout";
 import localFont from "next/font/local";
 import { Cache } from "three";
+import { NextIntlClientProvider } from "next-intl";
 
 Cache.enabled = true;
 
@@ -37,8 +38,13 @@ const valve = localFont({
 
 export default function App({ Component, pageProps }) {
   return (
-    <Layout className={valve.className}>
-      <Component {...pageProps} />
-    </Layout>
+    <NextIntlClientProvider
+      locale={pageProps.locale ?? "it"}
+      messages={pageProps.messages ?? {}}
+    >
+      <Layout className={valve.className}>
+        <Component {...pageProps} />
+      </Layout>
+    </NextIntlClientProvider>
   );
 }

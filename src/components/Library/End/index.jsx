@@ -2,9 +2,11 @@ import { useStore } from "@/store/useStore";
 import { useState, useRef, useEffect } from "react";
 import { useLenis } from "lenis/react";
 import { gsap } from "@/lib/gsap";
+import { useTranslations } from "next-intl";
 
 export default function End() {
   const { setTransition, activeYear, endText } = useStore();
+  const t = useTranslations("end");
   const [end, setEnd] = useState(false);
   const [hovered, setHovered] = useState(false);
   const endRef = useRef(null);
@@ -88,7 +90,7 @@ export default function End() {
         className="pointer-events-none fixed inset-0 z-50 flex items-center justify-center"
       >
         <p className="text-[--text-color] text-[2rem] lg:text-[4rem] xl:text-[7rem] font-[500] italic">
-          to be continued...
+          {t("tbc")}
         </p>
       </div>
     );
@@ -137,7 +139,7 @@ export default function End() {
         className={`stroke cursor-pointer bg-gradient-to-r from-bg-blue to-text-color from-50% to-50% bg-[length:200%_100%] ${hovered ? "bg-right" : "bg-left"} transition-all duration-300 bg-clip-text text-transparent uppercase text-[9vw] leading-[6vw] font-extrabold pointer-events-auto px-2 lg:[writing-mode:vertical-rl] lg:rotate-180 rotate-0 lg:translate-x-full opacity-0`}
         onClick={handleClick}
       >
-        next
+        {t("next")}
       </div>
     </div>
   );

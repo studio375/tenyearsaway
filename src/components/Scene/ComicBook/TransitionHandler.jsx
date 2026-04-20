@@ -5,7 +5,7 @@ import { useThree } from "@react-three/fiber";
 import { comicLayouts } from "@/assets/data";
 import { generateGridPositions } from "@/helpers/functions";
 import { useLenis } from "lenis/react";
-import { useRouter } from "next/router";
+import { useRouter } from "@/i18n/navigation";
 export default function TransitionHandler() {
   const {
     objects,

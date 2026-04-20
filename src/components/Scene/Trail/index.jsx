@@ -12,7 +12,7 @@ import {
 import vertexShader from "@/assets/shaders/trail/shared.vert.glsl";
 import trailFragmentShader from "@/assets/shaders/trail/trail.frag.glsl";
 import halftoneFragmentShader from "@/assets/shaders/trail/halftone.frag.glsl";
-import { useRouter } from "next/router";
+import { usePathname } from "@/i18n/navigation";
 import { gsap } from "@/lib/gsap";
 import { useStore } from "@/store/useStore";
 
@@ -27,7 +27,7 @@ export default function Trail() {
   const prevMouseRef = useRef([-viewport.width, -viewport.height]);
   const velocityRef = useRef(0);
   const dirRef = useRef([0, 0]);
-  const { asPath } = useRouter();
+  const asPath = usePathname();
   const loaded = useStore((state) => state.loaded);
 
   const objs = useMemo(() => {

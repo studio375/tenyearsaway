@@ -1,8 +1,10 @@
 import { gsap } from "@/lib/gsap";
 import { useStore } from "@/store/useStore";
 import { useEffect, useRef } from "react";
+import { useTranslations } from "next-intl";
 
 export default function BookLabels() {
+  const t = useTranslations();
   const pages = useStore((s) => s.pages);
   const bookCurrentPage = useStore((s) => s.bookCurrentPage);
   const active = useStore((s) => s.active);
@@ -232,7 +234,7 @@ export default function BookLabels() {
               className="opacity-0 pointer-events-none absolute inset-0 group cursor-pointer pl-[8vw] max-lg:pl-[4vw] text-left flex flex-col justify-center w-full"
             >
               <p className="block stroke uppercase font-extrabold lg:text-center lg:absolute lg:-left-[1vw] lg:top-1/2 lg:-translate-y-1/2 lg:[writing-mode:vertical-rl] lg:rotate-180 lg:h-full lg:text-[9vw] text-[3rem] lg:leading-[0.9em] max-lg:leading-tight max-lg:mb-[0.4rem]">
-                {`Year ${i}`}
+                {t("common.year", { number: i })}
               </p>
               <p className="text-[1.4rem] font-medium uppercase mt-[0.6rem] mb-[0.2rem] mx-0">
                 {page.title}
@@ -268,7 +270,7 @@ export default function BookLabels() {
               className="opacity-0 pointer-events-none absolute inset-0 group cursor-pointer pr-[8vw] max-lg:pr-[4vw] text-right flex flex-col justify-center w-full"
             >
               <p className="block stroke uppercase font-extrabold lg:text-center lg:absolute lg:-right-[1vw] lg:top-1/2 lg:-translate-y-1/2 lg:[writing-mode:vertical-rl] lg:rotate-180 lg:h-full lg:text-[9vw] lg:leading-[0.9em] text-[3rem] max-lg:leading-tight max-lg:mb-[0.4rem]">
-                {`Year ${i}`}
+                {t("common.year", { number: i })}
               </p>
               <p className="text-[1.4rem] font-medium uppercase mt-[0.6rem] mb-[0.2rem] mx-0">
                 {page.title}
@@ -286,7 +288,7 @@ export default function BookLabels() {
         className="fixed bottom-[1.8rem] left-2 lg:bottom-5 lg:left-1/2 lg:-translate-x-1/2 pointer-events-none select-none opacity-0 translate-y-10"
       >
         <p className="lg:text-[1.8rem] text-[1.4rem] lowercase font-medium">
-          Swipe to turn pages
+          {t("book.swipe")}
         </p>
       </div>
     </>

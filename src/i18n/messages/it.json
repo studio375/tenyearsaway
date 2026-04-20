@@ -1,0 +1,24 @@
+{
+  "common": {
+    "year": "Year {number}"
+  },
+  "about": {
+    "description": "Ten Years Away è un fumetto interattivo che racconta dieci anni di storia attraverso le persone che hanno preso parte a questo straordinario viaggio.",
+    "studio": "Studio375 è un'agenzia di comunicazione, grafica e web con sede a Vicenza.",
+    "illustrations": "Illustrazioni di Davide Grazi."
+  },
+  "end": {
+    "tbc": "continua...",
+    "next": "next"
+  },
+  "book": {
+    "swipe": "Trascina per girare le pagine"
+  },
+  "footer": {
+    "tagline": "TEN YEARS AWAY...un anno dopo... ops: un fumetto, di una storia vera, basata su... noi."
+  },
+  "home": {
+    "tagline": "Un fumetto, di una storia vera, basata su... noi.",
+    "subtitle": "...un anno dopo... opss"
+  }
+}

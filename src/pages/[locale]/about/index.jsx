@@ -1,15 +1,25 @@
 import { fetchAPI } from "@/helpers/api/fetch-api";
 import Bridge from "@/components/Utility/Bridge";
 import AboutText from "@/components/Library/AboutText";
+import { routing } from "@/i18n/routing";
 
-export async function getStaticProps() {
+export async function getStaticPaths() {
+  return {
+    paths: routing.locales.map((locale) => ({ params: { locale } })),
+    fallback: false,
+  };
+}
+
+export async function getStaticProps({ params: { locale } }) {
+  const messages = (await import(`@/i18n/messages/${locale}.json`)).default;
   const page = await fetchAPI("pages", {
     slug: "about",
     acf_format: "standard",
+    lang: locale,
   });
 
   return {
-    props: { page: page },
+    props: { page, messages, locale },
     revalidate: 10,
   };
 }

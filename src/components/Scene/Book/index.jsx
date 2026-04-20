@@ -12,7 +12,7 @@ import {
 } from "three";
 import gsap from "gsap";
 import { easing } from "maath";
-import { useRouter } from "next/router";
+import { useRouter, usePathname } from "@/i18n/navigation";
 import { useDrag } from "@use-gesture/react";
 
 const PAGE_DEPTH = 0.003;
@@ -51,6 +51,7 @@ export default function Book() {
   const [currentPage, setCurrentPage] = useState(false);
   const [prevPage, setPrevPage] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
 
   const { size } = useThree();
   const yOffset = size.width >= 1024 ? 0 : 0.4;
@@ -134,7 +135,7 @@ export default function Book() {
 
     tl.current?.kill();
     tl.current = null;
-    if (router.asPath === "/year") {
+    if (pathname === "/year") {
       const needsStateReset = selectedPage || selectedPage === 0;
       isEnabled.current = false;
       gsap.killTweensOf([groupRef.current.position, groupRef.current.rotation]);
@@ -217,7 +218,7 @@ export default function Book() {
       tl.current?.kill();
       tl.current = null;
     };
-  }, [router.asPath, activeExperience, transition, yOffset]);
+  }, [pathname, activeExperience, transition, yOffset]);
 
   const tlPage = useRef();
   useEffect(() => {

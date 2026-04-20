@@ -1,13 +1,23 @@
 import { fetchAPI } from "@/helpers/api/fetch-api";
 import Bridge from "@/components/Utility/Bridge";
 import BookLabels from "@/components/Scene/Book/Labels";
+import { routing } from "@/i18n/routing";
 
-export async function getStaticProps() {
+export async function getStaticPaths() {
+  return {
+    paths: routing.locales.map((locale) => ({ params: { locale } })),
+    fallback: false,
+  };
+}
+
+export async function getStaticProps({ params: { locale } }) {
+  const messages = (await import(`@/i18n/messages/${locale}.json`)).default;
   const data = await fetchAPI("anno", {
     _fields: "slug,title,acf.completo,acf.completo_texture,acf.titolo",
     acf_format: "standard",
     order: "asc",
     per_page: 100,
+    lang: locale,
   });
 
   const cleanData = data.map((item) => ({
@@ -18,7 +28,7 @@ export async function getStaticProps() {
   }));
 
   return {
-    props: { years: cleanData },
+    props: { years: cleanData, messages, locale },
     revalidate: 10,
   };
 }

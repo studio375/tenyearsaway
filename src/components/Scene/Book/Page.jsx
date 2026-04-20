@@ -5,7 +5,7 @@ import { ShaderMaterial } from "three";
 import vertexShader from "@/assets/shaders/book/vertex.glsl";
 import fragmentShader from "@/assets/shaders/book/fragment.glsl";
 import { useFrame, useThree } from "@react-three/fiber";
-import { useRouter } from "next/router";
+import { useRouter, usePathname } from "@/i18n/navigation";
 const PAGE_DEPTH = 0.003;
 
 export default function Page({
@@ -32,6 +32,7 @@ export default function Page({
   ]);
   const { size } = useThree();
   const router = useRouter();
+  const pathname = usePathname();
 
   const materials = useMemo(() => {
     return [
@@ -83,14 +84,14 @@ export default function Page({
   }, []);
 
   useEffect(() => {
-    if (router.asPath === `/year`) {
+    if (pathname === `/year`) {
       meshRef.current.position.set(
         sizes.width / 2,
         0,
         -index * PAGE_DEPTH + currentPage * PAGE_DEPTH,
       );
     }
-  }, [router.asPath]);
+  }, [pathname]);
 
   //GSAP
   useEffect(() => {
