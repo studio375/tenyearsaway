@@ -14,13 +14,14 @@ export async function getStaticProps({ params: { locale } }) {
   const messages = (await import(`@/i18n/messages/${locale}.json`)).default;
   const page = await fetchAPI("pages", {
     slug: "about",
+    _fields: "acf,slug",
     acf_format: "standard",
     lang: locale,
   });
 
   return {
     props: { page, messages, locale },
-    revalidate: 10,
+    revalidate: 3600,
   };
 }
 

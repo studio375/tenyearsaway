@@ -29,7 +29,7 @@ export async function getStaticProps({ params }) {
 
   return {
     props: { year, messages, locale },
-    revalidate: 10,
+    revalidate: 3600,
   };
 }
 
