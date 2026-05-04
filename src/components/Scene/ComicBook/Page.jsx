@@ -1,6 +1,6 @@
 import React, { useRef, useMemo, useEffect } from "react";
 import { ShaderMaterial } from "three";
-import { useKTX2 } from "@react-three/drei";
+import { useTexture } from "@react-three/drei";
 import { useStore } from "@/store/useStore";
 import vertexShader from "@/assets/shaders/page/vertex.glsl";
 import fragmentShader from "@/assets/shaders/page/fragment.glsl";
@@ -10,7 +10,7 @@ import BookShadow from "../Book/Shadow";
 const Page = function ({ geometry, page }) {
   const meshRef = useRef(null);
   const shadowRef = useRef(null);
-  const texture = useKTX2(page[1].url);
+  const texture = useTexture(page[0].url);
   const { addObject, removeObject } = useStore();
   const { size, gl } = useThree();
 
