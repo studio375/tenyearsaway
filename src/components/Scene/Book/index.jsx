@@ -24,7 +24,7 @@ const COVER_URL = "/textures/fullCopertina.png";
 const BACK_COVER_URL = "/textures/retro-IT.png";
 const BACK_COVER_URL_EN = "/textures/retro-EN.png";
 const BACK_COVER_URL_FRONT_IT = "/textures/retroFront-IT.png";
-const BACK_COVER_URL_FRONT_EN = "/textures/retroFront-IT.png";
+const BACK_COVER_URL_FRONT_EN = "/textures/retroFront-EN.png";
 
 const pageMaterials = [
   new MeshBasicMaterial({ color: "#fff" }), // Bordo Destro
