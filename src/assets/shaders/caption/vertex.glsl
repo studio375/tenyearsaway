@@ -13,7 +13,7 @@ void main() {
 
   float progress = 1. - uProgress;
   pos.y += sin(pos.x * 3.20 + uSeed) * 0.2 * progress;
-  pos.x += sin(uTime * 2.2 + uSeed * 6.0) * 0.03;
+  // pos.x += sin(uTime * 2.2 + uSeed * 1.0) * 0.03;
 
   vec4 wPos = modelMatrix * vec4(pos, 1.0);
   gl_Position = projectionMatrix * viewMatrix * wPos;

@@ -154,7 +154,7 @@ export default function BookLabels() {
       pageTl.current.to(
         prevLeftEl,
         {
-          x: -20,
+          x: -25,
           opacity: 0,
           pointerEvents: "none",
           duration: 0.25,
@@ -168,7 +168,7 @@ export default function BookLabels() {
       pageTl.current.to(
         prevRightEl,
         {
-          x: 20,
+          x: 25,
           opacity: 0,
           pointerEvents: "none",
           duration: 0.25,
@@ -182,7 +182,7 @@ export default function BookLabels() {
     if (nextLeftEl)
       pageTl.current.fromTo(
         nextLeftEl,
-        { x: -20, opacity: 0, pointerEvents: "none" },
+        { x: -25, opacity: 0, pointerEvents: "none" },
         {
           x: 0,
           opacity: 1,
@@ -195,7 +195,7 @@ export default function BookLabels() {
     if (nextRightEl)
       pageTl.current.fromTo(
         nextRightEl,
-        { x: 20, opacity: 0, pointerEvents: "none" },
+        { x: 25, opacity: 0, pointerEvents: "none" },
         {
           x: 0,
           opacity: 1,
@@ -218,22 +218,24 @@ export default function BookLabels() {
           return (
             <div
               key={i}
-              ref={(el) => {
-                leftElsRef.current[i] = el;
-              }}
+              ref={(el) => { leftElsRef.current[i] = el; }}
               onClick={(e) => {
                 if (isOpen && bookCurrentPage === sheetNum) {
                   e.currentTarget.classList.remove("is-hovered");
                   setSelectedPage(sheetNum - 1);
                 }
               }}
-              onMouseEnter={(e) => e.currentTarget.classList.add("is-hovered")}
-              onMouseLeave={(e) =>
-                e.currentTarget.classList.remove("is-hovered")
-              }
-              className="opacity-0 pointer-events-none absolute inset-0 group cursor-pointer pl-[8vw] max-lg:pl-[4vw] text-left flex flex-col justify-center w-full"
+              onMouseEnter={(e) => {
+                e.currentTarget.classList.add("is-hovered");
+                gsap.to(e.currentTarget, { x: -25, duration: 0.4, ease: "power2.out" });
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.classList.remove("is-hovered");
+                gsap.to(e.currentTarget, { x: 0, duration: 0.4, ease: "power2.out" });
+              }}
+              className="opacity-0 pointer-events-none will-change-transform absolute inset-0 group cursor-pointer pl-[7vw] max-lg:pl-[4vw] text-left flex flex-col justify-center w-full"
             >
-              <p className="block stroke uppercase font-extrabold lg:text-center lg:absolute lg:-left-[1vw] lg:top-1/2 lg:-translate-y-1/2 lg:[writing-mode:vertical-rl] lg:rotate-180 lg:h-full lg:text-[9vw] text-[3rem] lg:leading-[0.9em] max-lg:leading-tight max-lg:mb-[0.4rem]">
+              <p className="block stroke small uppercase font-extrabold lg:text-center lg:absolute lg:left-[2rem] lg:top-1/2 lg:-translate-y-1/2 lg:[writing-mode:vertical-rl] lg:rotate-180 lg:h-full lg:text-[4.6rem] text-[3rem] lg:leading-[0.9em] max-lg:leading-tight max-lg:mb-[0.4rem]">
                 {t("common.year", { number: i })}
               </p>
               <p className="text-[1.4rem] font-medium uppercase mt-[0.6rem] mb-[0.2rem] mx-0">
@@ -254,22 +256,24 @@ export default function BookLabels() {
           return (
             <div
               key={i}
-              ref={(el) => {
-                rightElsRef.current[i] = el;
-              }}
+              ref={(el) => { rightElsRef.current[i] = el; }}
               onClick={(e) => {
                 if (isOpen && bookCurrentPage === sheetNum) {
                   e.currentTarget.classList.remove("is-hovered");
                   setSelectedPage(sheetNum);
                 }
               }}
-              onMouseEnter={(e) => e.currentTarget.classList.add("is-hovered")}
-              onMouseLeave={(e) =>
-                e.currentTarget.classList.remove("is-hovered")
-              }
-              className="opacity-0 pointer-events-none absolute inset-0 group cursor-pointer pr-[8vw] max-lg:pr-[4vw] text-right flex flex-col justify-center w-full"
+              onMouseEnter={(e) => {
+                e.currentTarget.classList.add("is-hovered");
+                gsap.to(e.currentTarget, { x: 25, duration: 0.4, ease: "power2.out" });
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.classList.remove("is-hovered");
+                gsap.to(e.currentTarget, { x: 0, duration: 0.4, ease: "power2.out" });
+              }}
+              className="opacity-0 pointer-events-none will-change-transform absolute inset-0 group cursor-pointer pr-[7vw] max-lg:pr-[4vw] text-right flex flex-col justify-center w-full"
             >
-              <p className="block stroke uppercase font-extrabold lg:text-center lg:absolute lg:-right-[1vw] lg:top-1/2 lg:-translate-y-1/2 lg:[writing-mode:vertical-rl] lg:rotate-180 lg:h-full lg:text-[9vw] lg:leading-[0.9em] text-[3rem] max-lg:leading-tight max-lg:mb-[0.4rem]">
+              <p className="block stroke small uppercase font-extrabold lg:text-center lg:absolute lg:right-[2rem] lg:top-1/2 lg:-translate-y-1/2 lg:[writing-mode:vertical-rl] lg:rotate-180 lg:h-full lg:text-[4.6rem] lg:leading-[0.9em] text-[3rem] max-lg:leading-tight max-lg:mb-[0.4rem]">
                 {t("common.year", { number: i })}
               </p>
               <p className="text-[1.4rem] font-medium uppercase mt-[0.6rem] mb-[0.2rem] mx-0">

@@ -5,7 +5,12 @@ import { useRef, useMemo, useLayoutEffect } from "react";
 import Mesh from "./Mesh";
 import CameraRig from "./CameraRig";
 import Caption from "./Caption";
-import { positions, cameraTargets, ZOOM_START_2025 } from "@/assets/data";
+import {
+  positions,
+  cameraTargets,
+  ZOOM_START_2025,
+  captionSizeOverrides,
+} from "@/assets/data";
 import { getMeshSizes, getCaptionPositions } from "@/helpers/functions";
 import { useLenis } from "lenis/react";
 import TransitionHandler from "./TransitionHandler";
@@ -158,7 +163,7 @@ export default function ComicBook() {
     return frames.map((frame, index) => {
       if (!Array.isArray(frame?.dialogo) || frame.dialogo.length === 0)
         return [];
-      return frame.dialogo.map((dialogoItem) => {
+      return frame.dialogo.map((dialogoItem, dialogoIdx) => {
         if (!dialogoItem?.immagine_txt) return null;
         const refDim = size.width < 1024 ? size.height : size.width;
         const isTablet = size.width >= 600 && size.width < 1024;
@@ -184,9 +189,12 @@ export default function ComicBook() {
         const scaledH = h * sizeMultiplier;
         const finalW = Math.max(scaledW, minCaptionW, mobileMinW);
         const finalH = finalW > scaledW ? finalW / ar : scaledH;
+        const overrideScale =
+          captionSizeOverrides[activeYear]?.[`${index}-${dialogoIdx}`] ?? 1;
+        const wideScreenScale = size.width >= 2000 ? 0.7 : 1;
         return {
-          meshWidth: finalW,
-          meshHeight: finalH,
+          meshWidth: finalW * overrideScale * wideScreenScale,
+          meshHeight: finalH * overrideScale * wideScreenScale,
         };
       });
     });

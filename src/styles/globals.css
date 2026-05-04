@@ -147,6 +147,10 @@ svg .letter {
   color: var(--bg-blue);
   transition: color 0.27s ease;
 }
+.stroke.small {
+  -webkit-text-stroke: 1.3px #000000;
+  text-stroke: 1.3px #000000;
+}
 stroke:hover {
   color: var(--text-color);
 }

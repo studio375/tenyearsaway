@@ -56,14 +56,22 @@ export default function End() {
     };
   }, [end]);
 
+  const isDesktop = () => window.matchMedia("(min-width: 1024px)").matches;
+
   const handleMouseEnter = () => {
     setHovered(true);
     wrapperRef.current?.classList.add("is-hovered");
+    if (isDesktop()) {
+      gsap.to(endRef.current, { x: 25, duration: 0.4, ease: "power2.out" });
+    }
   };
 
   const handleMouseLeave = () => {
     setHovered(false);
     wrapperRef.current?.classList.remove("is-hovered");
+    if (isDesktop()) {
+      gsap.to(endRef.current, { x: 0, duration: 0.4, ease: "power2.out" });
+    }
   };
 
   useEffect(() => {
@@ -130,13 +138,13 @@ export default function End() {
   return (
     <div
       ref={wrapperRef}
-      className="fixed lg:top-1/2 bottom-[8rem] lg:bottom-auto -translate-y-1/2 lg:right-0 left-1/2 lg:left-auto -translate-x-1/2 lg:translate-x-0 group"
+      className="fixed lg:top-1/2 bottom-[8rem] lg:bottom-auto -translate-y-1/2 lg:right-0 lg:pr-[2rem] left-1/2 lg:left-auto -translate-x-1/2 lg:translate-x-0 group"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
       <div
         ref={endRef}
-        className={`stroke cursor-pointer bg-gradient-to-r from-bg-blue to-text-color from-50% to-50% bg-[length:200%_100%] ${hovered ? "bg-right" : "bg-left"} transition-all duration-300 bg-clip-text text-transparent uppercase text-[9vw] leading-[6vw] font-extrabold pointer-events-auto px-2 lg:[writing-mode:vertical-rl] lg:rotate-180 rotate-0 lg:translate-x-full opacity-0`}
+        className={`stroke small cursor-pointer bg-gradient-to-r will-change-transform from-bg-blue to-text-color from-50% to-50% bg-[length:200%_100%] ${hovered ? "bg-right" : "bg-left"} transition-all duration-300 bg-clip-text text-transparent uppercase text-[4.6rem] leading-[90%] font-extrabold pointer-events-auto px-2 lg:[writing-mode:vertical-rl] lg:rotate-180 rotate-0 lg:translate-x-full opacity-0`}
         onClick={handleClick}
       >
         {t("next")}
