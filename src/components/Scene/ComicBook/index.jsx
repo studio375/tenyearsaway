@@ -261,15 +261,18 @@ export default function ComicBook() {
     frames?.length ? frames.map(() => ({ progress: 0 })) : [],
   );
   useLayoutEffect(() => {
+    // Always reset progress when frames change — prevents stale progress values
+    // from a previous year from immediately killing new timelines via the >= 1 check.
+    framesProgress.current = frames?.length
+      ? frames.map(() => ({ progress: 0 }))
+      : [];
+
     if (framesTimeline.length > 0 && totalWidth > 0) {
-      framesProgress.current = frames?.length
-        ? frames.map(() => ({ progress: 0 }))
-        : [];
       framesTimelineRef.current = framesTimeline;
-    } else if (frames?.length && framesTimeline.length === 0) {
+    } else {
       framesTimelineRef.current = [];
     }
-  }, [framesTimeline, totalWidth, frames?.length]);
+  }, [framesTimeline, totalWidth, frames]);
 
   useLenis(({ progress }) => {
     const timeline = framesTimelineRef.current;

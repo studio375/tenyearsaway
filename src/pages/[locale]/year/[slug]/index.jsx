@@ -27,6 +27,8 @@ export async function getStaticProps({ params }) {
     lang: locale,
   });
 
+  if (!year) return { notFound: true };
+
   return {
     props: { year, messages, locale },
     revalidate: 3600,

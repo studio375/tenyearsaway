@@ -1,31 +1,34 @@
 import { getBackendURL } from "./api-helpers";
 import qs from "qs";
-export async function fetchAPI(path = "", urlParamsObject = {}) {
-  try {
-    const options = {
-      next: { tags: ["all"] },
-      cache: "force-cache",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
 
-    // Build request URL
+const FETCH_TIMEOUT_MS = 8000;
+
+export async function fetchAPI(path = "", urlParamsObject = {}) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+
+  try {
     const queryString = qs.stringify(urlParamsObject);
     const requestUrl = `${getBackendURL(
       `/${path}${queryString ? `?${queryString}` : ""}`,
     )}`;
-    // Trigger API call
-    const response = await fetch(requestUrl, options);
+
+    const response = await fetch(requestUrl, {
+      next: { tags: ["all"] },
+      cache: "force-cache",
+      headers: { "Content-Type": "application/json" },
+      signal: controller.signal,
+    });
+    clearTimeout(timeout);
+
     const r = await response.json();
     if ("slug" in urlParamsObject) {
       return Array.isArray(r) ? (r[0] ?? null) : null;
     }
     return r;
   } catch (error) {
-    console.error(error);
-    throw new Error(
-      `Please check if your server is running and you set all the required tokens.`,
-    );
+    clearTimeout(timeout);
+    console.error(`fetchAPI error [${path}]:`, error);
+    return null;
   }
 }

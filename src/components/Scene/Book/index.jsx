@@ -13,14 +13,18 @@ import {
 import gsap from "gsap";
 import { easing } from "maath";
 import { useRouter, usePathname } from "@/i18n/navigation";
+import { useLocale } from "next-intl";
 import { useDrag } from "@use-gesture/react";
 
 const PAGE_DEPTH = 0.003;
 const PAGE_SEGMENTS = 30;
 const sharedGeometry = new BoxGeometry(1, 1, PAGE_DEPTH, PAGE_SEGMENTS, 2);
 
-const COVER_URL = "/textures/fullCopertina.jpeg";
-const BACK_COVER_URL = "/textures/copertina-retro.png";
+const COVER_URL = "/textures/fullCopertina.png";
+const BACK_COVER_URL = "/textures/retro-IT.png";
+const BACK_COVER_URL_EN = "/textures/retro-EN.png";
+const BACK_COVER_URL_FRONT_IT = "/textures/retroFront-IT.png";
+const BACK_COVER_URL_FRONT_EN = "/textures/retroFront-IT.png";
 
 const pageMaterials = [
   new MeshBasicMaterial({ color: "#fff" }), // Bordo Destro
@@ -52,6 +56,7 @@ export default function Book() {
   const [prevPage, setPrevPage] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
+  const locale = useLocale();
 
   const { size } = useThree();
   const yOffset = size.width >= 1024 ? 0 : 0.4;
@@ -74,8 +79,17 @@ export default function Book() {
   const textures = useMemo(() => {
     if (!pages) return [];
     const contentUrls = pages.map((p) => p.full.url);
-    return [COVER_URL, ...contentUrls, BACK_COVER_URL];
-  }, [pages]);
+    const retroFrontUrl =
+      locale === "en" ? BACK_COVER_URL_FRONT_EN : BACK_COVER_URL_FRONT_IT;
+    const backCoverUrl = locale === "en" ? BACK_COVER_URL_EN : BACK_COVER_URL;
+    // [COVER_URL, ...contentUrls] must have even length so retroFront lands
+    // on the front face (even index) of the last sheet
+    const base = [COVER_URL, ...contentUrls];
+    if (base.length % 2 !== 0) {
+      base.push(retroFrontUrl); // filler: retroFront on back of penultimate sheet
+    }
+    return [...base, retroFrontUrl, backCoverUrl];
+  }, [pages, locale]);
 
   const totalSheets = Math.ceil(textures.length / 2);
   const sheets = useMemo(

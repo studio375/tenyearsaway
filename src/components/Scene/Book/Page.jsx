@@ -139,7 +139,6 @@ export default function Page({
       },
     });
     if (selectedPage === index) {
-      router.prefetch(`/year/${year}`);
       tl.current.eventCallback("onComplete", () => {
         resetBook();
         tl.current.time(0).kill();
