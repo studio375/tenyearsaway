@@ -20,7 +20,7 @@ const RT_SIZE = 512;
 
 export default function Trail() {
   const { gl, size, viewport } = useThree();
-  if (size.width < 1024) return null;
+  const isMobile = size.width < 1024;
 
   const ref = useRef();
   const mouseRef = useRef([-viewport.width, -viewport.height]);
@@ -83,6 +83,7 @@ export default function Trail() {
   const writeTarget = useRef(objs.rtB);
 
   useEffect(() => {
+    if (isMobile) return;
     objs.halftoneMat.uniforms.uResolution.value = [size.width, size.height];
     objs.trailMat.uniforms.uAspect.value = size.width / size.height;
 
@@ -100,6 +101,7 @@ export default function Trail() {
   }, [size.width, size.height, objs, loaded]);
 
   useEffect(() => {
+    if (isMobile) return;
     const tl = gsap.timeline();
     if (asPath === "/") {
       tl.to(objs.halftoneMat.uniforms.uColor.value, {
@@ -127,6 +129,7 @@ export default function Trail() {
 
   // Mouse tracking via pointermove (works on touch too)
   useEffect(() => {
+    if (isMobile) return;
     const onPointerMove = (e) => {
       prevMouseRef.current = [...mouseRef.current];
       mouseRef.current = [
@@ -162,6 +165,7 @@ export default function Trail() {
   }, [objs]);
 
   useFrame((state) => {
+    if (isMobile) return;
     const { trailMat, halftoneMat, offScene, offCamera } = objs;
 
     trailMat.uniforms.uPrevTrail.value = readTarget.current.texture;
@@ -200,6 +204,8 @@ export default function Trail() {
     ref.current.position.y = cam.position.y;
     ref.current.scale.set(w, h, 1);
   });
+
+  if (isMobile) return null;
 
   return (
     <mesh

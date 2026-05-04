@@ -182,16 +182,17 @@ export default function Header() {
     <header className="fixed top-[10px] md:top-2 left-0 w-full p-0 z-12 flex justify-center items-center uppercase text-[1.4rem] font-500">
       {activeYear && (
         <div
-          className={`text-[1.2rem] lg:text-[1.4rem] absolute fixed top-9 lg:top-4 left-[2rem] lg:left-[2.4rem] flex lg:gap-2 gap-1`}
+          className={`text-[1.2rem] lg:text-[1.4rem] absolute top-9 lg:top-1/2 lg:-translate-y-1/2 left-[2rem] lg:left-[2.4rem] flex lg:gap-2 gap-1`}
           ref={currentYear}
         >
-          <p className="font-medium uppercase m-0 opacity-0 will-change-transform">
+          <p className="font-medium uppercase m-0 opacity-0 will-change-transform leading-[100%]">
             {t("year", { number: Math.abs(2015 - parseInt(activeYear)) })}
           </p>
-          <p className="font-bold mx-0 opacity-0  will-change-transform">
+
+          <p className="font-bold mx-0 opacity-0  will-change-transform leading-[100%]">
             {activeYear ?? ""}
           </p>
-          <p className="font-medium uppercase m-0 opacity-0 will-change-transform">
+          <p className="font-medium uppercase m-0 opacity-0 will-change-transform leading-[100%]">
             {pageData?.[2] ?? ""}
           </p>
         </div>
@@ -236,7 +237,7 @@ export default function Header() {
         </div>
       </div>
       {active && pathname !== "/" && (
-        <div className="absolute top-4 md:top-2 right-[2rem] md:right-[2.4rem] flex items-center gap-[0.6rem] text-[1.2rem] tracking-widest">
+        <div className="absolute top-4 md:top-1/2 md:-translate-y-1/2 right-[2rem] md:right-[2.4rem] flex items-center gap-[0.6rem] text-[1.2rem] tracking-widest">
           {routing.locales.map((loc, i) => (
             <span key={loc} className="flex items-center gap-[0.6rem]">
               {i > 0 && <span className="opacity-30">|</span>}

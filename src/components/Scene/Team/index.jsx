@@ -147,7 +147,7 @@ export default function Team() {
         tl.current
           .to(
             card.position,
-            { x: 0, y: 0, duration: 1, ease: "power3.out", delay: 0.03 },
+            { x: 0, y: 0, duration: 1, ease: "magic2", delay: 0.03 },
             0,
           )
           .to(
@@ -169,7 +169,7 @@ export default function Team() {
               x: circleLayout[index].position[0],
               y: circleLayout[index].position[1],
               duration: 1,
-              ease: "snake",
+              ease: "magic3",
               delay: 0.03,
             },
             1,

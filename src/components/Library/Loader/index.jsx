@@ -30,14 +30,13 @@ export default function Loader() {
   const loaderRef = useRef(null);
   const stripRefs = useRef([]);
   const setLoaded = useStore((s) => s.setLoaded);
-  const soundRef = useRef(null);
   const timeRef = useRef(null);
 
   useEffect(() => {
     const loader = loaderRef.current;
 
     const initTl = gsap.timeline();
-    initTl.to([soundRef.current, timeRef.current], {
+    initTl.to(timeRef.current, {
       opacity: 1,
       y: 0,
       yPercent: 0,
@@ -81,14 +80,6 @@ export default function Loader() {
       ref={loaderRef}
       className="fixed left-0 top-0 inset-0 z-0 w-screen h-svh bg-storm flex items-center justify-center"
     >
-      <div className="absolute left-1/2 top-2 -translate-x-1/2 w-full text-center">
-        <span
-          className="lowercase text-text-blue opacity-0 -translate-y-3 will-change-transform block"
-          ref={soundRef}
-        >
-          enable sound for a better experience
-        </span>
-      </div>
       <div className="flex text-text-blue lg:text-[16rem] text-[10rem] font-[800] leading-[120%]">
         {STRIPS.map((strip, col) => (
           <div

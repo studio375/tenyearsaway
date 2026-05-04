@@ -36,6 +36,8 @@ CustomEase.create(
   "M0,0 C0.15,0 0.2,0.85 0.3,0.95 0.5,1 0.8,1 1,1",
 );
 CustomEase.create("snake", "0.76, 0, 0.24, 1");
+CustomEase.create("magic2", "0.63, 0.322, 0.194, 0.988");
+CustomEase.create("magic3", "0.744, 0, 0.347, 1.003");
 
 // Global Config
 gsap.config({
