@@ -1,3 +1,5 @@
+const LOCALES = ["it", "en"];
+
 export default async function handler(req, res) {
   try {
     const slugsRes = await fetch(
@@ -5,12 +7,22 @@ export default async function handler(req, res) {
     );
     const years = await slugsRes.json();
 
-    await res.revalidate("/");
-    await Promise.all(
-      years.map((year) => res.revalidate(`/year/${year.slug}`))
-    );
+    const paths = [];
+    for (const locale of LOCALES) {
+      paths.push(`/${locale}`);
+      paths.push(`/${locale}/year`);
+      paths.push(`/${locale}/about`);
+      for (const year of years) {
+        paths.push(`/${locale}/year/${year.slug}`);
+      }
+    }
 
-    return res.status(200).json({ revalidated: true, count: years.length });
+    const results = await Promise.allSettled(paths.map((p) => res.revalidate(p)));
+    const failed = results
+      .map((r, i) => r.status === "rejected" ? { path: paths[i], reason: r.reason?.message } : null)
+      .filter(Boolean);
+
+    return res.status(200).json({ revalidated: true, count: years.length, failed });
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
