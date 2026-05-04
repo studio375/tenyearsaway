@@ -5,6 +5,7 @@ import { Cache } from "three";
 import { NextIntlClientProvider } from "next-intl";
 import { useLayoutEffect } from "react";
 import { useStore } from "@/store/useStore";
+import { GoogleTagManager } from "@next/third-parties/google";
 
 Cache.enabled = true;
 
@@ -70,6 +71,7 @@ export default function App({ Component, pageProps }) {
     >
       <Layout className={valve.className}>
         <Component {...pageProps} />
+        <GoogleTagManager gtmId="GTM-MXPTHXJ7" />
       </Layout>
     </NextIntlClientProvider>
   );
