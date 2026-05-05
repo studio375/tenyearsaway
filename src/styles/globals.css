@@ -154,6 +154,9 @@ svg .letter {
 stroke:hover {
   color: var(--text-color);
 }
+div.group:hover > .stroke {
+  color: var(--text-color);
+}
 div.group.is-hovered > .stroke {
   color: var(--text-color);
 }

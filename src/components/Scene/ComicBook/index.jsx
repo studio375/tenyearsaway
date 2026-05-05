@@ -10,6 +10,7 @@ import {
   cameraTargets,
   ZOOM_START_2025,
   captionSizeOverrides,
+  captionSizeOverridesMobile,
 } from "@/assets/data";
 import { getMeshSizes, getCaptionPositions } from "@/helpers/functions";
 import { useLenis } from "lenis/react";
@@ -184,17 +185,21 @@ export default function ComicBook() {
         const isMobile = size.width <= 500;
         const minCaptionW =
           meshSizes[index].meshWidth >= 8.5 ? 1 : staticViewport.width * 0.075;
-        const mobileMinW = isMobile ? staticViewport.width * 0.2 : 0;
+        const mobileMinW = isMobile ? staticViewport.width * 0.19 : 0;
         const scaledW = w * sizeMultiplier;
         const scaledH = h * sizeMultiplier;
         const finalW = Math.max(scaledW, minCaptionW, mobileMinW);
         const finalH = finalW > scaledW ? finalW / ar : scaledH;
+        const overrides = isMobile ? captionSizeOverridesMobile : captionSizeOverrides;
         const overrideScale =
-          captionSizeOverrides[activeYear]?.[`${index}-${dialogoIdx}`] ?? 1;
+          overrides[activeYear]?.[`${index}-${dialogoIdx}`] ?? 1;
+
         const wideScreenScale = size.width >= 2000 ? 0.7 : 1;
+        const computedW = finalW * overrideScale * wideScreenScale;
+        const computedH = finalH * overrideScale * wideScreenScale;
         return {
-          meshWidth: finalW * overrideScale * wideScreenScale,
-          meshHeight: finalH * overrideScale * wideScreenScale,
+          meshWidth: computedW,
+          meshHeight: computedH,
         };
       });
     });

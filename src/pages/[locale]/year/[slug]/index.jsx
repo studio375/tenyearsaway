@@ -9,7 +9,7 @@ export async function getStaticPaths() {
   const paths = routing.locales.flatMap((locale) =>
     years.map((year) => ({
       params: { locale, slug: year.slug },
-    }))
+    })),
   );
 
   return {
@@ -28,10 +28,17 @@ export async function getStaticProps({ params }) {
     lang: locale,
   });
 
+  const next = await fetchAPI("anno", {
+    slug: (parseInt(slug) + 1).toString(),
+    acf_format: "standard",
+    per_page: 100,
+    lang: locale,
+  });
+
   if (!year) return { notFound: true };
 
   return {
-    props: { year, messages, locale },
+    props: { year, next: next || null, messages, locale },
     revalidate: 3600,
   };
 }
@@ -44,7 +51,7 @@ const descTemplate = {
     `Year ${slug} — ${title}. Discover this chapter of the interactive graphic novel Ten Years Away.`,
 };
 
-export default function Year({ year, locale }) {
+export default function Year({ year, next, locale }) {
   const slug = year?.slug;
   const isLastYear = slug === "2025";
   const title = year?.acf?.titolo || year?.title?.rendered || slug;
@@ -68,7 +75,7 @@ export default function Year({ year, locale }) {
       <main
         className={`pointer-events-none relative z-10 ${isLastYear ? "h-[1300vh]" : "h-[1000vh]"}`}
       >
-        <End />
+        <End next={next} />
         <Bridge year={year} />
       </main>
     </div>

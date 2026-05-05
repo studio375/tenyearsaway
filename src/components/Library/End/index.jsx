@@ -4,7 +4,7 @@ import { useLenis } from "lenis/react";
 import { gsap } from "@/lib/gsap";
 import { useTranslations } from "next-intl";
 
-export default function End() {
+export default function End({ next }) {
   const { setTransition, activeYear, endText } = useStore();
   const t = useTranslations("end");
   const [end, setEnd] = useState(false);
@@ -138,16 +138,28 @@ export default function End() {
   return (
     <div
       ref={wrapperRef}
-      className="fixed lg:top-1/2 bottom-[8rem] lg:bottom-auto -translate-y-1/2 lg:right-0 lg:pr-[2rem] left-1/2 lg:left-auto -translate-x-1/2 lg:translate-x-0 group"
+      className="fixed lg:top-1/2 bottom-[0rem] lg:bottom-auto -translate-y-1/2 lg:right-0 lg:pr-[2rem] left-1/2 lg:left-auto -translate-x-1/2 lg:translate-x-0 group w-full"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
       <div
         ref={endRef}
-        className={`stroke small cursor-pointer bg-gradient-to-r will-change-transform from-bg-blue to-text-color from-50% to-50% bg-[length:200%_100%] ${hovered ? "bg-right" : "bg-left"} transition-all duration-300 bg-clip-text text-transparent uppercase text-[4.6rem] leading-[90%] font-extrabold pointer-events-auto px-2 lg:[writing-mode:vertical-rl] lg:rotate-180 rotate-0 lg:translate-x-full opacity-0`}
+        className="will-change-transform lg:translate-x-full opacity-0 pointer-events-auto cursor-pointer flex flex-col lg:flex-row items-center gap-0 lg:gap-6 group"
         onClick={handleClick}
       >
-        {t("next")}
+        {next && (
+          <div
+            className={`flex flex-col items-center text-center lg:items-end lg:text-right transition-colors duration-300 order-last lg:order-first ${hovered ? "text-[--text-color]" : ""}`}
+          >
+            <p className="text-[1.4rem] font-medium uppercase mt-[0.6rem] mb-[0.2rem] mx-0">
+              {next.acf?.titolo || next.title?.rendered}
+            </p>
+            <p className="text-[1.4rem] font-bold uppercase m-0">{next.slug}</p>
+          </div>
+        )}
+        <span className="stroke small will-change-transform transition-all duration-300 bg-clip-text uppercase text-[3rem] lg:text-[4.6rem] leading-[90%] font-extrabold px-2 lg:[writing-mode:vertical-rl] lg:rotate-180 rotate-0 block">
+          {t("next")}
+        </span>
       </div>
     </div>
   );
