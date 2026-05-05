@@ -65,6 +65,7 @@ export default function Trail() {
         uResolution: { value: [1, 1] },
         uColor: { value: [0.2, 0.2, 0.2] },
         uCellSize: { value: 9.0 },
+        uOpacity: { value: 1.0 },
       },
       transparent: true,
       depthWrite: false,
@@ -127,6 +128,8 @@ export default function Trail() {
     };
   }, [asPath]);
 
+  const isOverLinkRef = useRef(false);
+
   // Mouse tracking via pointermove (works on touch too)
   useEffect(() => {
     if (isMobile) return;
@@ -147,6 +150,22 @@ export default function Trail() {
 
       if (len > 0.0001) {
         dirRef.current = [dx / len, dy / len];
+      }
+
+      const el = document.elementFromPoint(e.clientX, e.clientY);
+      const overLink = !!el?.closest("[data-link]");
+      if (overLink !== isOverLinkRef.current) {
+        isOverLinkRef.current = overLink;
+        gsap.to(objs.trailMat.uniforms.uBrushSize, {
+          value: overLink ? 0.01 : 0.04,
+          duration: 0.9,
+          ease: "power2.out",
+        });
+        gsap.to(objs.halftoneMat.uniforms.uOpacity, {
+          value: overLink ? 0.2 : 1.0,
+          duration: 0.8,
+          ease: "power2.out",
+        });
       }
     };
 

@@ -146,6 +146,7 @@ export default function End({ next }) {
         ref={endRef}
         className="will-change-transform lg:translate-x-full opacity-0 pointer-events-auto cursor-pointer flex flex-col lg:flex-row items-center gap-0 lg:gap-6 group"
         onClick={handleClick}
+        data-link
       >
         {next && (
           <div

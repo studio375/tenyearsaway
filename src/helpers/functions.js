@@ -217,12 +217,15 @@ export function getCaptionPositions(
   meshPositions,
   captionSizes,
   xScaleFactor,
+  positionOverrides,
 ) {
   return frames.map((frame, index) => {
     if (!frame.dialogo) return null;
 
     return frame.dialogo.map((dialogoItem, dialogoIdx) => {
-      const percentage = dialogoItem.posizione.split(",");
+      const overridePos = positionOverrides?.[`${index}-${dialogoIdx}`];
+      const rawPos = overridePos ?? dialogoItem.posizione;
+      const percentage = rawPos.split(",");
       const px = parseFloat(percentage[0].replace("%", "")) / 100;
       const py = parseFloat(percentage[1].replace("%", "")) / 100;
 

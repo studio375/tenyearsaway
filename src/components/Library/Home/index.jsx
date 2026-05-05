@@ -169,7 +169,7 @@ export default function Home() {
           <div className="order-1 lg:order-2 w-full lg:w-auto">
             <p
               ref={rightTextRef}
-              className="font-[500] italic text-[#cce8eb] lg:text-[2rem] text-[1.55rem] -mt-[2rem] lg:ml-0 -ml-[0.8rem] opacity-0 lg:w-auto w-full text-center lg:text-left"
+              className="font-[500] italic text-[#cce8eb] lg:text-[2rem] text-[1.55rem] -mt-[2rem] lx:-mt-[4rem] lgx:-mt-[2rem] xl:-mt-[2rem] lg:ml-0 -ml-[0.8rem] opacity-0 lg:w-auto w-full text-center lg:text-left"
             >
               {t("subtitle")}
             </p>

@@ -200,6 +200,7 @@ export default function Header() {
       <div
         ref={box}
         className="opacity-0 translate-y-100 inline-flex justify-center items-center w-auto h-[2.5rem] md:h-[3.8rem]"
+        data-link
       >
         <div
           ref={(el) => (menu.current[0] = el)}
@@ -237,7 +238,10 @@ export default function Header() {
         </div>
       </div>
       {active && pathname !== "/" && (
-        <div className="absolute top-4 md:top-1/2 md:-translate-y-1/2 right-[2rem] md:right-[2.4rem] flex items-center gap-[0.6rem] text-[1.2rem] tracking-widest">
+        <div
+          data-link
+          className="absolute top-4 md:top-1/2 md:-translate-y-1/2 right-[2rem] md:right-[2.4rem] flex items-center gap-[0.6rem] text-[1.2rem] tracking-widest"
+        >
           {routing.locales.map((loc, i) => (
             <span key={loc} className="flex items-center gap-[0.6rem]">
               {i > 0 && <span className="opacity-30">|</span>}

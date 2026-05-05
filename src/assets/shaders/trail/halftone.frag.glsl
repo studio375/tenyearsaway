@@ -5,6 +5,7 @@ uniform sampler2D uTrailTexture;
 uniform vec2 uResolution;
 uniform float uCellSize;
 uniform vec3 uColor;
+uniform float uOpacity;
 
 varying vec2 vUv;
 varying vec3 vWorldPosition;
@@ -34,5 +35,5 @@ void main() {
   // smoothstep threshold avoids single-pixel noise dots at near-zero density
   float alpha = inDot * smoothstep(0.05, 0.2, density);
 
-  gl_FragColor = vec4(uColor, alpha);
+  gl_FragColor = vec4(uColor, alpha * uOpacity);
 }

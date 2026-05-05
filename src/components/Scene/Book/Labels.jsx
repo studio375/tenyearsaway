@@ -243,6 +243,7 @@ export default function BookLabels() {
                   ease: "power2.out",
                 });
               }}
+              data-link
               className="opacity-0 pointer-events-none will-change-transform absolute inset-0 group cursor-pointer pl-[11rem] max-lg:pl-[4vw] text-left flex flex-col justify-center w-full"
             >
               <p className="block stroke small uppercase font-extrabold lg:text-center lg:absolute lg:left-[2rem] lg:top-1/2 lg:-translate-y-1/2 lg:[writing-mode:vertical-rl] lg:rotate-180 lg:h-full lg:text-[4.6rem] text-[3rem] lg:leading-[0.9em] max-lg:leading-tight max-lg:mb-[0.4rem]">
@@ -291,6 +292,7 @@ export default function BookLabels() {
                   ease: "power2.out",
                 });
               }}
+              data-link
               className="opacity-0 pointer-events-none will-change-transform absolute inset-0 group cursor-pointer pr-[11rem] max-lg:pr-[4vw] text-right flex flex-col justify-center w-full"
             >
               <p className="block stroke small uppercase font-extrabold lg:text-center lg:absolute lg:right-[2rem] lg:top-1/2 lg:-translate-y-1/2 lg:[writing-mode:vertical-rl] lg:rotate-180 lg:h-full lg:text-[4.6rem] lg:leading-[0.9em] text-[3rem] max-lg:leading-tight max-lg:mb-[0.4rem]">

@@ -122,6 +122,7 @@ export default function Footer() {
         {t("tagline")}
       </div>
       <div
+        data-link
         ref={(el) => (infoRef.current[1] = el)}
         className="opacity-0 text-right absolute lg:right-5 right-[2rem] translate-y-100 bottom-[1.9rem] lg:bottom-2 lgx:bottom-[2.5] lgx:bottom-auto"
       >
@@ -132,6 +133,7 @@ export default function Footer() {
       {prevYear && (
         <div
           ref={prevRef}
+          data-link
           className="opacity-0 absolute lg:left-5 left-[2rem] bottom-[1.9rem] lg:bottom-2 lgx:bottom-[2.5] lgx:bottom-auto"
         >
           <Link href={`/year/${prevYear}`}>previous</Link>

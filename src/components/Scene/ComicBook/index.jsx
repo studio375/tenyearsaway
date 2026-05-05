@@ -11,6 +11,7 @@ import {
   ZOOM_START_2025,
   captionSizeOverrides,
   captionSizeOverridesMobile,
+  captionPositionOverridesMobile,
 } from "@/assets/data";
 import { getMeshSizes, getCaptionPositions } from "@/helpers/functions";
 import { useLenis } from "lenis/react";
@@ -190,7 +191,9 @@ export default function ComicBook() {
         const scaledH = h * sizeMultiplier;
         const finalW = Math.max(scaledW, minCaptionW, mobileMinW);
         const finalH = finalW > scaledW ? finalW / ar : scaledH;
-        const overrides = isMobile ? captionSizeOverridesMobile : captionSizeOverrides;
+        const overrides = isMobile
+          ? captionSizeOverridesMobile
+          : captionSizeOverrides;
         const overrideScale =
           overrides[activeYear]?.[`${index}-${dialogoIdx}`] ?? 1;
 
@@ -215,14 +218,26 @@ export default function ComicBook() {
 
   const captionPositions = useMemo(() => {
     if (!activePositions?.length) return [];
+    const posOverrides = isMobile
+      ? captionPositionOverridesMobile[activeYear]
+      : undefined;
     return getCaptionPositions(
       frames,
       meshSizes,
       activePositions,
       captionSizes,
       xScaleFactor,
+      posOverrides,
     );
-  }, [frames, meshSizes, captionSizes, activePositions, xScaleFactor]);
+  }, [
+    frames,
+    meshSizes,
+    captionSizes,
+    activePositions,
+    xScaleFactor,
+    isMobile,
+    activeYear,
+  ]);
 
   const framesTimeline = useMemo(() => {
     if (!frames?.length || !meshSizes.length || totalWidth <= 0) return [];

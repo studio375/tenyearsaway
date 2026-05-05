@@ -70,6 +70,7 @@ export default function TransitionHandler() {
         1,
       );
 
+      const y = window.innerWidth <= 1024 ? -0.45 : null;
       // Objects
       objects.forEach(({ ref, index, type }) => {
         if (type == "page") {
@@ -80,6 +81,7 @@ export default function TransitionHandler() {
             page.position,
             {
               z: 0,
+              y: y ? y : page.position.y,
               duration: 2,
               ease: "power2.out",
               delay: 0.7,
@@ -114,6 +116,7 @@ export default function TransitionHandler() {
             page.position,
             {
               z: 0,
+              y: y ? y : page.position.y,
               duration: 2,
               ease: "power2.out",
               delay: 0.7,
@@ -149,7 +152,7 @@ export default function TransitionHandler() {
               mesh.position,
               {
                 x: camera.position.x + target.x,
-                y: camera.position.y + target.y,
+                y: camera.position.y + target.y + (y ? y : 0),
                 z: 0,
                 duration: 1.8,
                 ease: "expo.inOut",

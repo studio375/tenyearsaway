@@ -33,6 +33,13 @@ export const captionSizeOverridesMobile = {
   2022: { "6-1": 1.2 },
 };
 
+export const captionPositionOverridesMobile = {
+  2025: {
+    "6-0": "50%,1%",
+    "6-2": "50%,90%",
+  },
+};
+
 export const positions = {
   2015: [
     [0, 0, 0.0011],
