@@ -138,7 +138,7 @@ export default function End({ next }) {
   return (
     <div
       ref={wrapperRef}
-      className="fixed lg:top-1/2 bottom-[0rem] lg:bottom-auto -translate-y-1/2 lg:right-0 lg:pr-[2rem] left-1/2 lg:left-auto -translate-x-1/2 lg:translate-x-0 group w-full"
+      className="fixed lg:top-1/2 bottom-[0rem] lg:bottom-auto -translate-y-1/2 lg:right-0 lg:pr-[2rem] left-1/2 lg:left-auto -translate-x-1/2 lg:translate-x-0 group w-full lg:w-auto"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
