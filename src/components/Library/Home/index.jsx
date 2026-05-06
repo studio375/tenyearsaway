@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useStore } from "@/store/useStore";
+import MuteButton from "../MuteButton";
 import { gsap, SplitText } from "@/lib/gsap";
 import { useRouter } from "next/router";
 import { usePathname } from "@/i18n/navigation";
@@ -23,6 +24,7 @@ export default function Home() {
   const mobileSvgGroupRef = useRef(null);
   const leftTextRef = useRef(null);
   const rightTextRef = useRef(null);
+  const muteRef = useRef(null);
   const router = useRouter();
   const pathname = usePathname();
   const t = useTranslations("home");
@@ -84,6 +86,12 @@ export default function Home() {
         stagger: 0.08,
         ease: "power3.out",
       });
+
+      gsap.fromTo(
+        muteRef.current,
+        { y: 10, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.9, delay: 0.7, ease: "power3.out" },
+      );
     });
 
     return () => {
@@ -156,6 +164,13 @@ export default function Home() {
 
   return (
     <div>
+      <div
+        ref={muteRef}
+        data-link
+        className="opacity-0 fixed bottom-[calc(10.4rem + 3px)] hidden lg:flex  align-center items-center md:bottom-[calc(16rem+3px)] lg:bottom-[calc(4rem+3px)] lgx:bottom-[calc(1.6rem+3px)] right-[2rem] lg:right-5 z-[13]"
+      >
+        <MuteButton className="text-text-blue" />
+      </div>
       <main className="relative z-1 h-svh w-screen">
         <div className="lg:pt-[13vh] lgx:pt-[19vh] md:pt-[21.6rem] pt-[12rem] lgx:px-5 px-[1.5rem] flex lg:flex-row flex-col justify-between items-start flex-wrap pointer-events-none lg:h-auto h-full">
           <div className="lgx:pl-[8rem] lg:pl-[5rem] pl-0 order-2 lg:order-1 w-full lg:w-auto mb-1 lg:mb-0">

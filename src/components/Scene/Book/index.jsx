@@ -15,6 +15,7 @@ import { easing } from "maath";
 import { useRouter, usePathname } from "@/i18n/navigation";
 import { useLocale } from "next-intl";
 import { useDrag } from "@use-gesture/react";
+import { useSound } from "@/hooks/useSound";
 
 const PAGE_DEPTH = 0.003;
 const PAGE_SEGMENTS = 30;
@@ -44,6 +45,9 @@ export default function Book() {
   const groupRef = useRef();
   const isEnabled = useRef(false);
   const isDragging = useRef(false);
+  const { play: playTurnSound } = useSound("/sound/page_turn.wav", {
+    volume: 1,
+  });
   const {
     pages,
     setSelectedPage,
@@ -122,6 +126,9 @@ export default function Book() {
     }
     if (!last || distance[0] < 1.1) return;
     isDragging.current = true;
+    setTimeout(() => {
+      playTurnSound();
+    }, 450);
     if (mx >= 0) {
       // drag right = go back
       setCurrentPage((prev) => {

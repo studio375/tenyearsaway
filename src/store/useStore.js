@@ -31,4 +31,6 @@ export const useStore = create((set) => ({
   setBackground: (background) => set({ background }),
   team: [],
   setTeam: (team) => set({ team }),
+  muted: false,
+  setMuted: (muted) => set({ muted }),
 }));
