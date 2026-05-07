@@ -2,6 +2,7 @@ import { useLayoutEffect } from "react";
 import Head from "next/head";
 import { useStore } from "@/store/useStore";
 import { routing } from "@/i18n/routing";
+import { fetchAPI } from "@/helpers/api/fetch-api";
 
 export async function getStaticPaths() {
   return {
@@ -12,8 +13,24 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params: { locale } }) {
   const messages = (await import(`@/i18n/messages/${locale}.json`)).default;
+  const data = await fetchAPI("anno", {
+    _fields: "slug,acf.completo,acf.completo_texture,acf.titolo",
+    acf_format: "standard",
+    order: "asc",
+    per_page: 100,
+    lang: locale,
+  });
+
+  const years = (data ?? []).map((item) => ({
+    year: item.slug,
+    title: item.acf?.titolo || null,
+    full: item.acf?.completo || null,
+    fullTexture: item.acf?.completo_texture || null,
+  }));
+
   return {
-    props: { messages, locale },
+    props: { messages, locale, years },
+    revalidate: 3600,
   };
 }
 

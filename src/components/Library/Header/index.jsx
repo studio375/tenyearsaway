@@ -183,6 +183,23 @@ export default function Header() {
     <header
       className={`fixed top-[10px] md:top-2 left-0 w-full p-0 z-12 flex justify-center items-center uppercase text-[1.4rem] font-500 ${active ? "pointer-events-auto" : "pointer-events-none"}`}
     >
+      {activeYear && (
+        <div
+          className={`text-[1.2rem] lg:text-[1.4rem] absolute top-9 lg:top-1/2 lg:-translate-y-1/2 left-[2rem] lg:left-[2.4rem] flex lg:gap-2 gap-1`}
+          ref={currentYear}
+        >
+          <p className="font-medium uppercase m-0 opacity-0 will-change-transform leading-[100%]">
+            {t("year", { number: Math.abs(2015 - parseInt(activeYear)) })}
+          </p>
+
+          <p className="font-bold mx-0 opacity-0  will-change-transform leading-[100%]">
+            {activeYear ?? ""}
+          </p>
+          <p className="font-medium uppercase m-0 opacity-0 will-change-transform leading-[100%]">
+            {pageData?.[2] ?? ""}
+          </p>
+        </div>
+      )}
       <div
         ref={box}
         className="opacity-0 translate-y-100 inline-flex justify-center items-center w-auto h-[2.5rem] md:h-[3.8rem]"

@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "@/lib/gsap";
 import { useStore } from "@/store/useStore";
+import { useTexture } from "@react-three/drei";
 
 const START_YEAR = 2015;
 const END_YEAR = 2025;
@@ -32,6 +33,37 @@ export default function Loader() {
   const setLoaded = useStore((s) => s.setLoaded);
   const timeRef = useRef(null);
   const enableSoundRef = useRef(null);
+
+  useEffect(() => {
+    const { frames, pages } = useStore.getState();
+
+    // Prefetch PNG textures (captions + book pages) into drei's Suspense cache
+    const pngUrls = [];
+    if (frames?.length) {
+      frames.forEach((frame) => {
+        (frame.dialogo || []).forEach((d) => {
+          if (d.immagine_txt?.url) pngUrls.push(d.immagine_txt.url);
+        });
+      });
+    }
+    if (pages?.length) {
+      pages.forEach((p) => {
+        if (p.full?.url) pngUrls.push(p.full.url);
+      });
+    }
+    if (pngUrls.length) useTexture.preload(pngUrls);
+
+    // Warm HTTP cache for KTX2 frame textures via <link rel="prefetch">
+    if (frames?.length) {
+      frames.forEach((frame) => {
+        if (!frame.texture?.url) return;
+        const link = document.createElement("link");
+        link.rel = "prefetch";
+        link.href = frame.texture.url;
+        document.head.appendChild(link);
+      });
+    }
+  }, []);
 
   useEffect(() => {
     const loader = loaderRef.current;
