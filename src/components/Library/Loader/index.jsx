@@ -38,6 +38,7 @@ export default function Loader() {
   const [phase, setPhase] = useState("loading"); // "loading" o "ready"
 
   useEffect(() => {
+    const { frames, pages } = useStore.getState();
     const pngUrls = [];
     if (frames?.length) {
       frames.forEach((frame) => {
