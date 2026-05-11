@@ -1,4 +1,5 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { gsap } from "@/lib/gsap";
 import { useStore } from "@/store/useStore";
 import { useTexture } from "@react-three/drei";
@@ -30,14 +31,13 @@ const STRIPS = [0, 1, 2, 3].map((col) => buildStrip(col, EXTRA_LAPS[col]));
 export default function Loader() {
   const loaderRef = useRef(null);
   const stripRefs = useRef([]);
+  const topRef = useRef(null);
+  const bottomRef = useRef(null);
   const setLoaded = useStore((s) => s.setLoaded);
-  const timeRef = useRef(null);
-  const enableSoundRef = useRef(null);
+  const setMuted = useStore((s) => s.setMuted);
+  const [phase, setPhase] = useState("loading"); // "loading" o "ready"
 
   useEffect(() => {
-    const { frames, pages } = useStore.getState();
-
-    // Prefetch PNG textures (captions + book pages) into drei's Suspense cache
     const pngUrls = [];
     if (frames?.length) {
       frames.forEach((frame) => {
@@ -53,7 +53,6 @@ export default function Loader() {
     }
     if (pngUrls.length) useTexture.preload(pngUrls);
 
-    // Warm HTTP cache for KTX2 frame textures via <link rel="prefetch">
     if (frames?.length) {
       frames.forEach((frame) => {
         if (!frame.texture?.url) return;
@@ -66,10 +65,8 @@ export default function Loader() {
   }, []);
 
   useEffect(() => {
-    const loader = loaderRef.current;
-
     const initTl = gsap.timeline();
-    initTl.to([timeRef.current, enableSoundRef.current], {
+    initTl.to([topRef.current, bottomRef.current], {
       opacity: 1,
       y: 0,
       yPercent: 0,
@@ -81,16 +78,18 @@ export default function Loader() {
       defaults: { ease: "none" },
       paused: true,
       onComplete: () => {
-        gsap.to(loader, {
-          autoAlpha: 0,
-          delay: 0.5,
-          duration: 0.6,
-          ease: "power2.inOut",
-          onStart: () => {
-            setLoaded(true);
-          },
+        gsap.to([topRef.current, bottomRef.current], {
+          opacity: 0,
+          duration: 0.25,
+          ease: "power2.in",
           onComplete: () => {
-            gsap.set(loader, { display: "none" });
+            flushSync(() => setPhase("ready")); // re-render sincrono → DOM aggiornato
+            gsap.to([topRef.current, bottomRef.current], {
+              opacity: 1,
+              duration: 0.4,
+              ease: "power2.out",
+              stagger: 0.08,
+            });
           },
         });
       },
@@ -106,22 +105,38 @@ export default function Loader() {
     return () => {
       animTl.kill();
     };
-  }, [setLoaded]);
+  }, []);
+
+  function enter(withSound) {
+    if (!withSound) setMuted(true);
+    gsap.to(loaderRef.current, {
+      autoAlpha: 0,
+      duration: 0.6,
+      ease: "power2.inOut",
+      onStart: () => setLoaded(true),
+      onComplete: () => gsap.set(loaderRef.current, { display: "none" }),
+    });
+  }
+
+  const isReady = phase === "ready";
 
   return (
     <div
       ref={loaderRef}
-      className="fixed left-0 top-0 inset-0 z-0 w-screen h-svh bg-storm flex items-center justify-center"
+      className="fixed left-0 top-0 inset-0 z-1 w-screen h-svh bg-storm flex items-center justify-center"
     >
       <div className="absolute left-1/2 top-2 -translate-x-1/2 w-full text-center">
         <span
-          className="lowercase text-text-blue opacity-0 -translate-y-3 will-change-transform block"
-          ref={enableSoundRef}
+          ref={topRef}
+          onClick={isReady ? () => enter(true) : undefined}
+          className={`lowercase text-text-blue opacity-0 will-change-transform block ${isReady ? "cursor-pointer hover:opacity-70 transition-opacity pointer-events-auto" : "-translate-y-3"}`}
         >
-          enable sound for a better experience
+          {phase === "ready"
+            ? "enter with sound"
+            : "enable sound for a better experience"}
         </span>
       </div>
-      <div className="flex text-text-blue lg:text-[16rem] text-[10rem] font-[800] leading-[120%]">
+      <div className="flex text-text-blue lg:text-[16rem] text-[10rem] font-extrabold leading-[120%]">
         {STRIPS.map((strip, col) => (
           <div
             key={col}
@@ -132,7 +147,7 @@ export default function Loader() {
               {strip.map((digit, row) => (
                 <div
                   key={row}
-                  className="flex items-center font-[800] justify-center tabular-nums"
+                  className="flex items-center font-extrabold justify-center tabular-nums"
                   style={{
                     height: DIGIT_H,
                     minWidth: "0.65em",
@@ -147,10 +162,13 @@ export default function Loader() {
       </div>
       <div className="absolute left-1/2 bottom-2 -translate-x-1/2 w-full text-center">
         <span
-          className="lowercase text-text-blue opacity-0 translate-y-3 will-change-transform block"
-          ref={timeRef}
+          ref={bottomRef}
+          onClick={phase === "ready" ? () => enter(false) : undefined}
+          className={`lowercase text-text-blue opacity-0 will-change-transform block pointer-events-auto ${isReady ? "cursor-pointer hover:opacity-70 transition-opacity" : "translate-y-3"}`}
         >
-          yess... we are 1 year late
+          {phase === "ready"
+            ? "enter without sound"
+            : "yess... we are 1 year late"}
         </span>
       </div>
     </div>

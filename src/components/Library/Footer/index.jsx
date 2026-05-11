@@ -106,7 +106,7 @@ export default function Footer() {
   }, [pathname]);
 
   return (
-    <footer className="fixed bottom-0 left-0 w-full lgx:h-5 h-auto z-12 flex justify-center items-center font-500 text-[1.2rem] lg:px-5 px-[2rem]">
+    <footer className={`fixed bottom-0 left-0 w-full lgx:h-5 h-auto z-12 flex justify-center items-center font-500 text-[1.2rem] lg:px-5 px-[2rem] ${loaded ? "pointer-events-auto" : "pointer-events-none"}`}>
       <div className="flex justify-center items-center absolute lgx:top-1/2 bottom-[10.5rem] md:bottom-[16rem] lg:bottom-[4rem] lgx:bottom-auto left-1/2 -translate-x-1/2 lgx:-translate-y-1/2">
         <span
           ref={startRef}

@@ -46,7 +46,7 @@ export default function Book() {
   const isEnabled = useRef(false);
   const isDragging = useRef(false);
   const { play: playTurnSound } = useSound("/sound/page_turn.wav", {
-    volume: 1,
+    volume: 3.6,
   });
   const {
     pages,

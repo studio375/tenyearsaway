@@ -1,5 +1,20 @@
 export const ZOOM_START_2025 = 1000 / 1300;
 
+export const audioTracks = {
+  default: "/audio/2015.mp3",
+  2015: "/audio/2015.mp3",
+  2016: "/audio/2016.mp3",
+  2017: "/audio/2017.mp3",
+  2018: "/audio/2018.mp3",
+  2019: "/audio/2019.mp3",
+  2020: "/audio/2020.mp3",
+  2021: "/audio/2021.mp3",
+  2022: "/audio/2022.mp3",
+  2023: "/audio/2023.mp3",
+  2024: "/audio/2024.mp3",
+  2025: "/audio/2025.mp3",
+};
+
 export const captionSizeOverrides = {
   2015: { "5-1": 0.55 },
   2016: {
