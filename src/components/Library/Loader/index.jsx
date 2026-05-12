@@ -128,6 +128,11 @@ export default function Loader() {
     >
       <div className="absolute left-1/2 top-2 -translate-x-1/2 w-full text-center">
         <span
+          key={
+            phase === "ready"
+              ? "enter with sound"
+              : "enable sound for a better experience"
+          }
           ref={topRef}
           onClick={isReady ? () => enter(true) : undefined}
           className={`lowercase text-text-blue opacity-0 will-change-transform block ${isReady ? "cursor-pointer hover:opacity-70 transition-opacity pointer-events-auto" : "-translate-y-3"}`}
@@ -163,6 +168,11 @@ export default function Loader() {
       </div>
       <div className="absolute left-1/2 bottom-2 -translate-x-1/2 w-full text-center">
         <span
+          key={
+            phase === "ready"
+              ? "enter without sound"
+              : "yess... we are 1 year late"
+          }
           ref={bottomRef}
           onClick={phase === "ready" ? () => enter(false) : undefined}
           className={`lowercase text-text-blue opacity-0 will-change-transform block pointer-events-auto ${isReady ? "cursor-pointer hover:opacity-70 transition-opacity" : "translate-y-3"}`}

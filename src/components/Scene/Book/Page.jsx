@@ -101,6 +101,7 @@ export default function Page({
     meshRef.current.material[5].uniforms.uOpened.value = opened ? 1 : 0;
     const targetRotation = opened ? -Math.PI : 0;
     const delay = opened ? index * 0.12 : (totalSheets - index) * 0.12;
+    gsap.killTweensOf(groupRef.current.rotation);
     gsap.to(groupRef.current.rotation, {
       y: targetRotation,
       duration: 1.5,
