@@ -71,7 +71,7 @@ export default function AudioManager() {
     let rafId;
     const loop = () => {
       if (isYearRouteRef.current && currentHowl.current?.playing()) {
-        const rate = Math.min(1 + Math.max(0, scrollVelocity - 200) * 0.003, 1.35);
+        const rate = Math.min(1 + Math.max(0, scrollVelocity - 114) * 0.003, 1.35);
         currentHowl.current.rate(rate);
       }
       rafId = requestAnimationFrame(loop);
