@@ -44,7 +44,7 @@ export default function AudioManager() {
 
     const howl = new Howl({ src: [src], loop: true, volume: 0 });
     howl.play();
-    if (!mutedRef.current) howl.fade(0, 0.35, FADE_MS);
+    if (!mutedRef.current) howl.fade(0, 0.2, FADE_MS);
     currentHowl.current = howl;
     currentSrc.current = src;
   }

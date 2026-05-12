@@ -2,7 +2,7 @@ import { gsap } from "@/lib/gsap";
 import { useStore } from "@/store/useStore";
 import { useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
-
+import { useSound } from "@/hooks/useSound";
 export default function BookLabels() {
   const t = useTranslations();
   const pages = useStore((s) => s.pages);
@@ -10,7 +10,9 @@ export default function BookLabels() {
   const active = useStore((s) => s.active);
   const selectedPage = useStore((s) => s.selectedPage);
   const setSelectedPage = useStore((s) => s.setSelectedPage);
-
+  const { play: playHoverSound } = useSound("/sound/hover.mp3", {
+    volume: 1.2,
+  });
   // Ref maps: pageIndex -> DOM element
   const leftElsRef = useRef({});
   const rightElsRef = useRef({});
@@ -228,6 +230,7 @@ export default function BookLabels() {
                 }
               }}
               onMouseEnter={(e) => {
+                playHoverSound();
                 e.currentTarget.classList.add("is-hovered");
                 gsap.to(e.currentTarget, {
                   x: -25,
@@ -277,6 +280,7 @@ export default function BookLabels() {
                 }
               }}
               onMouseEnter={(e) => {
+                playHoverSound();
                 e.currentTarget.classList.add("is-hovered");
                 gsap.to(e.currentTarget, {
                   x: 25,

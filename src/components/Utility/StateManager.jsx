@@ -15,8 +15,15 @@ function stripLocale(path) {
 
 export default function StateManager() {
   const setTransition = useStore((state) => state.setTransition);
+  const setCurrentPath = useStore((state) => state.setCurrentPath);
   const router = useRouter();
   const pathname = usePathname();
+
+  // Sync pathname to Zustand so components inside R3F Canvas get it reliably
+  useEffect(() => {
+    setCurrentPath(pathname);
+  }, [pathname]);
+
   useEffect(() => {
     const handleStart = (url, { shallow }) => {
       const currentTransition = useStore.getState().transition;

@@ -6,7 +6,7 @@ import { routing } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import Title from "../Title";
 import MuteButton from "../MuteButton";
-
+import { useSound } from "@/hooks/useSound";
 export default function Header() {
   const box = useRef();
   const menu = useRef([]);
@@ -17,6 +17,9 @@ export default function Header() {
   const pageData = useStore((state) => state.page);
   const activeYear = useStore((state) => state.activeYear);
   const transition = useStore((state) => state.transition);
+  const { play: playHoverSound } = useSound("/sound/hover.mp3", {
+    volume: 1.2,
+  });
 
   const pathname = usePathname();
   const locale = useLocale();
@@ -152,6 +155,8 @@ export default function Header() {
       duration: 0.5,
       ease: "power3.out",
     });
+    if (pathname == "/year") return;
+    playHoverSound();
   };
   const handleLeaveLeft = () => {
     if (pathname == "/year") return;
@@ -168,6 +173,8 @@ export default function Header() {
       duration: 0.5,
       ease: "power3.out",
     });
+    if (pathname == "/about") return;
+    playHoverSound();
   };
   const handleLeaveRight = () => {
     if (pathname.startsWith("/about")) return;
@@ -258,6 +265,7 @@ export default function Header() {
                       : `/${loc}${pathname}`
                   }
                   className="font-medium opacity-60 hover:opacity-100 transition-opacity"
+                  onMouseEnter={() => playHoverSound()}
                 >
                   {loc.toUpperCase()}
                 </a>

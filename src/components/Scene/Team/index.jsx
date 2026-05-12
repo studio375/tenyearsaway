@@ -5,7 +5,7 @@ import { gsap, Observer } from "@/lib/gsap";
 import { useThree, useFrame } from "@react-three/fiber";
 import { MathUtils, PlaneGeometry } from "three";
 import Card from "./Card";
-
+import { useSound } from "@/hooks/useSound";
 const sharedGeometry = new PlaneGeometry(1, 1, 16, 16);
 
 export default function Team() {
@@ -30,7 +30,12 @@ export default function Team() {
   const [enableCarousel, setEnableCarousel] = useState(false);
   const prevActiveRef = useRef(false);
   const prevOffset = useRef(0);
-
+  const { play: playCardsSound } = useSound("/sound/shuffle.mp3", {
+    volume: 0.5,
+  });
+  const { play: playMovingSound } = useSound("/sound/moving.mp3", {
+    volume: 0.5,
+  });
   const tl = useRef(null);
   const positions = useMemo(() => {
     return team.map((_, index) => [
@@ -147,7 +152,17 @@ export default function Team() {
         tl.current
           .to(
             card.position,
-            { x: 0, y: 0, duration: 1, ease: "magic2", delay: 0.03 },
+            {
+              x: 0,
+              y: 0,
+              duration: 1,
+              ease: "magic2",
+              delay: 0.03,
+              onStart: () =>
+                index === 0
+                  ? setTimeout(() => playCardsSound(), 350)
+                  : undefined,
+            },
             0,
           )
           .to(
@@ -171,6 +186,10 @@ export default function Team() {
               duration: 1,
               ease: "magic3",
               delay: 0.03,
+              onStart: () =>
+                index === 0
+                  ? setTimeout(() => playMovingSound(), 100)
+                  : undefined,
             },
             1,
           )

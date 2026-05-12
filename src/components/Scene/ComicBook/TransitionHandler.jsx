@@ -6,6 +6,8 @@ import { comicLayouts } from "@/assets/data";
 import { generateGridPositions } from "@/helpers/functions";
 import { useLenis } from "lenis/react";
 import { useRouter } from "@/i18n/navigation";
+import { useSound } from "@/hooks/useSound";
+
 export default function TransitionHandler() {
   const {
     objects,
@@ -21,6 +23,9 @@ export default function TransitionHandler() {
   const lenis = useLenis();
   const router = useRouter();
   const transitionTl = useRef(null);
+  const { play: playTurnSound } = useSound("/sound/page-merge.mp3", {
+    volume: 0.34,
+  });
 
   const finalTargets = useMemo(() => {
     if (!comicLayouts[activeYear]) return [];
@@ -85,6 +90,9 @@ export default function TransitionHandler() {
               duration: 2,
               ease: "power2.out",
               delay: 0.7,
+              onStart: () => {
+                playTurnSound();
+              },
             },
             1,
           )

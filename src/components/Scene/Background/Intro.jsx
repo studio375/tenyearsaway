@@ -10,6 +10,7 @@ import { usePathname } from "@/i18n/navigation";
 import { useTexture, Text } from "@react-three/drei";
 import { useStore } from "@/store/useStore";
 import BookShadow from "@/components/Scene/Book/Shadow";
+import { useSound } from "@/hooks/useSound";
 export default function Intro({ geometry }) {
   const { size, gl } = useThree();
   const ref = useRef(null);
@@ -18,6 +19,12 @@ export default function Intro({ geometry }) {
   const textRef = useRef(null);
   const asPath = usePathname();
   const { loaded, setActive, transition } = useStore();
+  const { play: playTurnSound } = useSound("/sound/whoosh.mp3", {
+    volume: 0.56,
+  });
+  const { play: playEnterSound } = useSound("/sound/page-enter.mp3", {
+    volume: 0.6,
+  });
   const staticViewport = useMemo(() => {
     const distance = 5;
     const fov = (75 * Math.PI) / 180;
@@ -84,11 +91,18 @@ export default function Intro({ geometry }) {
     };
   }, []);
 
+  const introPlayedRef = useRef(false);
   const tlInOut = useRef(null);
   useEffect(() => {
-    console.log("transition", transition);
     if (!ref.current || !loaded || (transition && transition !== "home"))
       return;
+
+    if (asPath !== "/") {
+      if (introPlayedRef.current) return;
+      introPlayedRef.current = true;
+    } else {
+      introPlayedRef.current = false;
+    }
 
     tlInOut.current = gsap.timeline({
       onStart: () => {
@@ -123,6 +137,11 @@ export default function Intro({ geometry }) {
             duration: 1,
             delay: 0,
             ease: "expo.in",
+            onStart: () => {
+              setTimeout(() => {
+                playEnterSound();
+              }, 300);
+            },
           },
           0,
         )
@@ -164,6 +183,9 @@ export default function Intro({ geometry }) {
             duration: 1.8,
             delay: 0.2,
             ease: "power2.out",
+            onStart: () => {
+              playTurnSound();
+            },
           },
           0,
         )

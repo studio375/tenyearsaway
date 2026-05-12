@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { useLenis } from "lenis/react";
 import { gsap } from "@/lib/gsap";
 import { useTranslations } from "next-intl";
+import { useSound } from "@/hooks/useSound";
 
 export default function End({ next }) {
   const { setTransition, activeYear, endText } = useStore();
@@ -13,7 +14,9 @@ export default function End({ next }) {
   const tbcRef = useRef(null);
   const wrapperRef = useRef(null);
   const endStateRef = useRef(false);
-
+  const { play: playHoverSound } = useSound("/sound/hover.mp3", {
+    volume: 1.2,
+  });
   useLenis(({ progress }) => {
     if (progress > 0.95 && !endStateRef.current) {
       endStateRef.current = true;
@@ -59,6 +62,7 @@ export default function End({ next }) {
   const isDesktop = () => window.matchMedia("(min-width: 1024px)").matches;
 
   const handleMouseEnter = () => {
+    playHoverSound();
     setHovered(true);
     wrapperRef.current?.classList.add("is-hovered");
     if (isDesktop()) {
