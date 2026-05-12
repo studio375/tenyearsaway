@@ -4,10 +4,17 @@ import { usePathname } from "@/i18n/navigation";
 import gsap from "gsap";
 import { useStore } from "@/store/useStore";
 import { ScrollTrigger } from "@/lib/gsap";
+
+export let scrollVelocity = 0;
+
 function ScrollManager() {
   const lenis = useLenis();
   const asPath = usePathname();
   const { activeYear } = useStore();
+
+  useLenis((l) => {
+    scrollVelocity = Math.abs(l.velocity);
+  });
 
   useEffect(() => {
     if (!lenis) return;
