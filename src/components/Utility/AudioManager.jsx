@@ -17,6 +17,7 @@ export default function AudioManager() {
   const currentSrc = useRef(null);
   const mutedRef = useRef(muted);
   const scrollStopTimer = useRef(null);
+  const isYearRouteRef = useRef(isYearRoute);
 
   const isYearRoute = router.pathname === "/[locale]/year/[slug]";
 
@@ -24,6 +25,10 @@ export default function AudioManager() {
     mutedRef.current = muted;
     Howler.mute(muted);
   }, [muted]);
+
+  useEffect(() => {
+    isYearRouteRef.current = isYearRoute;
+  }, [isYearRoute]);
 
   function getDesiredSrc() {
     const y = useStore.getState().activeYear;
@@ -64,7 +69,7 @@ export default function AudioManager() {
   }, [isYearRoute, activeYear]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useLenis((lenis) => {
-    if (!isYearRoute || !currentHowl.current?.playing()) return;
+    if (!isYearRouteRef.current || !currentHowl.current?.playing()) return;
     const v = Math.abs(lenis.velocity);
     console.log(v);
     const rate = Math.min(1 + v * 0.0016, 1.35);
