@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { flushSync } from "react-dom";
 import { gsap } from "@/lib/gsap";
 import { useStore } from "@/store/useStore";
 import { useTexture } from "@react-three/drei";
@@ -31,8 +30,10 @@ const STRIPS = [0, 1, 2, 3].map((col) => buildStrip(col, EXTRA_LAPS[col]));
 export default function Loader() {
   const loaderRef = useRef(null);
   const stripRefs = useRef([]);
-  const topRef = useRef(null);
-  const bottomRef = useRef(null);
+  const topLoadingRef = useRef(null);
+  const topReadyRef = useRef(null);
+  const bottomLoadingRef = useRef(null);
+  const bottomReadyRef = useRef(null);
   const setLoaded = useStore((s) => s.setLoaded);
   const setMuted = useStore((s) => s.setMuted);
   const [phase, setPhase] = useState("loading"); // "loading" o "ready"
@@ -67,7 +68,7 @@ export default function Loader() {
 
   useEffect(() => {
     const initTl = gsap.timeline();
-    initTl.to([topRef.current, bottomRef.current], {
+    initTl.to([topLoadingRef.current, bottomLoadingRef.current], {
       opacity: 1,
       y: 0,
       yPercent: 0,
@@ -79,14 +80,14 @@ export default function Loader() {
       defaults: { ease: "none" },
       paused: true,
       onComplete: () => {
-        gsap.to([topRef.current, bottomRef.current], {
+        gsap.to([topLoadingRef.current, bottomLoadingRef.current], {
           opacity: 0,
           duration: 0.25,
           ease: "power2.in",
           onComplete: () => {
-            flushSync(() => setPhase("ready")); // re-render sincrono → DOM aggiornato
+            setPhase("ready");
             gsap.fromTo(
-              [topRef.current, bottomRef.current],
+              [topReadyRef.current, bottomReadyRef.current],
               { opacity: 0 },
               { opacity: 1, duration: 0.4, ease: "power2.out", stagger: 0.08 },
             );
@@ -118,8 +119,6 @@ export default function Loader() {
     });
   }
 
-  const isReady = phase === "ready";
-
   return (
     <div
       ref={loaderRef}
@@ -127,13 +126,17 @@ export default function Loader() {
     >
       <div className="absolute left-1/2 top-2 -translate-x-1/2 w-full text-center">
         <span
-          ref={topRef}
-          onClick={isReady ? () => enter(true) : undefined}
-          className={`lowercase text-text-blue opacity-0 will-change-transform block ${isReady ? "cursor-pointer hover:opacity-70 transition-opacity pointer-events-auto" : "-translate-y-3"}`}
+          ref={topLoadingRef}
+          className="lowercase text-text-blue opacity-0 will-change-transform block -translate-y-3"
         >
-          {phase === "ready"
-            ? "enter with sound"
-            : "enable sound for a better experience"}
+          enable sound for a better experience
+        </span>
+        <span
+          ref={topReadyRef}
+          onClick={() => enter(true)}
+          className="lowercase text-text-blue opacity-0 will-change-transform block cursor-pointer hover:opacity-70 transition-opacity absolute left-0 right-0 top-0"
+        >
+          enter with sound
         </span>
       </div>
       <div className="flex text-text-blue lg:text-[16rem] text-[10rem] font-extrabold leading-[120%]">
@@ -162,13 +165,17 @@ export default function Loader() {
       </div>
       <div className="absolute left-1/2 bottom-2 -translate-x-1/2 w-full text-center">
         <span
-          ref={bottomRef}
-          onClick={phase === "ready" ? () => enter(false) : undefined}
-          className={`lowercase text-text-blue opacity-0 will-change-transform block pointer-events-auto ${isReady ? "cursor-pointer hover:opacity-70 transition-opacity" : "translate-y-3"}`}
+          ref={bottomLoadingRef}
+          className="lowercase text-text-blue opacity-0 will-change-transform block translate-y-3"
         >
-          {phase === "ready"
-            ? "enter without sound"
-            : "yess... we are 1 year late"}
+          yess... we are 1 year late
+        </span>
+        <span
+          ref={bottomReadyRef}
+          onClick={() => enter(false)}
+          className="lowercase text-text-blue opacity-0 will-change-transform block cursor-pointer hover:opacity-70 transition-opacity absolute left-0 right-0 bottom-0"
+        >
+          enter without sound
         </span>
       </div>
     </div>
