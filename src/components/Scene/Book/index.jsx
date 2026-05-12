@@ -49,7 +49,7 @@ export default function Book() {
     volume: 3.6,
   });
   const { play: playEnterSound } = useSound("/sound/slide.mp3", {
-    volume: 0.99,
+    volume: 1.4,
   });
   const {
     pages,

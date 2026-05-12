@@ -3,6 +3,7 @@ import gsap from "gsap";
 import { useStore } from "@/store/useStore";
 import { useRouter, usePathname, Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
+import { useSound } from "@/hooks/useSound";
 export default function Footer() {
   const startRef = useRef(null);
   const infoRef = useRef([]);
@@ -16,6 +17,9 @@ export default function Footer() {
   const router = useRouter();
   const pathname = usePathname();
   const t = useTranslations("footer");
+  const { play: playHoverSound } = useSound("/sound/hover.mp3", {
+    volume: 1.2,
+  });
   useEffect(() => {
     if (!loaded) return;
     const tl = gsap.timeline();
@@ -134,6 +138,7 @@ export default function Footer() {
       </div>
       {prevYear && (
         <div
+          onMouseEnter={() => playHoverSound()}
           ref={prevRef}
           data-link
           className="opacity-0 absolute lg:left-5 left-[2rem] bottom-[1.9rem] lg:bottom-2 lgx:bottom-[2.5] lgx:bottom-auto"
