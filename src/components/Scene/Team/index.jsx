@@ -245,6 +245,9 @@ export default function Team() {
   const scrollOffset = useRef(0);
   const targetOffset = useRef(0);
   const scrollForce = useRef(0);
+  const lastScrollSoundTime = useRef(0);
+  const isScrollingActive = useRef(false);
+  const scrollStopTimer = useRef(null);
 
   useEffect(() => {
     if (!enableCarousel) return;
@@ -263,6 +266,11 @@ export default function Team() {
           self.event.pointerType === "touch";
         const multiplier = isTouch ? -0.003 : 0.001;
         targetOffset.current += self.deltaY * multiplier;
+        isScrollingActive.current = true;
+        clearTimeout(scrollStopTimer.current);
+        scrollStopTimer.current = setTimeout(() => {
+          isScrollingActive.current = false;
+        }, 100);
       },
       onChangeX: (self) => {
         const isTouch =
@@ -270,6 +278,11 @@ export default function Team() {
           self.event.pointerType === "touch";
         const multiplier = isTouch ? 0.003 : 0.001;
         targetOffset.current -= self.deltaX * multiplier;
+        isScrollingActive.current = true;
+        clearTimeout(scrollStopTimer.current);
+        scrollStopTimer.current = setTimeout(() => {
+          isScrollingActive.current = false;
+        }, 5);
       },
       tolerance: 10,
       preventDefault: true,
@@ -287,6 +300,19 @@ export default function Team() {
   useFrame((state, delta) => {
     if (!enableCarousel) return;
     const velocity = (scrollOffset.current - prevOffset.current) / delta;
+
+    const now = state.clock.getElapsedTime();
+    if (isScrollingActive.current) {
+      const force = Math.abs(scrollForce.current);
+      const cooldown = MathUtils.clamp(0.85 / (1 + force * 1.9), 0.25, 0.85);
+      if (now - lastScrollSoundTime.current > cooldown) {
+        lastScrollSoundTime.current = now;
+        playMovingSound();
+      }
+    } else {
+      lastScrollSoundTime.current = 0;
+    }
+
     scrollForce.current = MathUtils.damp(
       scrollForce.current,
       velocity * 0.5,

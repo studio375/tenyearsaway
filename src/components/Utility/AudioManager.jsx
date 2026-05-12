@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { Howl, Howler } from "howler";
 import { useStore } from "@/store/useStore";
 import { audioTracks } from "@/assets/data";
+import { useLenis } from "lenis/react";
 
 const FADE_MS = 1500;
 
@@ -15,6 +16,7 @@ export default function AudioManager() {
   const currentHowl = useRef(null);
   const currentSrc = useRef(null);
   const mutedRef = useRef(muted);
+  const scrollStopTimer = useRef(null);
 
   const isYearRoute = router.pathname === "/[locale]/year/[slug]";
 
@@ -44,7 +46,7 @@ export default function AudioManager() {
 
     const howl = new Howl({ src: [src], loop: true, volume: 0 });
     howl.play();
-    if (!mutedRef.current) howl.fade(0, 0.2, FADE_MS);
+    if (!mutedRef.current) howl.fade(0, 0.35, FADE_MS);
     currentHowl.current = howl;
     currentSrc.current = src;
   }
@@ -60,6 +62,18 @@ export default function AudioManager() {
     if (!loaded) return;
     playTrack(getDesiredSrc());
   }, [isYearRoute, activeYear]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useLenis((lenis) => {
+    if (!isYearRoute || !currentHowl.current?.playing()) return;
+    const v = Math.abs(lenis.velocity);
+    console.log(v);
+    const rate = Math.min(1 + v * 0.0016, 1.35);
+    currentHowl.current.rate(rate);
+    clearTimeout(scrollStopTimer.current);
+    scrollStopTimer.current = setTimeout(() => {
+      currentHowl.current?.rate(1);
+    }, 200);
+  });
 
   return null;
 }

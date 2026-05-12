@@ -24,7 +24,10 @@ export default function TransitionHandler() {
   const router = useRouter();
   const transitionTl = useRef(null);
   const { play: playTurnSound } = useSound("/sound/page-merge.mp3", {
-    volume: 0.34,
+    volume: 0.38,
+  });
+  const { play: playFastSound } = useSound("/sound/fast.mp3", {
+    volume: 0.45,
   });
 
   const finalTargets = useMemo(() => {
@@ -110,6 +113,9 @@ export default function TransitionHandler() {
               page.position,
               {
                 y: page.position.y + viewport.height / 2 + page.scale.y / 1.5,
+                onStart: () => {
+                  playFastSound();
+                },
                 duration: 1.5,
                 ease: "expo.inOut",
               },
