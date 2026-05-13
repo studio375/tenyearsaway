@@ -28,6 +28,9 @@ export default function TransitionHandler() {
   const { play: playFastSound } = useSound("/sound/fast.mp3", {
     volume: 0.45,
   });
+  const { play: playWindSound } = useSound("/sound/wind.mp3", {
+    volume: 0.8,
+  });
 
   const finalTargets = useMemo(() => {
     if (!comicLayouts[activeYear]) return [];
@@ -246,6 +249,9 @@ export default function TransitionHandler() {
         value: 0,
         duration: 1,
         ease: "power2.out",
+        onStart: () => {
+          playWindSound();
+        },
       });
       useStore.getState().objects.forEach(({ ref, type }) => {
         if (type === "card") return;
