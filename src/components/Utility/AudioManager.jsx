@@ -70,7 +70,7 @@ export default function AudioManager() {
   useLenis((lenis) => {
     if (!isYearRouteRef.current || !currentHowl.current?.playing()) return;
     const velocity = Math.abs(lenis.velocity);
-    const rate = Math.min(1 + Math.max(0, velocity - 100) * 0.009, 1.9);
+    const rate = Math.min(1 + Math.max(0, velocity - 27) * 0.009, 1.9);
     currentHowl.current.rate(rate);
   });
 
