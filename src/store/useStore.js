@@ -35,4 +35,6 @@ export const useStore = create((set) => ({
   setTeam: (team) => set({ team }),
   muted: false,
   setMuted: (muted) => set({ muted }),
+  sceneReady: false,
+  setSceneReady: () => set({ sceneReady: true }),
 }));

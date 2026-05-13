@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { gsap } from "@/lib/gsap";
 import { useStore } from "@/store/useStore";
 import { useTexture } from "@react-three/drei";
+import { audioTracks } from "@/assets/data";
 
 const START_YEAR = 2015;
 const END_YEAR = 2025;
@@ -40,7 +41,9 @@ export default function Loader() {
 
   useEffect(() => {
     const { frames, pages } = useStore.getState();
-    const pngUrls = [];
+
+    // Preload textures into drei cache
+    const pngUrls = ["/textures/cop_notitle.png"];
     if (frames?.length) {
       frames.forEach((frame) => {
         (frame.dialogo || []).forEach((d) => {
@@ -53,9 +56,9 @@ export default function Loader() {
         if (p.full?.url) pngUrls.push(p.full.url);
       });
     }
-    pngUrls.push("/textures/cop_notitle.png");
     useTexture.preload(pngUrls);
 
+    // Preload KTX2 textures for current year
     if (frames?.length) {
       frames.forEach((frame, i) => {
         if (!frame.texture?.url) return;
@@ -69,6 +72,21 @@ export default function Loader() {
         }, i * 250);
       });
     }
+
+    // Warm up HTTP cache for audio files so Howler plays without delay
+    const audioUrls = [
+      audioTracks.default,
+      "/sound/whoosh.mp3",
+      "/sound/page-enter.mp3",
+    ];
+    audioUrls.forEach((url) => {
+      if (document.querySelector(`link[rel="prefetch"][href="${url}"]`)) return;
+      const link = document.createElement("link");
+      link.rel = "prefetch";
+      link.as = "audio";
+      link.href = url;
+      document.head.appendChild(link);
+    });
   }, []);
 
   useEffect(() => {
@@ -120,10 +138,24 @@ export default function Loader() {
       animTl.to(stripRefs.current[i], { y: totalY, duration: 6 }, 0);
     });
 
-    gsap.to(animTl, { duration: 4, progress: 1, ease: "power3.inOut" });
+    let animStarted = false;
+    function startAnim() {
+      if (animStarted) return;
+      animStarted = true;
+      gsap.to(animTl, { duration: 4, progress: 1, ease: "power3.inOut" });
+    }
+
+    // Start only when the Canvas has rendered its first frames
+    if (useStore.getState().sceneReady) {
+      startAnim();
+    }
+    const unsub = useStore.subscribe((state) => {
+      if (state.sceneReady) startAnim();
+    });
 
     return () => {
       animTl.kill();
+      unsub();
     };
   }, []);
 

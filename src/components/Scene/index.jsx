@@ -1,6 +1,6 @@
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import ComicBook from "./ComicBook";
-import { Suspense } from "react";
+import { Suspense, useRef } from "react";
 import { Preload, AdaptiveDpr, AdaptiveEvents } from "@react-three/drei";
 import Book from "./Book";
 import Background from "./Background";
@@ -8,8 +8,20 @@ import { PlaneGeometry } from "three";
 import Intro from "./Background/Intro";
 import Team from "./Team";
 import Trail from "./Trail";
+import { useStore } from "@/store/useStore";
 
 const geometry = new PlaneGeometry(1, 1, 8, 8);
+
+function SceneReadyReporter() {
+  const frameCount = useRef(0);
+  useFrame(() => {
+    frameCount.current++;
+    if (frameCount.current === 3) {
+      useStore.getState().setSceneReady();
+    }
+  });
+  return null;
+}
 
 export default function Scene() {
   return (
@@ -37,6 +49,7 @@ export default function Scene() {
         <Background geometry={geometry} />
         <Intro geometry={geometry} />
         <Trail />
+        <SceneReadyReporter />
         <Preload all />
         <AdaptiveDpr pixelated />
         <AdaptiveEvents />
