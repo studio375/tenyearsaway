@@ -35,6 +35,7 @@ export default function Loader() {
   const topReadyRef = useRef(null);
   const bottomLoadingRef = useRef(null);
   const bottomReadyRef = useRef(null);
+  const loadingIndicatorRef = useRef(null);
   const setLoaded = useStore((s) => s.setLoaded);
   const setMuted = useStore((s) => s.setMuted);
   const [phase, setPhase] = useState("loading"); // "loading" o "ready"
@@ -64,7 +65,8 @@ export default function Loader() {
         if (!frame.texture?.url) return;
         const url = frame.texture.url;
         setTimeout(() => {
-          if (document.querySelector(`link[rel="prefetch"][href="${url}"]`)) return;
+          if (document.querySelector(`link[rel="prefetch"][href="${url}"]`))
+            return;
           const link = document.createElement("link");
           link.rel = "prefetch";
           link.href = url;
@@ -90,14 +92,21 @@ export default function Loader() {
   }, []);
 
   useEffect(() => {
+    // Show top text + "loading..." indicator immediately
     const initTl = gsap.timeline();
-    initTl.to([topLoadingRef.current, bottomLoadingRef.current], {
-      opacity: 1,
-      y: 0,
-      yPercent: 0,
-      duration: 0.6,
-      ease: "power2.out",
-    });
+    initTl
+      .to(topLoadingRef.current, {
+        opacity: 1,
+        y: 0,
+        yPercent: 0,
+        duration: 0.6,
+        ease: "power2.out",
+      })
+      .to(
+        loadingIndicatorRef.current,
+        { opacity: 1, duration: 0.4, ease: "power2.out" },
+        "<",
+      );
 
     const animTl = gsap.timeline({
       defaults: { ease: "none" },
@@ -122,7 +131,10 @@ export default function Loader() {
                     clearProps: "opacity",
                   });
                   [topReadyRef, bottomReadyRef].forEach((ref) => {
-                    ref.current?.classList.remove("opacity-0", "pointer-events-none");
+                    ref.current?.classList.remove(
+                      "opacity-0",
+                      "pointer-events-none",
+                    );
                     ref.current?.classList.add("animate-pulse");
                   });
                 },
@@ -138,24 +150,52 @@ export default function Loader() {
       animTl.to(stripRefs.current[i], { y: totalY, duration: 6 }, 0);
     });
 
+    let sceneOk = useStore.getState().sceneReady;
+    let audioOk = false;
     let animStarted = false;
-    function startAnim() {
-      if (animStarted) return;
+
+    function tryStart() {
+      if (!sceneOk || !audioOk || animStarted) return;
       animStarted = true;
+      // Cross-fade "loading..." → "yess... we are 1 year late"
+      gsap.to(loadingIndicatorRef.current, {
+        opacity: 0,
+        duration: 0.25,
+        ease: "power2.in",
+        onComplete: () => {
+          gsap.fromTo(
+            bottomLoadingRef.current,
+            { opacity: 0, y: 8 },
+            { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" },
+          );
+        },
+      });
       gsap.to(animTl, { duration: 4, progress: 1, ease: "power3.inOut" });
     }
 
-    // Start only when the Canvas has rendered its first frames
-    if (useStore.getState().sceneReady) {
-      startAnim();
-    }
     const unsub = useStore.subscribe((state) => {
-      if (state.sceneReady) startAnim();
+      if (state.sceneReady) {
+        sceneOk = true;
+        tryStart();
+      }
     });
+
+    // Fetch default audio track to warm HTTP cache; marks audio ready when done
+    const controller = new AbortController();
+    fetch(audioTracks.default, { signal: controller.signal })
+      .then(() => {
+        audioOk = true;
+        tryStart();
+      })
+      .catch(() => {
+        audioOk = true;
+        tryStart();
+      }); // don't block on network error
 
     return () => {
       animTl.kill();
       unsub();
+      controller.abort();
     };
   }, []);
 
@@ -216,8 +256,14 @@ export default function Loader() {
       </div>
       <div className="absolute left-1/2 bottom-2 -translate-x-1/2 w-full text-center">
         <span
+          ref={loadingIndicatorRef}
+          className="lowercase text-text-blue opacity-0 block absolute left-0 right-0 top-0"
+        >
+          loading...
+        </span>
+        <span
           ref={bottomLoadingRef}
-          className="lowercase text-text-blue opacity-0 will-change-transform block translate-y-3"
+          className="lowercase text-text-blue opacity-0 will-change-transform block"
         >
           yess... we are 1 year late
         </span>
