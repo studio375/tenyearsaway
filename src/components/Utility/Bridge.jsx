@@ -41,11 +41,24 @@ export default function Bridge({ year = false, years = false, page = false }) {
     const controller = new AbortController();
 
     const sync = async () => {
-      // Download all KTX2 files (2 at a time, retry on 503) before handing
-      // frames to the store — useKTX2 will then get instant cache hits
       const urls = year.acf.vignette
         .map((f) => f.texture?.url)
         .filter(Boolean);
+
+      // _app.js useLayoutEffect runs before Bridge useEffect, so activeYear may
+      // already match. In that case Mesh components are mounting — skip setYearData
+      // (would reset objects:[]) but still warm the cache so FrameErrorBoundary
+      // retries find files available. For year→year nav, activeYear differs and
+      // we await the cache warm before calling setYearData.
+      const alreadyActive = useStore.getState().activeYear === year.slug;
+
+      if (alreadyActive) {
+        // Fire-and-forget: warm cache in background for retry resilience
+        if (urls.length > 0) warmKTX2Cache(urls, controller.signal);
+        return;
+      }
+
+      // Year→year navigation: wait for cache before handing frames to store
       if (urls.length > 0) {
         await warmKTX2Cache(urls, controller.signal);
       }

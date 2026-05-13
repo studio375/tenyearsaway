@@ -14,6 +14,7 @@ export default function End({ next }) {
   const tbcRef = useRef(null);
   const wrapperRef = useRef(null);
   const endStateRef = useRef(false);
+  const transitionPollRef = useRef(null);
   const { play: playHoverSound } = useSound("/sound/hover.mp3", {
     volume: 1.2,
   });
@@ -94,6 +95,14 @@ export default function End({ next }) {
     });
   }, [endText]);
 
+  useEffect(() => {
+    return () => {
+      if (transitionPollRef.current) {
+        clearInterval(transitionPollRef.current);
+      }
+    };
+  }, []);
+
   if (activeYear === "2025") {
     return (
       <div
@@ -136,7 +145,28 @@ export default function End({ next }) {
         ease: "power3.inOut",
       });
     });
-    setTransition("next");
+    const fireTransition = () => setTransition("next");
+
+    const { frames, objects } = useStore.getState();
+    const needed = frames?.length ?? 0;
+    const ready = () =>
+      useStore.getState().objects.filter((o) => o.type === "frame").length >= needed;
+
+    if (needed === 0 || ready()) {
+      fireTransition();
+      return;
+    }
+
+    // Poll until all frames registered or 8s timeout
+    let elapsed = 0;
+    transitionPollRef.current = setInterval(() => {
+      elapsed += 300;
+      if (ready() || elapsed >= 8000) {
+        clearInterval(transitionPollRef.current);
+        transitionPollRef.current = null;
+        fireTransition();
+      }
+    }, 300);
   };
 
   return (

@@ -3,13 +3,26 @@ import { PlaneGeometry, Vector3, CatmullRomCurve3 } from "three";
 import { useThree } from "@react-three/fiber";
 import { useRef, useMemo, useLayoutEffect, Suspense, Component } from "react";
 
+const MAX_FRAME_RETRIES = 3;
+
 class FrameErrorBoundary extends Component {
   constructor(props) {
     super(props);
-    this.state = { hasError: false };
+    this.state = { hasError: false, retries: 0 };
+    this.retryTimer = null;
   }
   static getDerivedStateFromError() {
     return { hasError: true };
+  }
+  componentDidUpdate(_, prevState) {
+    if (!prevState.hasError && this.state.hasError && this.state.retries < MAX_FRAME_RETRIES) {
+      this.retryTimer = setTimeout(() => {
+        this.setState((s) => ({ hasError: false, retries: s.retries + 1 }));
+      }, 2000 * (this.state.retries + 1));
+    }
+  }
+  componentWillUnmount() {
+    clearTimeout(this.retryTimer);
   }
   render() {
     if (this.state.hasError) return null;
