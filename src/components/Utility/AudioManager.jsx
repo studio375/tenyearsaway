@@ -23,6 +23,9 @@ export default function AudioManager() {
   useEffect(() => {
     mutedRef.current = muted;
     Howler.mute(muted);
+    if (!muted && currentHowl.current && currentHowl.current.volume() === 0) {
+      currentHowl.current.fade(0, 0.35, FADE_MS);
+    }
   }, [muted]);
 
   useEffect(() => {
