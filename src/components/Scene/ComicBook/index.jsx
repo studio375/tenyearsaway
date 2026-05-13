@@ -1,7 +1,21 @@
 import { useStore } from "@/store/useStore";
 import { PlaneGeometry, Vector3, CatmullRomCurve3 } from "three";
 import { useThree } from "@react-three/fiber";
-import { useRef, useMemo, useLayoutEffect, Suspense } from "react";
+import { useRef, useMemo, useLayoutEffect, Suspense, Component } from "react";
+
+class FrameErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+  render() {
+    if (this.state.hasError) return null;
+    return this.props.children;
+  }
+}
 import Mesh from "./Mesh";
 import CameraRig from "./CameraRig";
 import Caption from "./Caption";
@@ -330,31 +344,33 @@ export default function ComicBook() {
           <group ref={groupRef}>
             {frames.map((frame, index) => {
               return (
-                <Suspense key={`${activeYear}-${frame.texture.id}`} fallback={null}>
-                  <group>
-                    <Mesh
-                      geometry={sharedGeometry}
-                      src={frame.texture.url}
-                      index={index}
-                      sizes={meshSizes[index]}
-                      positions={activePositions[index]}
-                      xScaleFactor={xScaleFactor}
-                      framesProgress={framesProgress}
-                    />
-                    {Array.isArray(frame.dialogo) &&
-                      frame.dialogo.map((dialogoItem, dialogoIdx) => (
-                        <Caption
-                          key={`${activeYear}-${frame.texture.id}-caption-${dialogoIdx}`}
-                          geometry={sharedGeometry}
-                          src={dialogoItem.immagine_txt?.url}
-                          position={captionPositions[index][dialogoIdx]}
-                          size={captionSizes[index][dialogoIdx]}
-                          index={index}
-                          framesProgress={framesProgress}
-                        />
-                      ))}
-                  </group>
-                </Suspense>
+                <FrameErrorBoundary key={`${activeYear}-${frame.texture.id}`}>
+                  <Suspense fallback={null}>
+                    <group>
+                      <Mesh
+                        geometry={sharedGeometry}
+                        src={frame.texture.url}
+                        index={index}
+                        sizes={meshSizes[index]}
+                        positions={activePositions[index]}
+                        xScaleFactor={xScaleFactor}
+                        framesProgress={framesProgress}
+                      />
+                      {Array.isArray(frame.dialogo) &&
+                        frame.dialogo.map((dialogoItem, dialogoIdx) => (
+                          <Caption
+                            key={`${activeYear}-${frame.texture.id}-caption-${dialogoIdx}`}
+                            geometry={sharedGeometry}
+                            src={dialogoItem.immagine_txt?.url}
+                            position={captionPositions[index][dialogoIdx]}
+                            size={captionSizes[index][dialogoIdx]}
+                            index={index}
+                            framesProgress={framesProgress}
+                          />
+                        ))}
+                    </group>
+                  </Suspense>
+                </FrameErrorBoundary>
               );
             })}
           </group>
