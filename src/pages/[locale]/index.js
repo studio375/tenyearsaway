@@ -36,9 +36,9 @@ export async function getStaticProps({ params: { locale } }) {
 
 const SEO = {
   it: {
-    title: "Ten Years Away - Un fumetto, di una storia vera",
+    title: "Ten Years Away - Un fumetto, tratto da una storia vera",
     description:
-      "Un fumetto, di una storia vera, basata su noi. Un'esperienza interattiva firmata Studio375.",
+      "Un fumetto, tratto da una storia vera, basata su noi. Un'esperienza interattiva firmata Studio375.",
   },
   en: {
     title: "Ten Years Away - A graphic novel, of a true story",
