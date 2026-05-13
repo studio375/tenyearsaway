@@ -110,11 +110,14 @@ export default function Background({ geometry }) {
   useFrame((state) => {
     if (!ref.current || !loaded) return;
 
-    let time = state.clock.getElapsedTime();
-    ref.current.material.uniforms.uTime.value = time;
-
+    // Always track camera so position is correct on fade-in
     ref.current.position.x = state.camera.position.x;
     ref.current.position.y = state.camera.position.y;
+
+    // Skip shader updates when background is invisible
+    if (ref.current.material.uniforms.uAlpha.value < 0.01) return;
+
+    ref.current.material.uniforms.uTime.value = state.clock.getElapsedTime();
 
     if (!lenis.isScrolling) return;
     ref.current.material.uniforms.uSpeed.value = MathUtils.lerp(

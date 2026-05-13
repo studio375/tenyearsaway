@@ -10,7 +10,6 @@ import { useSound } from "@/hooks/useSound";
 
 export default function TransitionHandler() {
   const {
-    objects,
     transition,
     setTransition,
     activeYear,
@@ -80,7 +79,7 @@ export default function TransitionHandler() {
 
       const y = window.innerWidth <= 1024 ? -0.45 : null;
       // Objects
-      objects.forEach(({ ref, index, type }) => {
+      useStore.getState().objects.forEach(({ ref, index, type }) => {
         if (type == "page") {
           const page = ref;
           page.position.set(camera.position.x, camera.position.y, -2);
@@ -248,7 +247,7 @@ export default function TransitionHandler() {
         duration: 1,
         ease: "power2.out",
       });
-      objects.forEach(({ ref, type }) => {
+      useStore.getState().objects.forEach(({ ref, type }) => {
         if (type === "card") return;
         if (ref.material?.uniforms?.uProgress) {
           transitionTl.current.to(
@@ -265,7 +264,7 @@ export default function TransitionHandler() {
 
     if (transition === "exit") {
       lenis.stop();
-      objects.forEach(({ ref, type }) => {
+      useStore.getState().objects.forEach(({ ref, type }) => {
         if (type == "card") return;
         gsap.killTweensOf(ref.position);
         gsap.killTweensOf(ref.scale);
@@ -293,7 +292,7 @@ export default function TransitionHandler() {
         duration: 0.4,
         ease: "power2.out",
       });
-      objects.forEach(({ ref, index, type }) => {
+      useStore.getState().objects.forEach(({ ref, index, type }) => {
         if (type == "card") return;
         transitionTl.current
           .to(

@@ -40,12 +40,22 @@ void main() {
   alphaWithFbm = pow(alphaWithFbm, 1.35); 
   float speedFactor = smoothstep(0.0, 0.4, uSpeed);
   alpha = mix(alpha, alphaWithFbm, speedFactor);
-  alpha = pow(alpha, 2.); 
+  float rawAlpha = alpha; // pre-pow, drives color variation
+  alpha = pow(alpha, 2.);
   //alpha *= 2.;
 
   vec3 gray = vec3(0.1, 0.1, 0.1);
+  vec3 deepBlue = vec3(0.08, 0.15, 0.30);
+  vec3 orange = vec3(0.84, 0.35, 0.22);
   vec3 stellarBlue = vec3(0.45, 0.72, 0.98);
-  vec3 color = mix(stellarBlue, gray, uAlpha);
+  // Base: thin edges → blue, dense areas → gray
+  vec3 smokeColor = mix(deepBlue, gray, rawAlpha);
+  // Speed: three-color gradient across density — thin=blue, mid=orange, dense=gray
+  vec3 speedBlue = vec3(0.12, 0.28, 0.60); // brighter blue for speed
+  vec3 speedSmoke = mix(speedBlue, orange, smoothstep(0.2, 0.7, rawAlpha));
+  speedSmoke = mix(speedSmoke, gray, smoothstep(0.7, 1.0, rawAlpha));
+  smokeColor = mix(smokeColor, speedSmoke, speedFactor);
+  vec3 color = mix(stellarBlue, smokeColor, uAlpha);
 
   float amount = pow(uAlpha, 2.0);
   gl_FragColor = vec4(color, alpha * amount);

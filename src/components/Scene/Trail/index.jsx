@@ -82,6 +82,7 @@ export default function Trail() {
 
   const readTarget = useRef(objs.rtA);
   const writeTarget = useRef(objs.rtB);
+  const decayFramesRef = useRef(0);
 
   useEffect(() => {
     if (isMobile) return;
@@ -129,6 +130,18 @@ export default function Trail() {
   }, [asPath]);
 
   const isOverLinkRef = useRef(false);
+  const linkElsRef = useRef([]);
+
+  // Cache [data-link] elements, refresh on DOM mutations
+  useEffect(() => {
+    if (isMobile) return;
+    linkElsRef.current = Array.from(document.querySelectorAll("[data-link]"));
+    const observer = new MutationObserver(() => {
+      linkElsRef.current = Array.from(document.querySelectorAll("[data-link]"));
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+    return () => observer.disconnect();
+  }, [isMobile]);
 
   // Mouse tracking via pointermove (works on touch too)
   useEffect(() => {
@@ -153,7 +166,23 @@ export default function Trail() {
       }
 
       const el = document.elementFromPoint(e.clientX, e.clientY);
-      const overLink = !!el?.closest("[data-link]");
+      const directOverLink = !!el?.closest("[data-link]");
+      let overLink = directOverLink;
+      if (!overLink) {
+        const LASCO = 10;
+        for (const linkEl of linkElsRef.current) {
+          const rect = linkEl.getBoundingClientRect();
+          if (
+            e.clientX >= rect.left - LASCO &&
+            e.clientX <= rect.right + LASCO &&
+            e.clientY >= rect.top - LASCO &&
+            e.clientY <= rect.bottom + LASCO
+          ) {
+            overLink = true;
+            break;
+          }
+        }
+      }
       if (overLink !== isOverLinkRef.current) {
         isOverLinkRef.current = overLink;
         gsap.to(objs.trailMat.uniforms.uBrushSize, {
@@ -185,6 +214,27 @@ export default function Trail() {
 
   useFrame((state) => {
     if (isMobile) return;
+
+    // Always keep mesh covering the camera view
+    const cam = state.camera;
+    const meshZ = ref.current.position.z;
+    const dist = cam.position.z - meshZ;
+    const fov = (cam.fov * Math.PI) / 180;
+    const h = 2 * Math.tan(fov / 2) * dist;
+    const w = h * (state.size.width / state.size.height);
+    ref.current.position.x = cam.position.x;
+    ref.current.position.y = cam.position.y;
+    ref.current.scale.set(w, h, 1);
+
+    // Track decay: keep rendering for 60 frames after mouse stops to let trail fade
+    if (velocityRef.current > 0.001) {
+      decayFramesRef.current = 60;
+    } else if (decayFramesRef.current > 0) {
+      decayFramesRef.current--;
+    } else {
+      return; // trail fully decayed, skip off-screen render
+    }
+
     const { trailMat, halftoneMat, offScene, offCamera } = objs;
 
     trailMat.uniforms.uPrevTrail.value = readTarget.current.texture;
@@ -212,16 +262,6 @@ export default function Trail() {
     writeTarget.current = tmp;
 
     velocityRef.current *= 0.8;
-
-    const cam = state.camera;
-    const meshZ = ref.current.position.z;
-    const dist = cam.position.z - meshZ;
-    const fov = (cam.fov * Math.PI) / 180;
-    const h = 2 * Math.tan(fov / 2) * dist;
-    const w = h * (state.size.width / state.size.height);
-    ref.current.position.x = cam.position.x;
-    ref.current.position.y = cam.position.y;
-    ref.current.scale.set(w, h, 1);
   });
 
   if (isMobile) return null;

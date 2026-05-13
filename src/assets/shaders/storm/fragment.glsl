@@ -23,7 +23,7 @@ void main() {
     float amplitude = .2;
     float frequency = .17;
     d -= cnoise(vec4(vWorldPosition * frequency, uTime * 0.05)) * amplitude;
-    float alphaReveal = 1. - falloff(d, -amplitude, 0.5 + amplitude, 0.1, uProgress);
+    float alphaReveal = 1. - falloff(d, -amplitude, 0.72 + amplitude, 0.1, uProgress);
     float alpha = 1.0;
     alpha *= alphaReveal;
 

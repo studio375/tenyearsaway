@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { Howl, Howler } from "howler";
 import { useStore } from "@/store/useStore";
 import { audioTracks } from "@/assets/data";
-import { scrollVelocity } from "./ScrollProvider";
+import { useLenis } from "lenis/react";
 
 const FADE_MS = 1500;
 
@@ -66,19 +66,13 @@ export default function AudioManager() {
     playTrack(getDesiredSrc());
   }, [isYearRoute, activeYear]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Scroll-driven playback rate
-  useEffect(() => {
-    let rafId;
-    const loop = () => {
-      if (isYearRouteRef.current && currentHowl.current?.playing()) {
-        const rate = Math.min(1 + Math.max(0, scrollVelocity - 114) * 0.005, 1.5);
-        currentHowl.current.rate(rate);
-      }
-      rafId = requestAnimationFrame(loop);
-    };
-    rafId = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(rafId);
-  }, []);
+  // Scroll-driven playback rate — fires only while Lenis is scrolling
+  useLenis((lenis) => {
+    if (!isYearRouteRef.current || !currentHowl.current?.playing()) return;
+    const velocity = Math.abs(lenis.velocity);
+    const rate = Math.min(1 + Math.max(0, velocity - 100) * 0.009, 1.9);
+    currentHowl.current.rate(rate);
+  });
 
   return null;
 }

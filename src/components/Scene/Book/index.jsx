@@ -51,6 +51,9 @@ export default function Book() {
   const { play: playEnterSound } = useSound("/sound/slide.mp3", {
     volume: 1.4,
   });
+  const { play: playWindSound } = useSound("/sound/wind.mp3", {
+    volume: 1,
+  });
   const {
     pages,
     setSelectedPage,
@@ -395,6 +398,7 @@ export default function Book() {
                   : pages[2 * sheetIndex - 1]?.year
               }
               resetBook={() => resetBook()}
+              playWindSound={playWindSound}
               yOffset={yOffset}
             />
           );

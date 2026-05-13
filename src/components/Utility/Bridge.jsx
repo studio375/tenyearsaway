@@ -16,6 +16,15 @@ export default function Bridge({ year = false, years = false, page = false }) {
         year.acf?.titolo || year.title?.rendered,
       ];
       setYearData(year.slug, year.acf.vignette, page);
+
+      // Prefetch KTX2 textures into HTTP cache as soon as year data syncs
+      year.acf.vignette.forEach((frame) => {
+        if (!frame.texture?.url) return;
+        const link = document.createElement("link");
+        link.rel = "prefetch";
+        link.href = frame.texture.url;
+        document.head.appendChild(link);
+      });
     };
 
     const currentTransition = useStore.getState().transition;

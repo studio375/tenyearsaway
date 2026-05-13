@@ -12,7 +12,6 @@ import fragmentShader from "@/assets/shaders/card/fragment.glsl";
 import { useTexture, Text } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { gsap } from "@/lib/gsap";
-import { usePathname } from "@/i18n/navigation";
 import { useStore } from "@/store/useStore";
 const Card = forwardRef(function Card(
   { card, geometry, index = 0, active = false },
@@ -23,7 +22,7 @@ const Card = forwardRef(function Card(
   const nameRef = useRef(null);
   const descRef = useRef(null);
   const { addObject, removeObject } = useStore();
-  const asPath = usePathname();
+  const currentPath = useStore((state) => state.currentPath);
   const [isSmall, setIsSmall] = useState(
     () => typeof window !== "undefined" && window.innerWidth < 600,
   );
@@ -109,7 +108,7 @@ const Card = forwardRef(function Card(
     const ref = meshRef.current;
     ref.material.uniforms.uScrollForce.value = 0;
     ref.material.uniforms.uTime.value = 0;
-  }, [asPath]);
+  }, [currentPath]);
 
   useFrame((state, delta) => {
     if (!meshRef.current) return;

@@ -6,7 +6,6 @@ import vertexShader from "@/assets/shaders/book/vertex.glsl";
 import fragmentShader from "@/assets/shaders/book/fragment.glsl";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useRouter, usePathname } from "@/i18n/navigation";
-import { useSound } from "@/hooks/useSound";
 const PAGE_DEPTH = 0.003;
 
 export default function Page({
@@ -23,6 +22,7 @@ export default function Page({
   selectedPage,
   year,
   resetBook,
+  playWindSound,
   yOffset = 0,
 }) {
   const groupRef = useRef(null);
@@ -34,9 +34,6 @@ export default function Page({
   const { size } = useThree();
   const router = useRouter();
   const pathname = usePathname();
-  const { play: playWindSound } = useSound("/sound/wind.mp3", {
-    volume: 1,
-  });
   const materials = useMemo(() => {
     return [
       ...pageMaterials,
