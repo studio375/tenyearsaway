@@ -53,7 +53,8 @@ export default function Loader() {
         if (p.full?.url) pngUrls.push(p.full.url);
       });
     }
-    if (pngUrls.length) useTexture.preload(pngUrls);
+    pngUrls.push("/textures/cop_notitle.png");
+    useTexture.preload(pngUrls);
 
     if (frames?.length) {
       frames.forEach((frame, i) => {
