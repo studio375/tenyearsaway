@@ -89,7 +89,21 @@ export default function Loader() {
             gsap.fromTo(
               [topReadyRef.current, bottomReadyRef.current],
               { opacity: 0 },
-              { opacity: 1, duration: 0.4, ease: "power2.out", stagger: 0.08 },
+              {
+                opacity: 1,
+                duration: 0.4,
+                ease: "power2.out",
+                stagger: 0.08,
+                onComplete: () => {
+                  gsap.set([topReadyRef.current, bottomReadyRef.current], {
+                    clearProps: "opacity",
+                  });
+                  topReadyRef.current?.classList.remove("opacity-0");
+                  bottomReadyRef.current?.classList.remove("opacity-0");
+                  topReadyRef.current?.classList.add("animate-pulse");
+                  bottomReadyRef.current?.classList.add("animate-pulse");
+                },
+              },
             );
           },
         });
