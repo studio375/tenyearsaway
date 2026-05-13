@@ -94,19 +94,13 @@ export default function Loader() {
   useEffect(() => {
     // Show top text + "loading..." indicator immediately
     const initTl = gsap.timeline();
-    initTl
-      .to(topLoadingRef.current, {
-        opacity: 1,
-        y: 0,
-        yPercent: 0,
-        duration: 0.6,
-        ease: "power2.out",
-      })
-      .to(
-        loadingIndicatorRef.current,
-        { opacity: 1, duration: 0.4, ease: "power2.out" },
-        "<",
-      );
+    initTl.to(topLoadingRef.current, {
+      opacity: 1,
+      y: 0,
+      yPercent: 0,
+      duration: 0.6,
+      ease: "power2.out",
+    });
 
     const animTl = gsap.timeline({
       defaults: { ease: "none" },
@@ -257,7 +251,7 @@ export default function Loader() {
       <div className="absolute left-1/2 bottom-2 -translate-x-1/2 w-full text-center">
         <span
           ref={loadingIndicatorRef}
-          className="lowercase text-text-blue opacity-0 block absolute left-0 right-0 top-0"
+          className="lowercase text-text-blue block absolute left-0 right-0 top-0"
         >
           loading...
         </span>
