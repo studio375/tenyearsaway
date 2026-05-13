@@ -56,12 +56,16 @@ export default function Loader() {
     if (pngUrls.length) useTexture.preload(pngUrls);
 
     if (frames?.length) {
-      frames.forEach((frame) => {
+      frames.forEach((frame, i) => {
         if (!frame.texture?.url) return;
-        const link = document.createElement("link");
-        link.rel = "prefetch";
-        link.href = frame.texture.url;
-        document.head.appendChild(link);
+        const url = frame.texture.url;
+        setTimeout(() => {
+          if (document.querySelector(`link[rel="prefetch"][href="${url}"]`)) return;
+          const link = document.createElement("link");
+          link.rel = "prefetch";
+          link.href = url;
+          document.head.appendChild(link);
+        }, i * 250);
       });
     }
   }, []);
@@ -98,10 +102,10 @@ export default function Loader() {
                   gsap.set([topReadyRef.current, bottomReadyRef.current], {
                     clearProps: "opacity",
                   });
-                  topReadyRef.current?.classList.remove("opacity-0");
-                  bottomReadyRef.current?.classList.remove("opacity-0");
-                  topReadyRef.current?.classList.add("animate-pulse");
-                  bottomReadyRef.current?.classList.add("animate-pulse");
+                  [topReadyRef, bottomReadyRef].forEach((ref) => {
+                    ref.current?.classList.remove("opacity-0", "pointer-events-none");
+                    ref.current?.classList.add("animate-pulse");
+                  });
                 },
               },
             );
@@ -148,7 +152,7 @@ export default function Loader() {
         <span
           ref={topReadyRef}
           onClick={() => enter(true)}
-          className="lowercase text-text-blue opacity-0 will-change-transform block cursor-pointer hover:opacity-70 transition-opacity absolute left-0 right-0 top-0"
+          className="lowercase text-text-blue opacity-0 will-change-transform block cursor-pointer hover:opacity-70 transition-opacity absolute left-0 right-0 top-0 pointer-events-none"
         >
           enter with sound
         </span>
@@ -187,7 +191,7 @@ export default function Loader() {
         <span
           ref={bottomReadyRef}
           onClick={() => enter(false)}
-          className="lowercase text-text-blue opacity-0 will-change-transform block cursor-pointer hover:opacity-70 transition-opacity absolute left-0 right-0 bottom-0"
+          className="lowercase text-text-blue opacity-0 will-change-transform block cursor-pointer hover:opacity-70 transition-opacity absolute left-0 right-0 bottom-0 pointer-events-none"
         >
           enter without sound
         </span>

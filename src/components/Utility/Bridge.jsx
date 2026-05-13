@@ -17,13 +17,17 @@ export default function Bridge({ year = false, years = false, page = false }) {
       ];
       setYearData(year.slug, year.acf.vignette, page);
 
-      // Prefetch KTX2 textures into HTTP cache as soon as year data syncs
-      year.acf.vignette.forEach((frame) => {
+      // Prefetch KTX2 textures — staggered to avoid 503 on origin server
+      year.acf.vignette.forEach((frame, i) => {
         if (!frame.texture?.url) return;
-        const link = document.createElement("link");
-        link.rel = "prefetch";
-        link.href = frame.texture.url;
-        document.head.appendChild(link);
+        const url = frame.texture.url;
+        setTimeout(() => {
+          if (document.querySelector(`link[rel="prefetch"][href="${url}"]`)) return;
+          const link = document.createElement("link");
+          link.rel = "prefetch";
+          link.href = url;
+          document.head.appendChild(link);
+        }, i * 250);
       });
     };
 
