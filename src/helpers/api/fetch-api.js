@@ -14,8 +14,7 @@ export async function fetchAPI(path = "", urlParamsObject = {}) {
     )}`;
 
     const response = await fetch(requestUrl, {
-      next: { tags: ["all"] },
-      cache: "force-cache",
+      cache: "no-store",
       headers: { "Content-Type": "application/json" },
       signal: controller.signal,
     });
