@@ -78,6 +78,17 @@ export default function Loader() {
     // Warm up HTTP cache for audio files so Howler plays without delay
     const audioUrls = [
       audioTracks.default,
+      audioTracks[2015],
+      audioTracks[2016],
+      audioTracks[2017],
+      audioTracks[2018],
+      audioTracks[2019],
+      audioTracks[2020],
+      audioTracks[2021],
+      audioTracks[2022],
+      audioTracks[2023],
+      audioTracks[2024],
+      audioTracks[2025],
       "/sound/whoosh.mp3",
       "/sound/page-enter.mp3",
     ];
