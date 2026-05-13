@@ -1,9 +1,14 @@
+import { revalidateTag } from "next/cache";
+
 const LOCALES = ["it", "en"];
 
 export default async function handler(req, res) {
   try {
+    revalidateTag("all");
+
     const slugsRes = await fetch(
-      "https://admin10.375.studio/wp-json/wp/v2/anno?per_page=100&_fields=slug"
+      "https://admin10.375.studio/wp-json/wp/v2/anno?per_page=100&_fields=slug",
+      { cache: "no-store" }
     );
     const years = await slugsRes.json();
 
