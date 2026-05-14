@@ -23,7 +23,7 @@ const sharedGeometry = new BoxGeometry(1, 1, PAGE_DEPTH, PAGE_SEGMENTS, 2);
 
 const COVER_URL = "/textures/fullCopertina.png";
 const BACK_COVER_URL = "/textures/retro-IT_.png";
-const BACK_COVER_URL_EN = "/textures/retro-EN_.png";
+const BACK_COVER_URL_EN = "/textures/retro-EN_2.png";
 const BACK_COVER_URL_FRONT_IT = "/textures/retroFront-IT_.png";
 const BACK_COVER_URL_FRONT_EN = "/textures/retroFront-EN_.png";
 
