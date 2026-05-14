@@ -169,6 +169,8 @@ export default function Book() {
     )
       return;
     if (currentPath !== "/year") return;
+    if (enteredRef.current) return;
+    enteredRef.current = true;
 
     exitTl.current?.kill();
     exitTl.current = null;
@@ -278,6 +280,12 @@ export default function Book() {
       exitTl.current = null;
     };
   }, [currentPath, activeExperience, selectedPage, yOffset]);
+
+  // Guard: prevent re-running entry when transition resets to false while still on /year
+  const enteredRef = useRef(false);
+  useEffect(() => {
+    if (currentPath !== "/year") enteredRef.current = false;
+  }, [currentPath]);
 
   const tlPage = useRef();
   useEffect(() => {

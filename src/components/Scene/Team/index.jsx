@@ -36,6 +36,7 @@ export default function Team() {
     volume: 0.5,
   });
   const tl = useRef(null);
+  const enteredRef = useRef(false);
   const positions = useMemo(() => {
     return team.map((_, index) => [
       staticViewport.width *
@@ -139,6 +140,8 @@ export default function Team() {
     tl.current = null;
 
     if (isAbout) {
+      if (enteredRef.current) return;
+      enteredRef.current = true;
       const entryDelay = prevActiveRef.current ? 0.3 : 1.5;
 
       container.current.visible = true;
@@ -209,6 +212,7 @@ export default function Team() {
           );
       });
     } else {
+      enteredRef.current = false;
       setEnableCarousel(false);
 
       tl.current = gsap.timeline({
