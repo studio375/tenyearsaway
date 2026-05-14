@@ -1,7 +1,7 @@
 export const ZOOM_START_2025 = 1000 / 1300;
 
 export const audioTracks = {
-  default: "/audio/2015.mp3",
+  default: "/audio/default.mp3",
   2015: "/audio/2015.mp3",
   2016: "/audio/2016.mp3",
   2017: "/audio/2017.mp3",
