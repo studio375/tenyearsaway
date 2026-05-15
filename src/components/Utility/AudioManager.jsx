@@ -19,6 +19,7 @@ export default function AudioManager() {
   const currentSrc = useRef(null);
   const mutedRef = useRef(muted);
   const isYearRouteRef = useRef(isYearRoute);
+  const active2025PartRef = useRef(0); // 0 = part1, 1 = part2
 
   useEffect(() => {
     mutedRef.current = muted;
@@ -36,7 +37,9 @@ export default function AudioManager() {
     const y = useStore.getState().activeYear;
     if (isYearRoute && y) {
       const key = parseInt(y, 10) || y;
-      return audioTracks[key] ?? audioTracks.default;
+      const track = audioTracks[key] ?? audioTracks.default;
+      // For years with multiple parts, return the first track
+      return Array.isArray(track) ? track[0] : track;
     }
     return audioTracks.default;
   }
@@ -57,24 +60,56 @@ export default function AudioManager() {
     currentSrc.current = src;
   }
 
+  // Pre-warm default track during loading screen so audio is decoded before user clicks enter
+  useEffect(() => {
+    const src = getDesiredSrc();
+    const howl = new Howl({ src: [src], loop: true, volume: 0, preload: true });
+    currentHowl.current = howl;
+    currentSrc.current = src;
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   // Start after loader click (loaded = true, user gesture guaranteed)
   useEffect(() => {
     if (!loaded) return;
-    playTrack(getDesiredSrc());
+    // If pre-warmed howl matches, just play it — no decode delay
+    const src = getDesiredSrc();
+    if (
+      currentSrc.current === src &&
+      currentHowl.current &&
+      !currentHowl.current.playing()
+    ) {
+      currentHowl.current.play();
+      if (!mutedRef.current) currentHowl.current.fade(0, 0.35, FADE_MS);
+    } else {
+      playTrack(src);
+    }
   }, [loaded]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Switch track on route / year change
+  // Switch track on route / year change; reset 2025 part index
   useEffect(() => {
+    active2025PartRef.current = 0;
     if (!loaded) return;
     playTrack(getDesiredSrc());
   }, [isYearRoute, activeYear]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Scroll-driven playback rate — fires only while Lenis is scrolling
-  useLenis((lenis) => {
+  // Scroll-driven playback rate + 2025 bidirectional mid-track swap
+  useLenis(({ velocity, progress }) => {
     if (!isYearRouteRef.current || !currentHowl.current?.playing()) return;
-    const velocity = Math.abs(lenis.velocity);
-    const rate = Math.min(1 + Math.max(0, velocity - 27) * 0.009, 1.9);
+
+    const rate = Math.min(
+      1 + Math.max(0, Math.abs(velocity) - 27) * 0.009,
+      1.9,
+    );
     currentHowl.current.rate(rate);
+
+    const y = useStore.getState().activeYear;
+    if (y === "2025") {
+      const desiredPart = progress >= 0.35 ? 1 : 0;
+      if (desiredPart !== active2025PartRef.current) {
+        active2025PartRef.current = desiredPart;
+        playTrack(audioTracks[2025][desiredPart]);
+      }
+    }
   });
 
   return null;

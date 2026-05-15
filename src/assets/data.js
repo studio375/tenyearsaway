@@ -12,7 +12,7 @@ export const audioTracks = {
   2022: "/audio/2022.mp3",
   2023: "/audio/2023.mp3",
   2024: "/audio/2024.mp3",
-  2025: "/audio/2025.mp3",
+  2025: ["/audio/2025_01.mp3", "/audio/2025_02.mp3"],
 };
 
 export const captionSizeOverrides = {

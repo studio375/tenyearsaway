@@ -88,7 +88,10 @@ export default function Loader() {
       audioTracks[2022],
       audioTracks[2023],
       audioTracks[2024],
-      audioTracks[2025],
+      // 2025 has two parts
+      ...(Array.isArray(audioTracks[2025])
+        ? audioTracks[2025]
+        : [audioTracks[2025]]),
       "/sound/whoosh.mp3",
       "/sound/page-enter.mp3",
     ];
@@ -99,6 +102,7 @@ export default function Loader() {
       link.as = "audio";
       link.href = url;
       document.head.appendChild(link);
+      console.log("prefetching", url);
     });
   }, []);
 
@@ -128,6 +132,7 @@ export default function Loader() {
               { opacity: 0 },
               {
                 opacity: 1,
+                pointerEvents: "auto",
                 duration: 0.4,
                 ease: "power2.out",
                 stagger: 0.08,
@@ -218,7 +223,7 @@ export default function Loader() {
   return (
     <div
       ref={loaderRef}
-      className="fixed left-0 top-0 inset-0 z-1 w-screen h-svh bg-storm flex items-center justify-center"
+      className="fixed left-0 top-0 inset-0 z-13 w-screen h-svh bg-storm flex items-center justify-center pointer-events-none"
     >
       <div className="absolute left-1/2 top-2 -translate-x-1/2 w-full text-center">
         <span
@@ -227,19 +232,12 @@ export default function Loader() {
         >
           enable sound for a better experience
         </span>
-        <span
-          ref={topReadyRef}
-          onClick={() => enter(true)}
-          className="lowercase text-text-blue opacity-0 will-change-transform block cursor-pointer hover:opacity-70 transition-opacity absolute left-0 right-0 top-0 pointer-events-none"
-        >
-          enter with sound
-        </span>
       </div>
-      <div className="flex text-text-blue lg:text-[16rem] text-[10rem] font-extrabold leading-[120%]">
+      <div className="flex relative">
         {STRIPS.map((strip, col) => (
           <div
             key={col}
-            className="overflow-hidden"
+            className="overflow-hidden text-text-blue lg:text-[16rem] text-[10rem] font-extrabold leading-[120%]"
             style={{ height: DIGIT_H }}
           >
             <div ref={(el) => (stripRefs.current[col] = el)}>
@@ -258,6 +256,22 @@ export default function Loader() {
             </div>
           </div>
         ))}
+        <div className="absolute left-1/2 -translate-x-1/2 top-[calc(100%+1rem)] w-full flex justify-center items-center">
+          <span
+            ref={topReadyRef}
+            onClick={() => enter(true)}
+            className="lowercase text-text-blue opacity-0 will-change-transform block cursor-pointer transition-opacity pointer-events-none mr-1"
+          >
+            enter with sound
+          </span>
+          <span
+            ref={bottomReadyRef}
+            onClick={() => enter(false)}
+            className="lowercase text-text-blue opacity-0 will-change-transform block cursor-pointer transition-opacity pointer-events-none ml-1"
+          >
+            enter without sound
+          </span>
+        </div>
       </div>
       <div className="absolute left-1/2 bottom-2 -translate-x-1/2 w-full text-center">
         <span
@@ -271,13 +285,6 @@ export default function Loader() {
           className="lowercase text-text-blue opacity-0 will-change-transform block"
         >
           yess... we are 1 year late
-        </span>
-        <span
-          ref={bottomReadyRef}
-          onClick={() => enter(false)}
-          className="lowercase text-text-blue opacity-0 will-change-transform block cursor-pointer hover:opacity-70 transition-opacity absolute left-0 right-0 bottom-0 pointer-events-none"
-        >
-          enter without sound
         </span>
       </div>
     </div>
