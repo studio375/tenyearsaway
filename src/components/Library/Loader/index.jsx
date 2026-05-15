@@ -130,13 +130,14 @@ export default function Loader() {
           onComplete: () => {
             gsap.fromTo(
               [topReadyRef.current, bottomReadyRef.current],
-              { opacity: 0 },
+              { opacity: 0, y: 18 },
               {
                 opacity: 1,
+                y: 0,
                 pointerEvents: "auto",
-                duration: 0.4,
-                ease: "power2.out",
-                stagger: 0.08,
+                duration: 0.6,
+                ease: "power3.out",
+                stagger: 0.1,
                 onComplete: () => {
                   [topReadyRef, bottomReadyRef].forEach((ref) => {
                     ref.current?.classList.remove(
