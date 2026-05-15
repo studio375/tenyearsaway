@@ -39,6 +39,7 @@ export default function Loader() {
   const loadingIndicatorRef = useRef(null);
   const pulseTweenRef = useRef(null);
   const isHoveringRef = useRef(false);
+  const entryDoneRef = useRef(false);
   const setLoaded = useStore((s) => s.setLoaded);
   const setMuted = useStore((s) => s.setMuted);
 
@@ -175,6 +176,7 @@ export default function Loader() {
                 ease: "power3.out",
                 stagger: 0.1,
                 onComplete: () => {
+                  entryDoneRef.current = true;
                   [topReadyRef, bottomReadyRef].forEach((ref) => {
                     ref.current?.classList.remove(
                       "opacity-0",
@@ -269,6 +271,7 @@ export default function Loader() {
   }
 
   function handleEnter(isTop) {
+    if (!entryDoneRef.current) return;
     isHoveringRef.current = true;
     if (pulseTweenRef.current) {
       pulseTweenRef.current.kill();
@@ -292,6 +295,7 @@ export default function Loader() {
   }
 
   function handleLeave() {
+    if (!entryDoneRef.current) return;
     isHoveringRef.current = false;
     gsap.killTweensOf([topReadyRef.current, bottomReadyRef.current]);
     gsap.to([topReadyRef.current, bottomReadyRef.current], {
