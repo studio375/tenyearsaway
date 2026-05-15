@@ -32,9 +32,10 @@ function ScrollManager() {
   return null;
 }
 
-const isSafari =
+const isSafariDesktop =
   typeof navigator !== "undefined" &&
-  /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+  /^((?!chrome|android).)*safari/i.test(navigator.userAgent) &&
+  !("ontouchstart" in window);
 
 export default function ScrollProvider({ children }) {
   return (
@@ -47,7 +48,7 @@ export default function ScrollProvider({ children }) {
         wheelMultiplier: 0.8,
         lerp: 0.12,
         autoResize: true,
-        syncTouch: !isSafari,
+        syncTouch: !isSafariDesktop,
         touchMultiplier: 1.85,
         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       }}
