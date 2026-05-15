@@ -256,18 +256,18 @@ export default function Loader() {
             </div>
           </div>
         ))}
-        <div className="absolute left-1/2 -translate-x-1/2 top-[calc(100%+1rem)] w-full flex justify-center items-center">
+        <div className="absolute left-1/2 -translate-x-1/2 top-[calc(100%+1rem)] w-full flex flex-col md:flex-row justify-center items-center">
           <span
             ref={topReadyRef}
             onClick={() => enter(true)}
-            className="lowercase text-text-blue opacity-0 will-change-transform block cursor-pointer transition-opacity pointer-events-none mr-1"
+            className="lowercase text-text-blue opacity-0 will-change-transform block cursor-pointer transition-opacity pointer-events-none md:mr-1"
           >
             enter with sound
           </span>
           <span
             ref={bottomReadyRef}
             onClick={() => enter(false)}
-            className="lowercase text-text-blue opacity-0 will-change-transform block cursor-pointer transition-opacity pointer-events-none ml-1"
+            className="lowercase text-text-blue opacity-0 will-change-transform block cursor-pointer transition-opacity pointer-events-none mt-0.5 md:mt-0 md:ml-1"
           >
             enter without sound
           </span>
