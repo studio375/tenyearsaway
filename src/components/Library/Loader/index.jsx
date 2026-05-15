@@ -3,6 +3,7 @@ import { gsap } from "@/lib/gsap";
 import { useStore } from "@/store/useStore";
 import { useTexture } from "@react-three/drei";
 import { audioTracks } from "@/assets/data";
+import { resolveAudioPath } from "@/lib/audioPath";
 
 const START_YEAR = 2015;
 const END_YEAR = 2025;
@@ -109,7 +110,7 @@ export default function Loader() {
       "/sound/mixSound.mp3",
       "/sound/whoosh.mp3",
       "/sound/page-enter.mp3",
-    ];
+    ].map(resolveAudioPath);
 
     const yearAudioUrls = isSlowConnection
       ? []
@@ -128,7 +129,7 @@ export default function Loader() {
           audioTracks[2016],
           audioTracks[2015],
           audioTracks.default,
-        ];
+        ].map(resolveAudioPath);
 
     const allPrefetchUrls = [...soundUrls, ...yearAudioUrls];
     const prefetchController = new AbortController();
@@ -235,7 +236,7 @@ export default function Loader() {
 
     // Fetch default audio track to warm HTTP cache; marks audio ready when done
     const controller = new AbortController();
-    fetch(audioTracks.default, { signal: controller.signal })
+    fetch(resolveAudioPath(audioTracks.default), { signal: controller.signal })
       .then(() => {
         audioOk = true;
         tryStart();

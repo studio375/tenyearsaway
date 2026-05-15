@@ -5,6 +5,7 @@ import { useThree, useFrame } from "@react-three/fiber";
 import { MathUtils, PlaneGeometry } from "three";
 import Card from "./Card";
 import { useSound } from "@/hooks/useSound";
+import { resolveAudioSrc } from "@/lib/audioPath";
 const sharedGeometry = new PlaneGeometry(1, 1, 16, 16);
 
 export default function Team() {
@@ -29,10 +30,10 @@ export default function Team() {
   const [enableCarousel, setEnableCarousel] = useState(false);
   const prevActiveRef = useRef(false);
   const prevOffset = useRef(0);
-  const { play: playCardsSound } = useSound("/sound/shuffle.mp3", {
+  const { play: playCardsSound } = useSound(resolveAudioSrc("/sound/shuffle.mp3"), {
     volume: 0.5,
   });
-  const { play: playMovingSound } = useSound("/sound/moving.mp3", {
+  const { play: playMovingSound } = useSound(resolveAudioSrc("/sound/moving.mp3"), {
     volume: 0.5,
   });
   const tl = useRef(null);

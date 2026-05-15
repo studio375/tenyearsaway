@@ -4,6 +4,7 @@ import { useLenis } from "lenis/react";
 import { gsap } from "@/lib/gsap";
 import { useTranslations } from "next-intl";
 import { useSound } from "@/hooks/useSound";
+import { resolveAudioSrc } from "@/lib/audioPath";
 
 export default function End({ next }) {
   const { setTransition, activeYear, endText } = useStore();
@@ -15,7 +16,7 @@ export default function End({ next }) {
   const wrapperRef = useRef(null);
   const endStateRef = useRef(false);
   const transitionPollRef = useRef(null);
-  const { play: playHoverSound } = useSound("/sound/hover.mp3", {
+  const { play: playHoverSound } = useSound(resolveAudioSrc("/sound/hover.mp3"), {
     volume: 1.2,
   });
   useLenis(({ progress }) => {

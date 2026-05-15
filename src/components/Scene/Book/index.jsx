@@ -16,6 +16,7 @@ import { useRouter, usePathname } from "@/i18n/navigation";
 import { useLocale } from "next-intl";
 import { useDrag } from "@use-gesture/react";
 import { useSound } from "@/hooks/useSound";
+import { resolveAudioSrc } from "@/lib/audioPath";
 
 const PAGE_DEPTH = 0.003;
 const PAGE_SEGMENTS = 30;
@@ -48,10 +49,10 @@ export default function Book() {
   const { play: playTurnSound } = useSound("/sound/page_turn.wav", {
     volume: 3.6,
   });
-  const { play: playEnterSound } = useSound("/sound/slide.mp3", {
+  const { play: playEnterSound } = useSound(resolveAudioSrc("/sound/slide.mp3"), {
     volume: 1.4,
   });
-  const { play: playWindSound } = useSound("/sound/wind.mp3", {
+  const { play: playWindSound } = useSound(resolveAudioSrc("/sound/wind.mp3"), {
     volume: 1,
   });
   const {

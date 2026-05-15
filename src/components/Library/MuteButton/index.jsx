@@ -2,11 +2,12 @@ import { useCallback } from "react";
 import { Howler } from "howler";
 import { useStore } from "@/store/useStore";
 import { useSound } from "@/hooks/useSound";
+import { resolveAudioSrc } from "@/lib/audioPath";
 
 export default function MuteButton({ className = "" }) {
   const muted = useStore((state) => state.muted);
   const setMuted = useStore((state) => state.setMuted);
-  const { play: playHoverSound } = useSound("/sound/hover.mp3", {
+  const { play: playHoverSound } = useSound(resolveAudioSrc("/sound/hover.mp3"), {
     volume: 1.2,
   });
   const toggleMute = useCallback(

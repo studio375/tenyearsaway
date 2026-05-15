@@ -7,6 +7,7 @@ import { generateGridPositions } from "@/helpers/functions";
 import { useLenis } from "lenis/react";
 import { useRouter } from "@/i18n/navigation";
 import { useSound } from "@/hooks/useSound";
+import { resolveAudioSrc } from "@/lib/audioPath";
 
 export default function TransitionHandler() {
   const {
@@ -22,13 +23,13 @@ export default function TransitionHandler() {
   const lenis = useLenis();
   const router = useRouter();
   const transitionTl = useRef(null);
-  const { play: playTurnSound } = useSound("/sound/page-merge.mp3", {
+  const { play: playTurnSound } = useSound(resolveAudioSrc("/sound/page-merge.mp3"), {
     volume: 0.38,
   });
-  const { play: playFastSound } = useSound("/sound/fast.mp3", {
+  const { play: playFastSound } = useSound(resolveAudioSrc("/sound/fast.mp3"), {
     volume: 0.45,
   });
-  const { play: playWindSound } = useSound("/sound/wind.mp3", {
+  const { play: playWindSound } = useSound(resolveAudioSrc("/sound/wind.mp3"), {
     volume: 0.8,
   });
 

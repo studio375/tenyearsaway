@@ -3,6 +3,7 @@ import { useStore } from "@/store/useStore";
 import { useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { useSound } from "@/hooks/useSound";
+import { resolveAudioSrc } from "@/lib/audioPath";
 export default function BookLabels() {
   const t = useTranslations();
   const pages = useStore((s) => s.pages);
@@ -10,7 +11,7 @@ export default function BookLabels() {
   const active = useStore((s) => s.active);
   const selectedPage = useStore((s) => s.selectedPage);
   const setSelectedPage = useStore((s) => s.setSelectedPage);
-  const { play: playHoverSound } = useSound("/sound/hover.mp3", {
+  const { play: playHoverSound } = useSound(resolveAudioSrc("/sound/hover.mp3"), {
     volume: 1.2,
   });
   // Ref maps: pageIndex -> DOM element

@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import Title from "../Title";
 import MuteButton from "../MuteButton";
 import { useSound } from "@/hooks/useSound";
+import { resolveAudioSrc } from "@/lib/audioPath";
 export default function Header() {
   const box = useRef();
   const menu = useRef([]);
@@ -17,7 +18,7 @@ export default function Header() {
   const pageData = useStore((state) => state.page);
   const activeYear = useStore((state) => state.activeYear);
   const transition = useStore((state) => state.transition);
-  const { play: playHoverSound } = useSound("/sound/hover.mp3", {
+  const { play: playHoverSound } = useSound(resolveAudioSrc("/sound/hover.mp3"), {
     volume: 1.2,
   });
 

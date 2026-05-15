@@ -11,6 +11,7 @@ import { useTexture, Text } from "@react-three/drei";
 import { useStore } from "@/store/useStore";
 import BookShadow from "@/components/Scene/Book/Shadow";
 import { useSound } from "@/hooks/useSound";
+import { resolveAudioSrc } from "@/lib/audioPath";
 export default function Intro({ geometry }) {
   const { size, gl } = useThree();
   const ref = useRef(null);
@@ -19,10 +20,10 @@ export default function Intro({ geometry }) {
   const textRef = useRef(null);
   const asPath = usePathname();
   const { loaded, setActive, transition } = useStore();
-  const { play: playTurnSound } = useSound("/sound/whoosh.mp3", {
+  const { play: playTurnSound } = useSound(resolveAudioSrc("/sound/whoosh.mp3"), {
     volume: 0.56,
   });
-  const { play: playEnterSound } = useSound("/sound/page-enter.mp3", {
+  const { play: playEnterSound } = useSound(resolveAudioSrc("/sound/page-enter.mp3"), {
     volume: 0.6,
   });
   const staticViewport = useMemo(() => {

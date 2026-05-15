@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { Howl, Howler } from "howler";
 import { useStore } from "@/store/useStore";
 import { audioTracks } from "@/assets/data";
+import { resolveAudioSrc } from "@/lib/audioPath";
 import { useLenis } from "lenis/react";
 
 const FADE_MS = 1500;
@@ -55,7 +56,7 @@ export default function AudioManager() {
       setTimeout(() => prev.unload(), fadeMs + 100);
     }
 
-    const howl = new Howl({ src: [src], loop: true, volume: 0 });
+    const howl = new Howl({ src: resolveAudioSrc(src), loop: true, volume: 0 });
     howl.play();
     if (!mutedRef.current) howl.fade(0, 0.35, fadeMs);
     currentHowl.current = howl;
@@ -68,14 +69,14 @@ export default function AudioManager() {
       mixSoundRef.current.stop();
       mixSoundRef.current.unload();
     }
-    mixSoundRef.current = new Howl({ src: ["/sound/mixSound.mp3"], volume: 1 });
+    mixSoundRef.current = new Howl({ src: resolveAudioSrc("/sound/mixSound.mp3"), volume: 1 });
     mixSoundRef.current.play();
   }
 
   // Pre-warm default track during loading screen so audio is decoded before user clicks enter
   useEffect(() => {
     const src = getDesiredSrc();
-    const howl = new Howl({ src: [src], loop: true, volume: 0, preload: true });
+    const howl = new Howl({ src: resolveAudioSrc(src), loop: true, volume: 0, preload: true });
     currentHowl.current = howl;
     currentSrc.current = src;
   }, []); // eslint-disable-line react-hooks/exhaustive-deps

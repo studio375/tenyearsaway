@@ -4,6 +4,7 @@ import { useStore } from "@/store/useStore";
 import { useRouter, usePathname, Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { useSound } from "@/hooks/useSound";
+import { resolveAudioSrc } from "@/lib/audioPath";
 export default function Footer() {
   const startRef = useRef(null);
   const infoRef = useRef([]);
@@ -17,7 +18,7 @@ export default function Footer() {
   const router = useRouter();
   const pathname = usePathname();
   const t = useTranslations("footer");
-  const { play: playHoverSound } = useSound("/sound/hover.mp3", {
+  const { play: playHoverSound } = useSound(resolveAudioSrc("/sound/hover.mp3"), {
     volume: 1.2,
   });
   useEffect(() => {
