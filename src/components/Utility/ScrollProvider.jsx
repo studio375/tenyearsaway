@@ -32,6 +32,10 @@ function ScrollManager() {
   return null;
 }
 
+const isSafari =
+  typeof navigator !== "undefined" &&
+  /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
 export default function ScrollProvider({ children }) {
   return (
     <ReactLenis
@@ -43,7 +47,7 @@ export default function ScrollProvider({ children }) {
         wheelMultiplier: 0.8,
         lerp: 0.12,
         autoResize: true,
-        syncTouch: true,
+        syncTouch: !isSafari,
         touchMultiplier: 1.85,
         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       }}

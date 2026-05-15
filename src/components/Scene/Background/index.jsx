@@ -114,8 +114,12 @@ export default function Background({ geometry }) {
     ref.current.position.x = state.camera.position.x;
     ref.current.position.y = state.camera.position.y;
 
-    // Skip shader updates when background is invisible
-    if (ref.current.material.uniforms.uAlpha.value < 0.01) return;
+    // Hide mesh entirely when invisible — skips GPU shader execution
+    if (ref.current.material.uniforms.uAlpha.value < 0.01) {
+      if (ref.current.visible) ref.current.visible = false;
+      return;
+    }
+    if (!ref.current.visible) ref.current.visible = true;
 
     ref.current.material.uniforms.uTime.value = state.clock.getElapsedTime();
 
