@@ -20,12 +20,18 @@ export default function Intro({ geometry }) {
   const textRef = useRef(null);
   const asPath = usePathname();
   const { loaded, setActive, transition } = useStore();
-  const { play: playTurnSound } = useSound(resolveAudioSrc("/sound/whoosh.mp3"), {
-    volume: 0.56,
-  });
-  const { play: playEnterSound } = useSound(resolveAudioSrc("/sound/page-enter.mp3"), {
-    volume: 0.6,
-  });
+  const { play: playTurnSound } = useSound(
+    resolveAudioSrc("/sound/whoosh.mp3"),
+    {
+      volume: 0.56,
+    },
+  );
+  const { play: playEnterSound } = useSound(
+    resolveAudioSrc("/sound/page-enter.mp3"),
+    {
+      volume: 0.6,
+    },
+  );
   const staticViewport = useMemo(() => {
     const distance = 5;
     const fov = (75 * Math.PI) / 180;
@@ -48,6 +54,9 @@ export default function Intro({ geometry }) {
     let h = Math.min(refH, refW / ASPECT);
     if (size.width < 1024 && h < staticViewport.height * 0.4) {
       h = staticViewport.height * 0.55;
+    }
+    if (size.height == 1200 && size.width == 1600) {
+      h = staticViewport.height * 0.68;
     }
     const w = h * ASPECT;
     return [w, h, 1];

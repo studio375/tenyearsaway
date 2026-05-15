@@ -172,7 +172,7 @@ export default function Home() {
         <MuteButton className="text-text-blue" />
       </div>
       <main className="relative z-1 h-svh w-screen">
-        <div className="lg:pt-[13vh] lgx:pt-[19vh] md:pt-[21.6rem] pt-[12rem] lgx:px-5 px-[1.5rem] flex lg:flex-row flex-col justify-between items-start flex-wrap pointer-events-none lg:h-auto h-full">
+        <div className="lg:pt-[13vh] lgx:pt-[20rem] md:pt-[21.6rem] pt-[12rem] lgx:px-5 px-[1.5rem] flex lg:flex-row flex-col justify-between items-start flex-wrap pointer-events-none lg:h-auto h-full">
           <div className="lgx:pl-[8rem] lg:pl-[5rem] pl-0 order-2 lg:order-1 w-full lg:w-auto mb-1 lg:mb-0">
             <p
               ref={leftTextRef}
@@ -184,7 +184,7 @@ export default function Home() {
           <div className="order-1 lg:order-2 w-full lg:w-auto">
             <p
               ref={rightTextRef}
-              className="font-[500] italic text-[#cce8eb] lg:text-[2rem] text-[1.55rem] -mt-[2rem] lx:-mt-[4rem] lgx:-mt-[2rem] xl:-mt-[2rem] lg:ml-0 -ml-[0.8rem] opacity-0 lg:w-auto w-full text-center lg:text-left"
+              className="font-[500] italic text-[#cce8eb] lg:text-[2rem] text-[1.55rem] -mt-[2rem] lx:-mt-[4rem] lgx:-mt-[8rem] xl:-mt-[6rem] xxl:-mt-[4rem] lg:ml-0 -ml-[0.8rem] opacity-0 lg:w-auto w-full text-center lg:text-left"
             >
               {t("subtitle")}
             </p>
