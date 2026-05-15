@@ -36,9 +36,10 @@ export default function Loader() {
   const bottomLoadingRef = useRef(null);
   const bottomReadyRef = useRef(null);
   const loadingIndicatorRef = useRef(null);
+  const pulseTweenRef = useRef(null);
+  const isHoveringRef = useRef(false);
   const setLoaded = useStore((s) => s.setLoaded);
   const setMuted = useStore((s) => s.setMuted);
-  const [phase, setPhase] = useState("loading"); // "loading" o "ready"
 
   useEffect(() => {
     const { frames, pages } = useStore.getState();
@@ -94,6 +95,7 @@ export default function Loader() {
         : [audioTracks[2025]]),
       "/sound/whoosh.mp3",
       "/sound/page-enter.mp3",
+      "/sound/mixSound.mp3",
     ];
     audioUrls.forEach((url) => {
       if (document.querySelector(`link[rel="prefetch"][href="${url}"]`)) return;
@@ -126,7 +128,6 @@ export default function Loader() {
           duration: 0.25,
           ease: "power2.in",
           onComplete: () => {
-            setPhase("ready");
             gsap.fromTo(
               [topReadyRef.current, bottomReadyRef.current],
               { opacity: 0 },
@@ -137,16 +138,22 @@ export default function Loader() {
                 ease: "power2.out",
                 stagger: 0.08,
                 onComplete: () => {
-                  gsap.set([topReadyRef.current, bottomReadyRef.current], {
-                    clearProps: "opacity",
-                  });
                   [topReadyRef, bottomReadyRef].forEach((ref) => {
                     ref.current?.classList.remove(
                       "opacity-0",
                       "pointer-events-none",
                     );
-                    ref.current?.classList.add("animate-pulse");
                   });
+                  pulseTweenRef.current = gsap.to(
+                    [topReadyRef.current, bottomReadyRef.current],
+                    {
+                      opacity: 0.4,
+                      duration: 1,
+                      repeat: -1,
+                      yoyo: true,
+                      ease: "power1.inOut",
+                    },
+                  );
                 },
               },
             );
@@ -209,6 +216,56 @@ export default function Loader() {
     };
   }, []);
 
+  function startPulse() {
+    if (isHoveringRef.current) return;
+    gsap.killTweensOf([topReadyRef.current, bottomReadyRef.current]);
+    pulseTweenRef.current = gsap.to(
+      [topReadyRef.current, bottomReadyRef.current],
+      {
+        opacity: 0.4,
+        duration: 1,
+        repeat: -1,
+        yoyo: true,
+        ease: "power1.inOut",
+      },
+    );
+  }
+
+  function handleEnter(isTop) {
+    isHoveringRef.current = true;
+    if (pulseTweenRef.current) {
+      pulseTweenRef.current.kill();
+      pulseTweenRef.current = null;
+    }
+    gsap.killTweensOf([topReadyRef.current, bottomReadyRef.current]);
+    const hovered = isTop ? topReadyRef.current : bottomReadyRef.current;
+    const other = isTop ? bottomReadyRef.current : topReadyRef.current;
+    gsap.to(hovered, {
+      opacity: 1,
+      duration: 0.3,
+      ease: "power2.out",
+      overwrite: true,
+    });
+    gsap.to(other, {
+      opacity: 0.3,
+      duration: 0.3,
+      ease: "power2.out",
+      overwrite: true,
+    });
+  }
+
+  function handleLeave() {
+    isHoveringRef.current = false;
+    gsap.killTweensOf([topReadyRef.current, bottomReadyRef.current]);
+    gsap.to([topReadyRef.current, bottomReadyRef.current], {
+      opacity: 1,
+      duration: 0.3,
+      ease: "power2.out",
+      overwrite: true,
+      onComplete: startPulse,
+    });
+  }
+
   function enter(withSound) {
     if (!withSound) setMuted(true);
     gsap.to(loaderRef.current, {
@@ -256,18 +313,23 @@ export default function Loader() {
             </div>
           </div>
         ))}
-        <div className="absolute left-1/2 -translate-x-1/2 top-[calc(100%+1rem)] w-full flex flex-col md:flex-row justify-center items-center">
+        <div
+          className="absolute left-1/2 -translate-x-1/2 h-auto md:h-[3.8rem] uppercase top-[calc(100%+1rem)] w-full flex flex-col md:flex-row justify-center items-center gap-1"
+          onMouseLeave={handleLeave}
+        >
           <span
             ref={topReadyRef}
             onClick={() => enter(true)}
-            className="lowercase text-text-blue opacity-0 will-change-transform block cursor-pointer transition-opacity pointer-events-none md:mr-1"
+            onMouseEnter={() => handleEnter(true)}
+            className="md:flex-1 w-[60%] h-[3rem] md:h-full flex items-center justify-center text-text-blue opacity-0 border border-text-blue rounded-[3px] will-change-transform cursor-pointer pointer-events-none max-md:text-[1.2rem]"
           >
             enter with sound
           </span>
           <span
             ref={bottomReadyRef}
             onClick={() => enter(false)}
-            className="lowercase text-text-blue opacity-0 will-change-transform block cursor-pointer transition-opacity pointer-events-none mt-0.5 md:mt-0 md:ml-1"
+            onMouseEnter={() => handleEnter(false)}
+            className="md:flex-1 w-[60%] h-[3rem] md:h-full flex items-center justify-center text-text-blue opacity-0 border border-text-blue rounded-[3px] will-change-transform cursor-pointer pointer-events-none max-md:text-[1.2rem]"
           >
             enter without sound
           </span>

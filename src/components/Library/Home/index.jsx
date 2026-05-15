@@ -176,7 +176,7 @@ export default function Home() {
           <div className="lgx:pl-[8rem] lg:pl-[5rem] pl-0 order-2 lg:order-1 w-full lg:w-auto mb-1 lg:mb-0">
             <p
               ref={leftTextRef}
-              className="text-text-blue lg:text-[2rem] text-center lg:text-left text-[1.4rem] font-[200] xl:w-[10vw] lgx:w-[13vw] lg:w-[16vw] w-full opacity-0"
+              className="text-text-blue lg:text-[2rem] text-center lg:text-left text-[1.4rem] font-[200] xl:w-[10vw] lgx:w-[13vw] lg:w-[16vw] w-full opacity-0 tracking-[-0.5px] md:tracking-0"
             >
               {t("tagline")}
             </p>

@@ -24,6 +24,7 @@ export default function Page({
   resetBook,
   playWindSound,
   yOffset = 0,
+  isEnabled,
 }) {
   const groupRef = useRef(null);
   const meshRef = useRef(null);
@@ -236,7 +237,7 @@ export default function Page({
         castShadow={true}
         onPointerOver={(e) => {
           e.stopPropagation();
-          document.body.style.cursor = "grab";
+          if (isEnabled?.current) document.body.style.cursor = "grab";
         }}
         onPointerOut={(e) => {
           e.stopPropagation();

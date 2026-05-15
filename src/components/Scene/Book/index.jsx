@@ -408,6 +408,7 @@ export default function Book() {
               resetBook={() => resetBook()}
               playWindSound={playWindSound}
               yOffset={yOffset}
+              isEnabled={isEnabled}
             />
           );
         })}

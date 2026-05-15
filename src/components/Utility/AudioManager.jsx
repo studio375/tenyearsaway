@@ -6,6 +6,7 @@ import { audioTracks } from "@/assets/data";
 import { useLenis } from "lenis/react";
 
 const FADE_MS = 1500;
+const SWAP_FADE_MS = 800;
 
 export default function AudioManager() {
   const loaded = useStore((state) => state.loaded);
@@ -20,6 +21,7 @@ export default function AudioManager() {
   const mutedRef = useRef(muted);
   const isYearRouteRef = useRef(isYearRoute);
   const active2025PartRef = useRef(0); // 0 = part1, 1 = part2
+  const mixSoundRef = useRef(null);
 
   useEffect(() => {
     mutedRef.current = muted;
@@ -44,20 +46,30 @@ export default function AudioManager() {
     return audioTracks.default;
   }
 
-  function playTrack(src) {
+  function playTrack(src, fadeMs = FADE_MS) {
     if (currentSrc.current === src && currentHowl.current?.playing()) return;
 
     const prev = currentHowl.current;
     if (prev) {
-      prev.fade(prev.volume(), 0, FADE_MS);
-      setTimeout(() => prev.unload(), FADE_MS + 100);
+      prev.fade(prev.volume(), 0, fadeMs);
+      setTimeout(() => prev.unload(), fadeMs + 100);
     }
 
     const howl = new Howl({ src: [src], loop: true, volume: 0 });
     howl.play();
-    if (!mutedRef.current) howl.fade(0, 0.35, FADE_MS);
+    if (!mutedRef.current) howl.fade(0, 0.35, fadeMs);
     currentHowl.current = howl;
     currentSrc.current = src;
+  }
+
+  function playMixSound() {
+    if (mutedRef.current) return;
+    if (mixSoundRef.current) {
+      mixSoundRef.current.stop();
+      mixSoundRef.current.unload();
+    }
+    mixSoundRef.current = new Howl({ src: ["/sound/mixSound.mp3"], volume: 1 });
+    mixSoundRef.current.play();
   }
 
   // Pre-warm default track during loading screen so audio is decoded before user clicks enter
@@ -107,7 +119,8 @@ export default function AudioManager() {
       const desiredPart = progress >= 0.35 ? 1 : 0;
       if (desiredPart !== active2025PartRef.current) {
         active2025PartRef.current = desiredPart;
-        playTrack(audioTracks[2025][desiredPart]);
+        playMixSound();
+        playTrack(audioTracks[2025][desiredPart], SWAP_FADE_MS);
       }
     }
   });
