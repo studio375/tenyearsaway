@@ -76,36 +76,71 @@ export default function Loader() {
       });
     }
 
-    // Warm up HTTP cache for audio files so Howler plays without delay
-    const audioUrls = [
-      audioTracks.default,
-      audioTracks[2015],
-      audioTracks[2016],
-      audioTracks[2017],
-      audioTracks[2018],
-      audioTracks[2019],
-      audioTracks[2020],
-      audioTracks[2021],
-      audioTracks[2022],
-      audioTracks[2023],
-      audioTracks[2024],
-      // 2025 has two parts
-      ...(Array.isArray(audioTracks[2025])
-        ? audioTracks[2025]
-        : [audioTracks[2025]]),
+    // Slow connection detection
+    const isSlowConnection =
+      navigator?.connection?.effectiveType === "3g" ||
+      navigator?.connection?.effectiveType === "2g" ||
+      navigator?.connection?.saveData === true;
+
+    // Sequential audio prefetch with retry — one at a time to avoid 503s on slow connections
+    async function fetchWithRetry(url, signal, maxAttempts = 3) {
+      for (let attempt = 0; attempt < maxAttempts; attempt++) {
+        try {
+          await fetch(url, { signal });
+          return;
+        } catch {
+          if (signal?.aborted) return;
+          if (attempt < maxAttempts - 1) {
+            await new Promise((r) =>
+              setTimeout(r, 1000 * Math.pow(2, attempt)),
+            );
+          } else {
+            console.warn(
+              `[Loader] audio prefetch failed after ${maxAttempts} attempts:`,
+              url,
+            );
+          }
+        }
+      }
+    }
+
+    // Priority: critical sounds first, then year audio descending (skipped on slow connection)
+    const soundUrls = [
+      "/sound/mixSound.mp3",
       "/sound/whoosh.mp3",
       "/sound/page-enter.mp3",
-      "/sound/mixSound.mp3",
     ];
-    audioUrls.forEach((url) => {
-      if (document.querySelector(`link[rel="prefetch"][href="${url}"]`)) return;
-      const link = document.createElement("link");
-      link.rel = "prefetch";
-      link.as = "audio";
-      link.href = url;
-      document.head.appendChild(link);
-      console.log("prefetching", url);
-    });
+
+    const yearAudioUrls = isSlowConnection
+      ? []
+      : [
+          ...(Array.isArray(audioTracks[2025])
+            ? audioTracks[2025]
+            : [audioTracks[2025]]),
+          audioTracks[2024],
+          audioTracks[2023],
+          audioTracks[2022],
+          audioTracks[2021],
+          audioTracks[2020],
+          audioTracks[2019],
+          audioTracks[2018],
+          audioTracks[2017],
+          audioTracks[2016],
+          audioTracks[2015],
+          audioTracks.default,
+        ];
+
+    const allPrefetchUrls = [...soundUrls, ...yearAudioUrls];
+    const prefetchController = new AbortController();
+
+    (async () => {
+      for (const url of allPrefetchUrls) {
+        if (prefetchController.signal.aborted) break;
+        await fetchWithRetry(url, prefetchController.signal);
+      }
+    })();
+
+    return () => prefetchController.abort();
   }, []);
 
   useEffect(() => {
